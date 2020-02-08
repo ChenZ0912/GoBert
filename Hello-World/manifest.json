@@ -1,0 +1,23 @@
+{
+    "manifest_version": 2,
+    "name": "Hello World",
+    "version": "1.0",
+    "description": "Hello world extension for senior design",
+    "icons": {
+        "128": "icon128.png",
+        "48": "icon48.png",
+        "16": "icon16.png"
+    },
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": false
+    },
+    "browser_action": {
+        "default_icon": "icon16.png",
+        "default_popup": "popup.html"
+    },
+    "content_scripts": [{
+        "matches": ["https://sis.portal.nyu.edu/*"],
+        "js": ["content.js", "jquery.min.js"]
+    }]
+}
