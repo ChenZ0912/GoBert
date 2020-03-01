@@ -1,0 +1,7 @@
+1. professor page
+	1.1 courses that the professor teaches
+	1.2 professor ratings
+2. search page
+	2.1 course rating, separated by prof
+3. course page
+	3.2 course comments
