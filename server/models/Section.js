@@ -2,6 +2,7 @@ const { model, Schema } = require('mongoose');
 
 const sectionSchema = new Schema({
 	courseID: String,
+	courseTitle: String,
 	term: String,
 	classNo: String,
 	daysTimes: String,

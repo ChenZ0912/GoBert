@@ -1,9 +1,9 @@
 ## GraphQL, MongoDB and Express
-- add a config.js file of the format
+- add a config.js file of the format with the following content. This role has a read only access to the database. If you need write access, please contact me directly.
 config.js
 ```
 module.exports = {
-	MONGODB: 'mongodb url'
+	MONGODB: 'mongodb+srv://dbreader:dbreader@courseapi-ujwvo.mongodb.net/nyu?retryWrites=true&w=majority'
 }
 ```
 - npm i
@@ -17,42 +17,49 @@ module.exports = {
 ##### you can try the following code out in localhost:4000 playground, please see https://graphql.org/graphql-js/graphql-clients/ for client side code
 ```
 query {
-  searchProfessorFuzzy(query: "John"){
+  getProfessorByName(query: "John") {
     name
     score
     numRate
   }
-  searchProfessorExact(query: "John Sterling"){
-    professor
-    courseID
-		courseTitle
-    avgProfScore
-    avgCourseScore
+  getProfessorDetail(query: "John Sterling") {
+    name
+    score
     numRate
+    ratings {
+      courseID
+      courseTitle
+      avgProfScore
+      avgCourseScore
+      numRate
+    }
   }
-  searchCourseFuzzy(query: "object oriented"){
+  getCourse(query: "object oriented") {
     courseID
     courseTitle
     score
     numRate
   }
-  searchCourseFuzzy(query: "2124"){
+
+  getCourseDetail(
+    searchCourseInput: {
+      cID: "CSUY 2124"
+      cTitle: "Object Oriented Programming  (Lecture)"
+    }
+  ) {
     courseID
     courseTitle
     score
     numRate
-  }
-  searchCourseExact(searchCourseInput:{
-    cID:"CSUY 2124",
-    cTitle: "Object Oriented Programming  (Lecture)",
-    prof: "John Sterling"
-  }){
-    professor
-    courseID
-    courseTitle
-    avgProfScore
-    avgCourseScore
-    numRate
+    ratings {
+      professor
+      courseID
+      courseTitle
+      avgProfScore
+      avgCourseScore
+      numRate
+    }
   }
 }
+
 ```

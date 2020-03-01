@@ -1,11 +1,12 @@
-const searchResolvers = require('./search');
+const searchProfessorResolvers = require('./searchProfessor');
+const searchCourseResolvers = require('./searchCourse');
+
 
 module.exports = {
 	Query: {
-		...searchResolvers.ProfQuery.QueryExact,
-		...searchResolvers.ProfQuery.QueryFuzzy,
-		...searchResolvers.CourseQuery.QueryFuzzy,
-		...searchResolvers.CourseQuery.QueryExact,
-
+		...searchProfessorResolvers.ProfQuery.GetProfessorByName,
+		...searchProfessorResolvers.ProfQuery.GetProfessorDetail,
+		...searchCourseResolvers.CourseQuery.GetCourse,
+		...searchCourseResolvers.CourseQuery.GetCourseDetail,
 	}
 }

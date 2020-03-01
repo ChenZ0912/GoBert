@@ -13,22 +13,35 @@ module.exports = gql`
 		name: String
 		score: Float
 		numRate: Int
+		ratings: [RateSummary]
 	}
 	type Course{
 		courseID: String
 		courseTitle: String
 		score: Float
 		numRate: Int
+		ratings: [RateSummary]
 	}
-	input SearchCourseInput{
+	type Section{
+		courseID: String,
+		courseTitle: String,
+		term: String,
+		classNo: String,
+		daysTimes: String,
+		location: String,
+		room: String,
+		status: String,
+		professor: String
+	}
+
+	input SearchCourseInput {
 		cID: String!
 		cTitle: String!
-		prof: String!
 	}
 	type Query{
-		searchProfessorFuzzy(query: String!): [Professor],
-		searchProfessorExact(query: String!): [RateSummary],
-		searchCourseFuzzy(query: String!): [Course],
-		searchCourseExact(searchCourseInput: SearchCourseInput): [RateSummary],
+		getProfessorByName(query: String!): [Professor],
+		getProfessorDetail(query: String!): Professor,
+		getCourse(query: String!): [Course],
+		getCourseDetail(searchCourseInput: SearchCourseInput): Course,
 	}
 `
