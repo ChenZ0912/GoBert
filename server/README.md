@@ -15,6 +15,35 @@ module.exports = {
 - searchCourseFuzzy
 - searchCourseExact
 ##### you can try the following code out in localhost:4000 playground, please see https://graphql.org/graphql-js/graphql-clients/ for client side code
+##### Mutation API
+```
+mutation {
+
+  register(registerInput:{
+    username: "kai"
+    password: "hashed"
+    confirmPassword: "hashed"
+    email: "kai@kai.com"
+  }){
+    token
+    email
+    standing
+    major
+    createdAt
+    username
+  }
+
+  login(username: "kai", password: "hashed") {
+    email
+    username
+    token
+    standing
+    major
+    createdAt
+  }
+}
+```
+##### Query API
 ```
 query {
   getProfessorByName(query: "John") {
