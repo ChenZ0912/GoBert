@@ -8,6 +8,27 @@ function getSelectedText() {
     return text;
 }
 
+function createSearchCourseDiv(courseInfo) {
+    // Remove the previous display
+    var blockID = "gobert_display";
+    $("#" + blockID).remove();
+    
+    var displayDiv = $("<div>Test Div</div>");
+    displayDiv.attr('id', blockID);
+    displayDiv.css({
+        "position":"fixed", 
+        "top": "5%", 
+        "right": "5%",
+        "background": "grey",
+        "width": "300px",
+        "height": "300px",
+        "z-index": "999"
+    });
+
+    $("body").append(displayDiv);
+}
+
+
 function doSomethingWithSelectedText() {
     var selectedText = getSelectedText();
     if (selectedText) {
@@ -15,7 +36,7 @@ function doSomethingWithSelectedText() {
             type: "GET",
             url: "http://localhost:8080/search",
             success: function (data) {
-                alert(selectedText + " " + JSON.stringify(data));
+                createSearchCourseDiv(data);
             },
             error: function (err) {
                 alert(err);
