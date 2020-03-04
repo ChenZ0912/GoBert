@@ -1,6 +1,12 @@
 const { gql } = require('apollo-server');
 
 module.exports = gql`
+	type searchResult {
+		category: String
+		name: String
+		score: Float
+		numRate: Int
+	}
 	type RateSummary {
 		professor: String
 		courseID: String
@@ -82,6 +88,7 @@ module.exports = gql`
 		getCourse(query: String!): [Course]
 		getCourseDetail(searchCourseInput: SearchCourseInput): Course
 		getRatings(searchCourseInput: SearchCourseInput): [RateSummary]
+		getSearchResult(query: String!): [searchResult]
 	}
 	type Mutation{
 		register(registerInput: RegisterInput): User!

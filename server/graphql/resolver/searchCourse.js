@@ -1,4 +1,3 @@
-const Professor = require('../../models/Professor');
 const Course = require('../../models/Course');
 const RateSummary = require('../../models/RateSummary');
 const escapeRegex = require("../../utils/escape");
