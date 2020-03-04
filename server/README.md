@@ -9,11 +9,6 @@ module.exports = {
 - npm i
 - npm start
 
-## Sample Endpoints
-- searchProfessorFuzzy
-- searchProfessorExact
-- searchCourseFuzzy
-- searchCourseExact
 ##### you can try the following code out in localhost:4000 playground, please see https://graphql.org/graphql-js/graphql-clients/ for client side code
 ##### Mutation API
 ```
@@ -46,6 +41,13 @@ mutation {
 ##### Query API
 ```
 query {
+  // This Query will return a combined result for course & professor
+  getSearchResult(query: "2124"){
+    category
+    name
+    score
+    numRate
+  }
   getProfessorByName(query: "John") {
     name
     score
