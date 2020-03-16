@@ -36,6 +36,37 @@ mutation {
     major
     createdAt
   }
+
+  // When you do a postRate in localhost:4000, you need to add
+  // http header: { "Authorization":"Bearer userToken" }, where userToken is the token retruned by register/login
+  postRate(
+      rateInput: {
+      	courseID: "CSUY 2124"
+        courseTitle: "Object Oriented Programming  (Lecture)"
+        courseScore: 4.5
+        professor: "John Sterling"
+        professorScore: 5.0
+        term: "Spring 2020"
+        anonymity: false
+        comment: "The course is helpful and sterling is great"       
+    }
+  ){
+    username
+    anonymity
+    courseID
+    courseTitle
+    term
+    courseScore
+    professor
+    professorScore
+    comment
+    upvotes
+    downvotes
+    createdAt
+  }
+
+  deleteRate(rateId: "5e5af12f4cf31e4f4f441143")
+
 }
 ```
 ##### Query API

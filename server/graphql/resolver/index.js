@@ -2,6 +2,7 @@ const searchProfessorResolvers = require('./searchProfessor');
 const searchCourseResolvers = require('./searchCourse');
 const searchResolvers = require('./search');
 const usersResolvers = require('./users');
+const rateResolvers = require('./rate');
 
 module.exports = {
 	Query: {
@@ -9,9 +10,11 @@ module.exports = {
 		...searchProfessorResolvers.ProfQuery.GetProfessorDetail,
 		...searchCourseResolvers.CourseQuery.GetCourse,
 		...searchCourseResolvers.CourseQuery.GetCourseDetail,
-		...searchResolvers.Query
+		...searchResolvers.Query,
+		...rateResolvers.Query
 	},
 	Mutation: {
-		...usersResolvers.Mutation
+		...usersResolvers.Mutation,
+		...rateResolvers.Mutation
 	}
 }

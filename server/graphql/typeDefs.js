@@ -7,6 +7,21 @@ module.exports = gql`
 		score: Float
 		numRate: Int
 	}
+	type Rate {
+		username: String
+		anonymity: Boolean
+		courseID: String
+		courseTitle: String
+		term: String
+		courseScore: Float
+		professor: String
+		professorScore: Float
+		comment: String
+		upvotes: [String]
+		downvotes: [String]
+		createdAt: String
+		id: ID
+	}
 	type RateSummary {
 		professor: String
 		courseID: String
@@ -53,7 +68,6 @@ module.exports = gql`
 		professor: String
 	}
 	input RateInput {
-		username: String!
 		courseID: String!
 		courseTitle: String!
 		courseScore: Float!
@@ -64,17 +78,20 @@ module.exports = gql`
 		comment: String!
 	}
 	type RateOutput {
-	  	username: String!
-	    courseID: String!
-	    courseTitle: String!
-	    courseScore: Float!
-	    professor: String!
-	    professorScore: Float!
-	    term: String!
-	    anonymity: Boolean!
-		comment: String!
-		upvotes: [String]!
-		downvotes: [String]!
+		alreadyRate: Boolean
+	  	username: String
+	    courseID: String
+	    courseTitle: String
+	    courseScore: Float
+	    professor: String
+	    professorScore: Float
+	    term: String
+	    anonymity: Boolean
+		comment: String
+		upvotes: [String]
+		downvotes: [String]
+		createdAt: String
+		id: ID
 	}
 	input RegisterInput {
 		username: String!
@@ -83,16 +100,18 @@ module.exports = gql`
 		email: String
 	}
 	type Query{
+		getSearchResult(query: String!): [searchResult]
 		getProfessorByName(query: String!): [Professor]
 		getProfessorDetail(query: String!): Professor
 		getCourse(query: String!): [Course]
 		getCourseDetail(searchCourseInput: SearchCourseInput): Course
-		getRatings(searchCourseInput: SearchCourseInput): [RateSummary]
-		getSearchResult(query: String!): [searchResult]
+		
+		getRatings(searchCourseInput: SearchCourseInput): [Rate]
 	}
 	type Mutation{
 		register(registerInput: RegisterInput): User!
 		login(username: String!, password: String!): User!
-		postRating(rateInput: RateInput): RateOutput!
+		postRate(rateInput: RateInput): RateOutput
+		deleteRate(rateId: String!): String
 	}
 `

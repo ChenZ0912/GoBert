@@ -9,7 +9,9 @@ const { MONGODB } = require('./config.js');
 
 const server = new ApolloServer({
 	typeDefs,
-	resolvers
+	resolvers,
+	// so that we can access req header in context
+	context: ({ req }) => ({ req })
 });
 
 mongoose

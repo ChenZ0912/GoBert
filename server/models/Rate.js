@@ -11,7 +11,8 @@ const rateSchema = new Schema({
 	professorScore: Number,
 	comment: String,
 	upvotes: [String],
-	downvotes: [String]
+	downvotes: [String],
+	createdAt: String
 })
 
 module.exports = model('rates', rateSchema);
