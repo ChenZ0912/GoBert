@@ -122,6 +122,28 @@ query {
       numRate
     }
   }
+
+  getRatings(
+      searchCourseInput: {
+        cID: "CSUY 2124"
+        cTitle: "Object Oriented Programming  (Lecture)"
+        professor:"John Sterling"
+    }
+  ){
+    username
+    anonymity
+    courseID
+    courseTitle
+    term
+    courseScore
+    professor
+    professorScore
+    comment
+    upvotes
+    downvotes
+    createdAt
+    id
+  }
 }
 
 ```
