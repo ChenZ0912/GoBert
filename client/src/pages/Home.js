@@ -1,26 +1,21 @@
-import React from 'react';
-import { Form } from 'semantic-ui-react';
+import React, { useContext } from 'react';
+import { AuthContext } from '../context/auth';
 
-function Home(props) {
-  function onSubmit(){
-    var input = document.getElementById("input").value;
-    if (input!=""){
-      props.history.push(`/search/${input}`);
-    }
-  }
-  
+function Home() {
+  const { user } = useContext(AuthContext);
+
   return (
-    <div className="center">
-      <img src="logo.png" alt="LOGO"></img>
-      <Form size='large' onSubmit={onSubmit}>
-        <Form.Input
-          id="input"
-          name="input"
-          type="text"
-          placeholder="Look up a professor or course..."
-        />
-        <Form.Button type="submit" content='Search' fluid size='large'/>
-      </Form>
+    <div>
+      <div className="center">
+        <img src="logo.png" alt="LOGO"></img>
+        {!user && (<p>LOGIN for more services: view shopping cart, generate schedules, etc... o(*￣▽￣*)ブ</p>)}
+      </div>
+
+      <nav className='bottom'>
+        <a href="/" className='box'>About</a>
+        <a href="/" className='box'>FAQs</a>
+        <a href="/" className='box'>Contact Us</a>
+      </nav>
     </div>
   );
 }

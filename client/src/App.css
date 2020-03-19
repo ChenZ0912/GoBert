@@ -15,11 +15,26 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
 }
 
-.ui.teal.button:focus,
-.ui.teal.buttons .button:focus {
-  background-color: #8900e1;
+.bottom {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 85%;
+  transform: translate(-50%, -50%);
+}
+
+.box {  
+  border-top-style: solid;
+  text-align: center;
+  color: #aaa;
+  float: left;
+  width: 33.33%;
+  padding: 5px;
+}
+
+.box:hover {
+  color: #330662;
 }

@@ -22,12 +22,10 @@ function MenuBar() {
 
   const menuBar = user ? (
     <Segment inverted>
-    <Menu fitted inverted secondary size="massive">
+    <Menu fixed inverted secondary size="massive">
       <Form onSubmit={onSubmit}>
         <Form.Input
-          style={{width:"40rem", padding:"5px"}}
-          icon="search"
-          iconPosition='left'
+          
           id="input"
           name="input"
           type="text"
@@ -43,10 +41,10 @@ function MenuBar() {
     </Segment>
   ) : (
     <Segment inverted>
-    <Menu fitted inverted secondary size="massive">
+    <Menu inverted secondary size="massive">
       <Form onSubmit={onSubmit}>
         <Form.Input
-          style={{width:"40rem", padding:"5px"}}
+          style={{width:"250%", padding:"5px"}}
           icon="search"
           iconPosition='left'
           id="input"
