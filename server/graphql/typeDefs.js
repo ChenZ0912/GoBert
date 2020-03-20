@@ -6,6 +6,7 @@ module.exports = gql`
 		name: String
 		score: Float
 		numRate: Int
+		_id: ID
 	}
 	type Rate {
 		username: String
@@ -29,19 +30,20 @@ module.exports = gql`
 		avgProfScore: Float
 		avgCourseScore: Float
 		numRate: Int
+		ratings: [Rate]
 	}
 	type Professor {
 		name: String
 		score: Float
 		numRate: Int
-		ratings: [RateSummary]
+		rateSummary: [RateSummary]
 	}
 	type Course {
 		courseID: String
 		courseTitle: String
 		score: Float
 		numRate: Int
-		ratings: [RateSummary]
+		rateSummary: [RateSummary]
 	}
 	type Section {
 		courseID: String
@@ -91,7 +93,7 @@ module.exports = gql`
 		upvotes: [String]
 		downvotes: [String]
 		createdAt: String
-		id: ID
+		id: String
 	}
 	input RegisterInput {
 		username: String!
@@ -105,7 +107,7 @@ module.exports = gql`
 		getProfessorByName(query: String!): [Professor]
 		getProfessorDetail(query: String!): Professor
 		getCourse(query: String!): [Course]
-		getCourseDetail(searchCourseInput: SearchCourseInput): Course
+		getCourseDetail(id: ID!): Course
 		getRatings(searchCourseInput: SearchCourseInput): [Rate]
 		getShoppingCart(username: String): [Course]
 	}

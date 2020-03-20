@@ -1,8 +1,8 @@
 const Professor = require('../../models/Professor');
 const RateSummary = require('../../models/RateSummary');
+const Rate = require('../../models/Rate');
 const escapeRegex = require("../../utils/escape");
 const Teach = require('../../models/Teach');
-
 
 module.exports = {
   ProfQuery: {
@@ -49,6 +49,12 @@ module.exports = {
                     courseTitle: courseTitle,
                     professor: professor
                 });
+                var ratings = await Rate.find({
+                    courseID: courseID,
+                    courseTitle: courseTitle,
+                    professor: professor
+                });
+                
                 if (!rating){
                     rating = {
                         'courseID': courseID,
@@ -56,13 +62,16 @@ module.exports = {
                         'avgProfScore': 0.0,
                         'avgCourseScore': 0.0,
                         'numRate': 0,
-                        'professor': professor
+                        'professor': professor,
+                        'ratings': []
                     }
+                }else{
+                  rating['ratings'] = ratings;
                 }
                 profStats.push(rating);
             }
 
-          professor['ratings'] = profStats;
+          professor['rateSummary'] = profStats;
           return professor;
         } catch (err) {
           throw new Error(err);

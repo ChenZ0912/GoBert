@@ -37,8 +37,8 @@ mutation {
     createdAt
   }
 
-  // When you do a postRate in localhost:4000, you need to add
-  // http header: { "Authorization":"Bearer userToken" }, where userToken is the token retruned by register/login
+  # When you do a postRate in localhost:4000, you need to add
+  # http header: { "Authorization":"Bearer userToken" }, where userToken is the token retruned by register/login
   postRate(
       rateInput: {
       	courseID: "CSUY 2124"
@@ -72,45 +72,47 @@ mutation {
 ##### Query API
 ```
 query {
-  // This Query will return a combined result for course & professor
+  # This Query will return a combined result for course & professor
   getSearchResult(query: "2124"){
     category
     name
     score
     numRate
+    _id
   }
-  getProfessorByName(query: "John") {
-    name
+
+  # the id returned by getSearchResult
+  getCourseDetail(id: "5e5af12f4cf31e4f4f440eaa"){
+    courseID
+    courseTitle
     score
     numRate
-  }
-  getProfessorDetail(query: "John Sterling") {
-    name
-    score
-    numRate
-    ratings {
+    rateSummary{
+      professor
       courseID
       courseTitle
       avgProfScore
       avgCourseScore
       numRate
+      ratings{
+        username
+      }
     }
   }
-  getCourse(query: "object oriented") {
-    courseID
-    courseTitle
-    score
-    numRate
+  
+  # Same format, but different param
+  getProfessorDetail(query: "John Sterling"){
+  	rateSummary{
+      ratings{
+        username
+      }
+    }
   }
 
-  getCourseDetail(
-    searchCourseInput: {
-      cID: "CSUY 2124"
-      cTitle: "Object Oriented Programming  (Lecture)"
-    }
-  ) {
+  # you need to provide a token in authorization
+  getShoppingCart(username(optional):"cindy123"){
     courseID
-    courseTitle
+		courseTitle
     score
     numRate
     ratings {
@@ -122,7 +124,13 @@ query {
       numRate
     }
   }
+}
 
+```
+
+##### Archived API
+```
+query{
   getRatings(
       searchCourseInput: {
         cID: "CSUY 2124"
@@ -145,21 +153,17 @@ query {
     id
   }
 
-  // you need to provide a token in authorization
-  getShoppingCart(username(optional):"cindy123"){
-    courseID
-		courseTitle
+  getProfessorByName(query: "John") {
+    name
     score
     numRate
-    ratings {
-      professor
-      courseID
-      courseTitle
-      avgProfScore
-      avgCourseScore
-      numRate
-    }
+  }
+
+  getCourse(query: "object oriented") {
+    courseID
+    courseTitle
+    score
+    numRate
   }
 }
-
 ```

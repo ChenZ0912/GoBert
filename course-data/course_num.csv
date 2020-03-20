@@ -1,4 +1,4 @@
-course_id,course_name,section_id,session,days/times,dates,instructor,status
+course_id,course_name,section_id,session,daystimes,dates,instructor,status
 ANSTUA410205326,ANST-UA 410 - Animal Minds,Section: 001-LEC (8953),Session: Regular Academic Session,Days/Times: MoWe 2:00pm - 3:15pm,Dates: 01/27/2020 - 05/11/2020,Instructor: Alexandra Eleni Bookis, Jeffrey Raymond Sebo,Status: Open
 ANSTUA600153315,ANST-UA 600 - Topics in AS:,Section: 001-SEM (9025),Topic: Literary Animals,Session: Regular Academic Session,Days/Times: MoWe 3:30pm - 4:45pm,Dates: 01/27/2020 - 05/11/2020,Instructor: Nandini Akira Thiyagarajan
 ANSTUA600153315,ANST-UA 600 - Topics in AS:,Section: 004-SEM (9708),Topic: Pets, Pests, or Family: On Companion Species,Session: Regular Academic Session,Days/Times: MoWe 12:30pm - 1:45pm,Dates: 01/27/2020 - 05/11/2020,Instructor: Nandini Akira Thiyagarajan
