@@ -1,23 +1,27 @@
 import gql from 'graphql-tag';
 
-export const FETCH_POSTS_QUERY = gql`
+export const FETCH_RATINGS_QUERY = gql`
   {
-    getPosts {
-      id
-      body
-      createdAt
+    getRatings(
+      searchCourseInput: {
+        cID: $cID
+        cTitle: $cTitle
+        professor: $professor
+      }
+    ){
       username
-      likeCount
-      likes {
-        username
-      }
-      commentCount
-      comments {
-        id
-        username
-        createdAt
-        body
-      }
+      anonymity
+      courseID
+      courseTitle
+      term
+      courseScore
+      professor
+      professorScore
+      comment
+      upvotes
+      downvotes
+      createdAt
+      id
     }
   }
 `;

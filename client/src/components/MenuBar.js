@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Menu, Form, Segment } from 'semantic-ui-react';
+import { Menu, Form, Container } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 import { AuthContext } from '../context/auth';
@@ -21,11 +21,11 @@ function MenuBar() {
   }
 
   const menuBar = user ? (
-    <Segment inverted>
-    <Menu fitted inverted secondary size="massive">
-      <Form onSubmit={onSubmit}>
+    <Menu fixed='top' inverted size="large">
+      <Container>
+      <Form onSubmit={onSubmit} style={{margin: "10px"}}>
         <Form.Input
-          style={{width:"40rem", padding:"5px"}}
+          style={{width: "40rem"}}
           icon="search"
           iconPosition='left'
           id="input"
@@ -39,14 +39,14 @@ function MenuBar() {
         <Menu.Item name={user.username} active as={Link} to="/"/>
         <Menu.Item name="logout" onClick={logout}/>
       </Menu.Menu>
+      </Container>
     </Menu>
-    </Segment>
   ) : (
-    <Segment inverted>
-    <Menu fitted inverted secondary size="massive">
-      <Form onSubmit={onSubmit}>
+    <Menu fixed='top' inverted size="large">
+      <Container>
+      <Form onSubmit={onSubmit} style={{margin: "12px"}}>
         <Form.Input
-          style={{width:"40rem", padding:"5px"}}
+          style={{width: "40rem"}}
           icon="search"
           iconPosition='left'
           id="input"
@@ -79,8 +79,8 @@ function MenuBar() {
           to="/register"
         />
       </Menu.Menu>
+      </Container>
     </Menu>
-    </Segment>
   );
   return menuBar;
 }

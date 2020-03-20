@@ -12,8 +12,8 @@ import MenuBar from './components/MenuBar';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import RateProf from './pages/RateProf';
 import Search from './pages/Search';
-import Schedule from './pages/Schedule';
 
 function App() {
   return (
@@ -25,7 +25,7 @@ function App() {
           <AuthRoute exact path="/login" component={Login} />
           <AuthRoute exact path="/register" component={Register} />
           <Route exact path="/search/:input" component={Search} />
-          <Route exact path="/generateSchedule" component={Schedule} />
+          <Route exact path="/rateProf/:name" component={RateProf} />
         </Container>
       </Router>
     </AuthProvider>

@@ -1,8 +1,7 @@
-.page-title {
-  display: block !important;
+.search-header {
   text-align: center;
-  font-size: 2rem;
-  margin-top: 10px;
+  float: left;
+  width: 20%;
 }
 
 .form-container {
@@ -31,7 +30,7 @@
   text-align: center;
   color: #aaa;
   float: left;
-  width: 33.33%;
+  width: 25%;
   padding: 5px;
 }
 

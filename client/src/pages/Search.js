@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
-import { Transition } from 'semantic-ui-react';
+import { Container,Transition } from 'semantic-ui-react';
 import ResultCard from '../components/ResultCard';
 
 function Search(props) {
@@ -18,7 +18,7 @@ function Search(props) {
   });
 
   return (
-    <div>
+    <Container style={{ marginTop: '7em' }}>
        {loading ? (
           <h1>Loading results..</h1>
         ) : (
@@ -29,7 +29,7 @@ function Search(props) {
               ))}
           </Transition.Group>
         )}
-    </div>
+    </Container>
   );
 }
 
