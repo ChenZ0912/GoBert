@@ -99,15 +99,17 @@ module.exports = gql`
 		confirmPassword: String!
 		email: String
 	}
+
 	type Query{
 		getSearchResult(query: String!): [searchResult]
 		getProfessorByName(query: String!): [Professor]
 		getProfessorDetail(query: String!): Professor
 		getCourse(query: String!): [Course]
 		getCourseDetail(searchCourseInput: SearchCourseInput): Course
-		
 		getRatings(searchCourseInput: SearchCourseInput): [Rate]
+		getShoppingCart(username: String): [Course]
 	}
+
 	type Mutation{
 		register(registerInput: RegisterInput): User!
 		login(username: String!, password: String!): User!

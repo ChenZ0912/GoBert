@@ -6,7 +6,8 @@ const userSchema = new Schema({
 	email: String,
 	standing: String,
 	major: String,
-	createdAt: String
+	createdAt: String,
+	shoppingCart: [String]
 })
 
 module.exports = model('users', userSchema);

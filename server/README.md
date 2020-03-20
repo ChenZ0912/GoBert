@@ -144,6 +144,22 @@ query {
     createdAt
     id
   }
+
+  // you need to provide a token in authorization
+  getShoppingCart(username(optional):"cindy123"){
+    courseID
+		courseTitle
+    score
+    numRate
+    ratings {
+      professor
+      courseID
+      courseTitle
+      avgProfScore
+      avgCourseScore
+      numRate
+    }
+  }
 }
 
 ```
