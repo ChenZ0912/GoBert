@@ -79,15 +79,13 @@ const FETCH_COURSE_QUERY = gql`
         ratings{
           username
           anonymity
-          courseID
-          courseTitle
           term
           courseScore
-          professor
           professorScore
           comment
           upvotes
           downvotes
+          id
         }
       }
     }

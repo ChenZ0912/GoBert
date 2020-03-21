@@ -6,19 +6,24 @@ import { Button, Card, Container, Divider, Dropdown, Form, Grid } from 'semantic
 import { AuthContext } from '../context/auth';
 
 function ShoppingCart() {
-    useContext(AuthContext);
-
     const options = [
         { key: 1, text: 'Required', value: 1 },
         { key: 2, text: 'Interested', value: 2 },
         { key: 3, text: 'Giveupable', value: 3 },
         { key: 4, text: 'Remove', value: 4 },
     ]
+
+    const { user } = useContext(AuthContext);
+    const username = user.username;
     
     const {
         loading,
         data: {getShoppingCart : results}
-    } = useQuery(FETCH_SHOPPING_CART_QUERY);
+    } = useQuery(FETCH_SHOPPING_CART_QUERY, {
+        variables: {
+            username
+        }
+    });
 
     function selectAll() {
         var checkboxes = document.getElementsByName("selectedCourse");  
@@ -55,9 +60,9 @@ function ShoppingCart() {
                         value={result.courseID} style={{ marginTop: '1em', marginLeft: '6em' }}/>
                     </Grid.Row>
                     </Grid.Column>
-                    <Grid.Column width={8}>
-                        <p>{result.courseID} {result.courseTitle}<br/>
-                        Course Score: {result.score} (based on {result.numRate} ratings)</p>
+                    <Grid.Column width={13}>
+                        <h2>{result.courseID} {result.courseTitle}</h2>
+                        <p>Course Score: {result.score} (based on {result.numRate} ratings)</p>
                     </Grid.Column>
                     </Grid.Row>
                 </Grid>
@@ -69,7 +74,7 @@ function ShoppingCart() {
                 <Button fluid color="violet" onClick={selectAll}>Select All</Button>
             </Grid.Column>
             <Grid.Column width={13}>
-                <Button fluid type="submit" color="violet">Generate Schedule</Button>
+                <Button fluid color="violet" type="submit">Generate Schedule</Button>
             </Grid.Column>
         </Grid>
         </Form>
@@ -82,7 +87,7 @@ function ShoppingCart() {
             <h1>Shopping Cart</h1>
             <Divider/>
             {loading ? (
-                <h1>Loading results..</h1>
+                <h3>Loading results..</h3>
             ) : (
                 shoppingCart
             )}
@@ -91,8 +96,8 @@ function ShoppingCart() {
 }
 
 const FETCH_SHOPPING_CART_QUERY = gql`
-  {
-    getShoppingCart {
+  query($username: String!) {
+    getShoppingCart(username: $username) {
       courseID
       courseTitle
       score
