@@ -75,14 +75,13 @@ function VoteButton({ user, post: { ratingID, upvotes, downvotes } }) {
 }
 
 // const LIKE_POST_MUTATION = gql`
-//   mutation likePost($postId: ID!) {
+//   mutation likePost($ratingId: ID!) {
 //     likePost(postId: $postId) {
 //       id
 //       likes {
 //         id
 //         username
 //       }
-//       likeCount
 //     }
 //   }
 // `;
