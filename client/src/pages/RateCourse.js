@@ -47,7 +47,7 @@ function RateCourse(props) {
 
 const FETCH_COURSE_QUERY = gql`
   query($id: String!) {
-    getCourseDetail(id: $id) {
+    getCourseDetail(_id: $id) {
       courseID
       courseTitle
       score
