@@ -22,10 +22,8 @@ function Login(props) {
         data: { login: userData }
       }
     ) {
-      
       context.login(userData);
       props.history.push('/');
-      
     },
     onError(err) {
       setErrors(err.graphQLErrors[0].extensions.exception.errors);
@@ -38,7 +36,7 @@ function Login(props) {
   }
 
   return (
-    <div className="form-container">
+    <div className="form-container" >
       <Form onSubmit={onSubmit} noValidate className={loading ? 'loading' : ''}>
         <h1>Login</h1>
         <Form.Input

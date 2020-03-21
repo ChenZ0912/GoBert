@@ -24,8 +24,8 @@ function Search(props) {
         ) : (
           <Transition.Group>
             {results &&
-              results.map((result) => (
-                <ResultCard result={result} />
+              results.map((result, index) => (
+                <dl key={index}> <ResultCard result={result} /> </dl>
               ))}
           </Transition.Group>
         )}
@@ -40,6 +40,7 @@ const FETCH_SERACH_QUERY = gql`
       name
       score
       numRate
+      _id
     }
   }
 `;
