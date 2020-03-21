@@ -38,7 +38,6 @@ module.exports = {
             var teaches = await Teach.find({
                 professor: query
             })
-
             var profStats = [];
             for (let i = 0; i < teaches.length; i++) {
                 const courseID = teaches[i]['courseID'];

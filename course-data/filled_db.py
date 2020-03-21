@@ -10,24 +10,30 @@ sections = []
 teaches = []
 professors = []
 # course_id,course_name,section_id,session,days/times,dates,instructor,status
-with open("course_num.csv", 'r') as f:
-    reader = csv.DictReader(f)
-    headers = next(reader, None)
+with open("course_num_fall.csv", 'r') as f:
+    reader = csv.reader(f, quotechar='¥', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True)
+    next(reader)
     for row in reader:
-        temp = row['course_name'].split("-", 2)
+        
+        if len(row) == 9:
+            print(row)
+            row[1] += row.pop(3).split("Topic:")[1]
+        
+        temp = row[1].split("-", 2)
+        # print(temp)
         course_id = temp[0] + temp[1].rstrip()
         course_title = temp[2].lstrip()
         
-        temp = row['section_id'].split(" (")
+        temp = row[2].split(" (")
         class_no = temp[1][:-1]
         term = "Spring 2020"
 
-        days_times = row['daystimes'].split(": ")[1]
-        dates = row['dates'].split(": ")[1]
-        session = row['session'].split(": ")[1]
-        status = row['status'].split(": ")[1]
+        days_times = row[4].split(": ")[1]
+        dates = row[5].split(": ")[1]
+        session = row[3].split(": ")[1]
+        status = row[7].split(": ")[1]
 
-        instructors = row['instructor'].split(", ")
+        instructors = row[6].split(": ")[1].split(", ")
 
         curr_course = {
             'courseID': course_id,
@@ -72,8 +78,11 @@ with open("course_num.csv", 'r') as f:
             if curr_sec not in sections:
                 sections.append(curr_sec)
 
-
-# db['sections'].insert_many(sections)
-# db['courses'].insert_many(courses)
-# db['teaches'].insert_many(teaches)
-# db['professors'].insert_many(professors)
+db['sections'].drop()
+db['courses'].drop()
+db['teaches'].drop()
+db['professors'].drop()
+db['sections'].insert_many(sections)
+db['courses'].insert_many(courses)
+db['teaches'].insert_many(teaches)
+db['professors'].insert_many(professors)
