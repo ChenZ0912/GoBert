@@ -42,7 +42,7 @@ module.exports = {
 				try {
                     var course = await Course.findOne({
                         _id: ObjectId(id)
-					})
+					});
 					const sections = await Teach.find({
 						courseID: course.courseID,
 						courseTitle: course.courseTitle,

@@ -107,7 +107,7 @@ module.exports = gql`
 		getProfessorByName(query: String!): [Professor]
 		getProfessorDetail(query: String!): Professor
 		getCourse(query: String!): [Course]
-		getCourseDetail(id: String!): Course
+		getCourseDetail(id: ID!): Course
 		getRatings(searchCourseInput: SearchCourseInput): [Rate]
 		getShoppingCart(username: String): [Course]
 	}
@@ -116,6 +116,6 @@ module.exports = gql`
 		register(registerInput: RegisterInput): User!
 		login(username: String!, password: String!): User!
 		postRate(rateInput: RateInput): RateOutput
-		deleteRate(rateId: String!): String
+		deleteRate(rateId: ID!): String
 	}
 `

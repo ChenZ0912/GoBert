@@ -20,7 +20,6 @@ module.exports = {
                 _id: user.shoppingCart[index]
             })
             courses.push(course);
-            console.log(course);
         }
         return courses;
     }

@@ -63,8 +63,11 @@ with open("course_num_fall.csv", 'r') as f:
                 'daystimes': days_times,
                 'dates': dates,
                 'session': session,
-                'professor': instructor
+                'professor': instructor,
+                'status': status
             }
+
+            sections.append(curr_sec)
 
             curr_teach = {
                 'courseID': course_id,
@@ -75,8 +78,7 @@ with open("course_num_fall.csv", 'r') as f:
             if curr_teach not in teaches:
                 teaches.append(curr_teach)
 
-            if curr_sec not in sections:
-                sections.append(curr_sec)
+            
 
 db['sections'].drop()
 db['courses'].drop()
