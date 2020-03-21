@@ -42,7 +42,7 @@ mutation {
   postRate(
       rateInput: {
       	courseID: "CSUY 2124"
-        courseTitle: "Object Oriented Programming  (Lecture)"
+        courseTitle: "Object Oriented Programming"
         courseScore: 4.5
         professor: "John Sterling"
         professorScore: 5.0
@@ -65,7 +65,7 @@ mutation {
     createdAt
   }
 
-  deleteRate(rateId: "5e5af12f4cf31e4f4f441143")
+  deleteRate(rateId: "rateID")
 
 }
 ```
@@ -87,7 +87,7 @@ query {
     courseTitle
     score
     numRate
-    rateSummary{
+  	rateSummary{
       professor
       courseID
       courseTitle
@@ -96,15 +96,48 @@ query {
       numRate
       ratings{
         username
+        username
+        anonymity
+        courseID
+        courseTitle
+        term
+        courseScore
+        professor
+        professorScore
+        comment
+        upvotes
+        downvotes
+        _id
       }
     }
   }
   
   # Same format, but different param
   getProfessorDetail(query: "John Sterling"){
+    name
+    score
+    numRate
   	rateSummary{
+      professor
+      courseID
+      courseTitle
+      avgProfScore
+      avgCourseScore
+      numRate
       ratings{
         username
+        username
+        anonymity
+        courseID
+        courseTitle
+        term
+        courseScore
+        professor
+        professorScore
+        comment
+        upvotes
+        downvotes
+        _id
       }
     }
   }
@@ -134,7 +167,7 @@ query{
   getRatings(
       searchCourseInput: {
         cID: "CSUY 2124"
-        cTitle: "Object Oriented Programming  (Lecture)"
+        cTitle: "Object Oriented Programming"
         professor:"John Sterling"
     }
   ){
@@ -150,7 +183,7 @@ query{
     upvotes
     downvotes
     createdAt
-    id
+    _id
   }
 
   getProfessorByName(query: "John") {
@@ -164,6 +197,7 @@ query{
     courseTitle
     score
     numRate
+    _id
   }
 }
 ```
