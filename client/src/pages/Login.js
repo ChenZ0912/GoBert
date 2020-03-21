@@ -23,7 +23,11 @@ function Login(props) {
       }
     ) {
       context.login(userData);
-      props.history.push('/');
+      if (props.history.length > 2) {
+        props.history.goBack();
+      } else {
+        props.history.push('/');
+      }
     },
     onError(err) {
       setErrors(err.graphQLErrors[0].extensions.exception.errors);

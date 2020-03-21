@@ -2,7 +2,7 @@ import React from 'react';
 import { Card } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
-function ResultCard({
+function SearchCard({
   result: { category, name, score, numRate, _id}
 }) {
 
@@ -24,4 +24,4 @@ function ResultCard({
   );
 }
 
-export default ResultCard;
+export default SearchCard;

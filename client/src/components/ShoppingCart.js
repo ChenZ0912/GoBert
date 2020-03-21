@@ -57,7 +57,7 @@ function ShoppingCart() {
                             options={options}
                             placeholder='Priority'/>
                         <Form.Field control='input' type='checkbox' name="selectedCourse" 
-                        value={result.courseID} style={{ marginTop: '1em', marginLeft: '6em' }}/>
+                        value={result.courseID} style={{ margin: '7% 45% 0 45%' }}/>
                     </Grid.Row>
                     </Grid.Column>
                     <Grid.Column width={13}>

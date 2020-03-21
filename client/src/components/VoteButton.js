@@ -7,7 +7,7 @@ import { Button, Confirm, Label, Icon } from 'semantic-ui-react';
 import { AuthContext } from '../context/auth';
 import MyPopup from '../util/MyPopup';
 
-function VoteButton({ post: { id, upvotes, downvotes, username } }) {
+function VoteButton({ id, upvotes, downvotes, username }) {
   const { user } = useContext(AuthContext);
 
   const upCount = upvotes.length;
