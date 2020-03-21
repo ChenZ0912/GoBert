@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
 import { Container,Transition } from 'semantic-ui-react';
-import ResultCard from '../components/ResultCard';
+import SearchCard from '../components/SearchCard';
 
 function Search(props) {
   const input = props.match.params.input;
@@ -24,8 +24,8 @@ function Search(props) {
         ) : (
           <Transition.Group>
             {results &&
-              results.map((result) => (
-                <ResultCard result={result} />
+              results.map((result, index) => (
+                <dl key={index}> <SearchCard result={result} /> </dl>
               ))}
           </Transition.Group>
         )}
@@ -40,6 +40,7 @@ const FETCH_SERACH_QUERY = gql`
       name
       score
       numRate
+      _id
     }
   }
 `;

@@ -5,12 +5,14 @@
 }
 
 .form-container {
+  position: absolute;
   width: 400px;
-  margin: auto;
+  margin-top: 7em;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .center {
-  margin: 0;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -21,7 +23,7 @@
   position: absolute;
   bottom: 0;
   left: 50%;
-  width: 85%;
+  width: 90%;
   transform: translate(-50%, -50%);
 }
 

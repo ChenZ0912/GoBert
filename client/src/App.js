@@ -12,6 +12,7 @@ import MenuBar from './components/MenuBar';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import RateCourse from './pages/RateCourse';
 import RateProf from './pages/RateProf';
 import Search from './pages/Search';
 
@@ -26,6 +27,7 @@ function App() {
           <AuthRoute exact path="/register" component={Register} />
           <Route exact path="/search/:input" component={Search} />
           <Route exact path="/rateProf/:name" component={RateProf} />
+          <Route exact path="/rateCourse/:id" component={RateCourse} />
         </Container>
       </Router>
     </AuthProvider>

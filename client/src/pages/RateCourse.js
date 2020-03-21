@@ -5,30 +5,30 @@ import gql from 'graphql-tag';
 import { Container, Divider, Transition } from 'semantic-ui-react';
 import RatingCard from '../components/RatingCard';
 
-function RateProf(props) {
-  const name = props.match.params.name;
+function RateCourse(props) {
+  const id = props.match.params.id;
 
   const {
     loading,
-    data: {getProfessorDetail : results}
-  } = useQuery(FETCH_PROF_QUERY, {
+    data: {getCourseDetail : results}
+  } = useQuery(FETCH_COURSE_QUERY, {
     variables: {
-      name
+      id
     }
   });
 
   var output = "No ratings availble /(ㄒoㄒ)/~~";
   if (results && results.rateSummary && results.rateSummary.length!==0) {
-    output = "Overall Score Based on " + results.rateSummary.length + " Course(s):";
+    output = "Overall Score Based on " + results.rateSummary.length + " Professor(s):";
   }
-  
+
   return (
     <Container style={{ marginTop: '7em' }}>
       {loading ? (
           <h1>Loading results..</h1>
         ) : (
           <div>
-          <h1>{results.name}<br/>{results.score}/5</h1>
+          <h1>{results.courseID} {results.courseTitle}<br/>{results.score}/5</h1>
           <Divider/>
           <h3>{output}</h3>
           <Transition.Group>
@@ -36,7 +36,7 @@ function RateProf(props) {
               results.rateSummary.map((rateSummary, index) => (
                 <dl key={index}>
                   <RatingCard rateSummary={rateSummary} />
-                </dl>  
+                </dl> 
               ))}
           </Transition.Group>
           </div>
@@ -45,10 +45,11 @@ function RateProf(props) {
   );
 }
 
-const FETCH_PROF_QUERY = gql`
-  query($name: String!) {
-    getProfessorDetail(query: $name) {
-      name
+const FETCH_COURSE_QUERY = gql`
+  query($id: String!) {
+    getCourseDetail(id: $id) {
+      courseID
+      courseTitle
       score
       numRate
       rateSummary{
@@ -74,4 +75,4 @@ const FETCH_PROF_QUERY = gql`
   }
 `;
 
-export default RateProf;
+export default RateCourse;

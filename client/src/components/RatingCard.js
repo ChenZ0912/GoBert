@@ -1,41 +1,52 @@
-import React, { useContext } from 'react';
-import { Button, Card, Icon, Label, Image } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
-import moment from 'moment';
+import React from 'react';
+import { Card, Grid, Divider } from 'semantic-ui-react';
 
-import { FETCH_RATINGS_QUERY } from '../util/graphql';
-import { useQuery } from '@apollo/react-hooks';
-
-import { AuthContext } from '../context/auth';
-import LikeButton from './LikeButton';
-import DeleteButton from './DeleteButton';
-import MyPopup from '../util/MyPopup';
+import RateForm from './RateForm';
+import VoteButton from './VoteButton';
 
 function RatingCard({
-  name: name,
-  rating: {courseID, courseTitle, avgProfScore, avgCourseScore, numRate }
+  rateSummary: {professor, courseID, courseTitle,
+    avgProfScore, avgCourseScore, numRate, ratings}
 }) {
-  const { user } = useContext(AuthContext);
-
-  const {
-    loading,
-    data
-  } = useQuery(FETCH_RATINGS_QUERY, {
-    variables: {
-      cID: courseID, 
-      cTitle: courseTitle, 
-      professor: name
-    }
-  });
-
-  console.log(data);
-
   return (
-    <Card fluid>
-      <Card.Header>{courseID} {courseTitle}</Card.Header>
-      <Card.Header>Professor Score: {avgProfScore}/5</Card.Header>
-      <Card.Header>Course Score: {avgCourseScore}/5</Card.Header>
+    <Card fluid color='violet'>
+      <Card.Content>
+      <Grid>
+        <Grid.Column floated='left' width={8}>
+          <h3>{courseID} {courseTitle}<br/>{professor}</h3>
+        </Grid.Column>
+        <Grid.Column floated='right' width={4}>
+          <p>Overall Course Score: {avgCourseScore}/5<br/>
+          Overall Professor Score: {avgProfScore}/5</p>
+        </Grid.Column>
+      </Grid>
+      </Card.Content>
+      <Card.Content>
+        {ratings && ratings.map((rating, index) => (
+        <dl key={index}>
+        <Grid divided>
+          <Grid.Row stretched>
+            <Grid.Column width={4}>
+              <span>Course Score:<br/><b>{rating.courseScore}/5</b><br/><br/>
+              Professor Score:<br/><b>{rating.professorScore}/5</b></span>
+            </Grid.Column>
+            <Grid.Column width={10}>
+              {rating.anonymity ? 
+                <h3>[{rating.term}] Anonymous</h3> : 
+                <h3>[{rating.term}] {rating.username}</h3>}
+              <p>{rating.comment}</p>
+              <VoteButton upvotes={rating.upvotes} downvotes={rating.downvotes} 
+                          id = {rating.id} username={rating.username} />
+            </Grid.Column>
+          </Grid.Row>
+          <Divider/>
+        </Grid>
+        </dl> ))}
+        <RateForm rateSummary = {{professor, courseID, courseTitle, 
+                                avgProfScore, avgCourseScore, numRate, ratings}} />
+      </Card.Content>
     </Card>
+    
   );
 }
 
