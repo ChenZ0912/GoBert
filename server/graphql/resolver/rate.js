@@ -3,6 +3,9 @@ const {
 } = require('apollo-server');
 
 const Rate = require('../../models/Rate');
+const RateSummary = require('../../models/RateSummary');
+const Professor = require('../../models/Professor');
+const Course = require('../../models/Course');
 const checkAuth = require('../../utils/checkAuth');
 
 module.exports = {
@@ -39,36 +42,181 @@ module.exports = {
       context,
       info){
         const user = checkAuth(context);
-        // check if that user already rate the course
-        const oldRate = await Rate.findOne({
-          username: user.username,
-          courseID,
-          courseTitle,
-          professor
-        });
-        if (oldRate){
-          throw Error("User already rated this course");
+
+        try{
+          // TODO: Fault Tolerant, if anything fail, nothing should be committed.
+          // check if that user already rate the course
+          const oldRate = await Rate.findOne({
+            username: user.username,
+            courseID,
+            courseTitle,
+            professor
+          });
+          if (oldRate) {
+            throw Error("User already rated this course");
+          }
+          const currProf = await Professor.findOne({
+            name: professor
+          });
+          if (!currProf){
+            throw Error("professor " + professor + " not exists");
+          }
+          const currCourse = await Course.findOne({
+            courseID,
+            courseTitle
+          });
+          if (!currCourse) {
+            throw Error("course " + courseID + ": " + courseTitle + " not exists");
+          }
+          // Rate
+          const newRate = new Rate({
+            username: user.username,
+            courseTitle, courseID, courseScore,
+            term, anonymity, professor,
+            professorScore, comment,
+            upvotes: [], downvotes: [],
+            createdAt: new Date().toISOString()
+          });
+          const rate = await newRate.save();
+
+          // Update RateSummary
+          const ratesum = await RateSummary.findOne({
+            courseID,
+            courseTitle,
+            professor
+          });
+          var newRateSummary = new RateSummary({
+            courseID, courseTitle, professor,
+            numRate: 1,
+            avgProfScore: professorScore,
+            avgCourseScore: courseScore
+          });
+          if (ratesum) {
+            const temp = await RateSummary.updateOne({
+              courseID, courseTitle, professor
+            }, {
+              $set: {
+                avgProfScore: (ratesum.avgProfScore * ratesum.numRate + professorScore) / (ratesum.numRate + 1),
+                avgCourseScore: (ratesum.avgCourseScore * ratesum.numRate + courseScore) / (ratesum.numRate + 1),
+                numRate: ratesum.numRate + 1
+              }
+            })
+          } else {
+            await newRateSummary.save();
+          }
+
+          // Update Prof Score
+          await Professor.updateOne({ name: professor }, 
+          {
+            $set: {
+              score: ((currProf.score * currProf.numRate) + professorScore) / (currProf.numRate + 1),
+              numRate: currProf.numRate + 1,
+            }
+          });
+
+          // Update Course Score
+          await Course.updateOne({ courseID, courseTitle }, 
+          {
+            $set: {
+              score: ((currCourse.score * currCourse.numRate) + courseScore) / (currCourse.numRate + 1),
+              numRate: currCourse.numRate + 1
+            }
+          })
+
+          return rate;
+        } catch(err){
+          throw new Error(err);
         }
-        const newRate = new Rate({
-          username: user.username,
-          courseTitle, courseID, courseScore,
-          term, anonymity, professor,
-          professorScore, comment,
-          upvotes: [], downvotes: [],
-          createdAt: new Date().toISOString()
-        });
-
-        const rate = await newRate.save();
-
-        return rate;
       },
 
       async deleteRate(_, { rateId }, context){
         const user = checkAuth(context);
         try{
           const rate = await Rate.findById(rateId);
+          if (!rate) {
+            throw new Error("Rate doesn't Exist");
+          }
           if (user.username === rate.username){
+            // delete the rate
             await rate.delete();
+            // decrease rateSummary Score
+            const ratesum = await RateSummary.findOne({
+              courseID: rate.courseID,
+              courseTitle: rate.courseTitle,
+              professor: rate.professor
+            });
+            if (ratesum.numRate != 1){
+              await RateSummary.updateOne({
+                courseID: rate.courseID,
+                courseTitle: rate.courseTitle,
+                professor: rate.professor
+              }, {
+                $set: {
+                  avgProfScore: (ratesum.avgProfScore * ratesum.numRate - rate.professorScore) / (ratesum.numRate - 1),
+                  avgCourseScore: (ratesum.avgCourseScore * ratesum.numRate - rate.courseScore) / (ratesum.numRate - 1),
+                  numRate: ratesum.numRate - 1
+                }
+              });
+            } else {
+              await RateSummary.updateOne({
+                courseID: rate.courseID,
+                courseTitle: rate.courseTitle,
+                professor: rate.professor
+              }, {
+                $set: {
+                  avgProfScore: 0,
+                  avgCourseScore: 0,
+                  numRate: 0
+                }
+              });
+            }
+            // decrease professor score
+            const prof = await Professor.findOne({ name: rate.professor });
+            if (prof.numRate != 1){
+              await Professor.updateOne({
+                name: prof.name
+              }, {
+                $set: {
+                  score: ((prof.score * prof.numRate) - rate.professorScore) / (prof.numRate - 1),
+                  numRate: prof.numRate - 1,
+                }
+              });
+            }else {
+              await Professor.updateOne({
+                name: prof.name
+              }, {
+                $set: {
+                  score: 0,
+                  numRate: 0,
+                }
+              });
+            }
+            // decrease course score
+            const course = await Course.findOne({
+              courseID: rate.courseID,
+              courseTitle: rate.courseTitle
+            });
+            if (course.numRate != 1) {
+              await Course.updateOne({
+                courseID: rate.courseID,
+                courseTitle: rate.courseTitle
+              }, {
+                $set: {
+                  score: ((course.score * course.numRate) - rate.courseScore) / (course.numRate - 1),
+                  numRate: course.numRate - 1,
+                }
+              });
+            } else {
+              await Course.updateOne({
+                courseID: rate.courseID,
+                courseTitle: rate.courseTitle
+              }, {
+                $set: {
+                  score: 0,
+                  numRate: 0,
+                }
+              });
+            }
             return 'Post Delete Successfully';
           }else{
             throw new AuthenticationError('Action not allowed');
