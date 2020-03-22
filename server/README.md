@@ -67,6 +67,10 @@ mutation {
 
   deleteRate(rateId: "rateID")
 
+  upvote(rateId: "5e76d9a0f3a1f0c7f3043ba4")
+  
+  downvote(rateId:"5e76d9a0f3a1f0c7f3043ba4")
+
 }
 ```
 ##### Query API

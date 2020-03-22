@@ -4,6 +4,7 @@ const searchResolvers = require('./search');
 const usersResolvers = require('./users');
 const rateResolvers = require('./rate');
 const shoppingCartResolvers = require('./shoppingCart');
+const voteResolvers = require('./vote');
 
 module.exports = {
 	Query: {
@@ -17,6 +18,7 @@ module.exports = {
 	},
 	Mutation: {
 		...usersResolvers.Mutation,
-		...rateResolvers.Mutation
+		...rateResolvers.Mutation,
+		...voteResolvers.Mutation
 	}
 }

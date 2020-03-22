@@ -33,15 +33,6 @@ module.exports = {
       }
     },
     Mutation: {
-      async postRateEasy(_, {
-        query
-      },
-      context){
-        console.log("hello");
-        const user = checkAuth(context);
-        return "hello from backend";
-      },
-
       async postRate(_, { 
         rateInput: {
           courseID, courseTitle, courseScore, professor,
