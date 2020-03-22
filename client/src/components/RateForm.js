@@ -19,29 +19,24 @@ function RateForm({
     rateSummary: { professor, courseID, courseTitle }
   }) {
 
+  const {user} = useContext(AuthContext);
   const { values, onChange, onSubmit } = useForm(createRateCallback, {
-    courseID: {courseID},
-    courseTitle: {courseTitle},
-    courseScore: 0,
-    professor: {professor},
-    professorScore: 0,
+    courseID,
+    courseTitle,
+    courseScore: 0.0,
+    professor,
+    professorScore: 0.0,
     term: "",
     anonymity: false,
     comment: ""    
   });
 
-  useContext(AuthContext);
   const [createRate, { error }] = useMutation(CREATE_RATE_MUTATION, {
-    update(proxy, result) {
-    //   const data = proxy.readQuery({
-    //     query: FETCH_POSTS_QUERY
-    //   });
-    //   data.getPosts = [result.data.createPost, ...data.getPosts];
-    //   proxy.writeQuery({ query: FETCH_POSTS_QUERY, data });
-      values.body = '';
-    },
-    variables: values
-  });
+      update() {
+        window.history.go(0);
+      },
+      variables: values
+    });
 
   function handleProf (e, { value }) { values.professorScore = value; }
   function handleCourse (e, { value }) { values.courseScore = value; }
@@ -54,7 +49,7 @@ function RateForm({
     }
   }
 
-  return (
+  const rateForm = (
     <>
       <Form onSubmit={onSubmit}>
           <Grid columns='equal'>
@@ -127,6 +122,14 @@ function RateForm({
         </div>
       )}
     </>
+  )
+
+  return (
+    <>
+    { user ? (rateForm) : (
+      <a href="/login">Please LOGIN to share your opinions (●'◡'●)</a>
+    ) }
+    </>
   );
 }
 
@@ -153,7 +156,16 @@ const CREATE_RATE_MUTATION = gql`
         comment: $comment
       }
     ) {
-        username
+      alreadyRate
+      username
+      courseID
+      courseTitle
+      courseScore
+      professor
+      professorScore
+      term
+      anonymity
+      comment
     }
   }
 `;

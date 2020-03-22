@@ -65,13 +65,11 @@ function VoteButton({ id, upvotes, downvotes, username }) {
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleteRate] = useMutation(DELETE_RATE_MUTATION, {
-    update(proxy) {
+    update() {
       setConfirmOpen(false);
-      console.log(proxy);
-      const pathname = window.location.pathname;
-      window.location.pathname = pathname;
+      window.history.go(0);
     },
-    variables: { rateId: id }
+    variables: { id: id }
   });
   
   return (
@@ -108,8 +106,8 @@ function VoteButton({ id, upvotes, downvotes, username }) {
 }
 
 const DELETE_RATE_MUTATION = gql`
-  mutation deleteRate($rateId: String!) {
-    deleteRate(rateId: $rateId)
+  mutation deleteRate($id: ID!) {
+    deleteRate(rateId: $id)
   }
 `;
 

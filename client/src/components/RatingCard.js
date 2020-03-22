@@ -36,7 +36,7 @@ function RatingCard({
                 <h3>[{rating.term}] {rating.username}</h3>}
               <p>{rating.comment}</p>
               <VoteButton upvotes={rating.upvotes} downvotes={rating.downvotes} 
-                          id = {rating.id} username={rating.username} />
+                          id = {rating._id} username={rating.username} />
             </Grid.Column>
           </Grid.Row>
           <Divider/>

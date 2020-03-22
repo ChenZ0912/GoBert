@@ -24,7 +24,7 @@ function Login(props) {
     ) {
       context.login(userData);
       if (props.history.length > 2) {
-        props.history.goBack();
+        props.history.go(-1);
       } else {
         props.history.push('/');
       }
