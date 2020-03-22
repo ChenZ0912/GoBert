@@ -33,101 +33,108 @@ module.exports = {
       }
     },
     Mutation: {
-      async postRate(_, { 
+      async postRateEasy(_, {
         query
-        // rateInput: {
-        //   courseID, courseTitle, courseScore, professor,
-        //   professorScore, term, anonymity, comment
-        // }
+      },
+      context){
+        console.log("hello");
+        const user = checkAuth(context);
+        return "hello from backend";
+      },
+
+      async postRate(_, { 
+        rateInput: {
+          courseID, courseTitle, courseScore, professor,
+          professorScore, term, anonymity, comment
+        }
       },
       context,
       info){
         const user = checkAuth(context);
-        return "hello from backend";
-        // try{
-        //   // TODO: Fault Tolerant, if anything fail, nothing should be committed.
-        //   // check if that user already rate the course
-        //   const oldRate = await Rate.findOne({
-        //     username: user.username,
-        //     courseID,
-        //     courseTitle,
-        //     professor
-        //   });
-        //   if (oldRate) {
-        //     throw Error("User already rated this course");
-        //   }
-        //   const currProf = await Professor.findOne({
-        //     name: professor
-        //   });
-        //   if (!currProf){
-        //     throw Error("professor " + professor + " not exists");
-        //   }
-        //   const currCourse = await Course.findOne({
-        //     courseID,
-        //     courseTitle
-        //   });
-        //   if (!currCourse) {
-        //     throw Error("course " + courseID + ": " + courseTitle + " not exists");
-        //   }
-        //   // Rate
-        //   const newRate = new Rate({
-        //     username: user.username,
-        //     courseTitle, courseID, courseScore,
-        //     term, anonymity, professor,
-        //     professorScore, comment,
-        //     upvotes: [], downvotes: [],
-        //     createdAt: new Date().toISOString()
-        //   });
-        //   const rate = await newRate.save();
+        try{
+          // TODO: Fault Tolerant, if anything fail, nothing should be committed.
+          // check if that user already rate the course
+          const oldRate = await Rate.findOne({
+            username: user.username,
+            courseID,
+            courseTitle,
+            professor
+          });
+          if (oldRate) {
+            throw Error("User already rated this course");
+          }
+          const currProf = await Professor.findOne({
+            name: professor
+          });
+          if (!currProf){
+            throw Error("professor " + professor + " not exists");
+          }
+          const currCourse = await Course.findOne({
+            courseID,
+            courseTitle
+          });
+          if (!currCourse) {
+            throw Error("course " + courseID + ": " + courseTitle + " not exists");
+          }
+          // Rate
+          const newRate = new Rate({
+            username: user.username,
+            courseTitle, courseID, courseScore,
+            term, anonymity, professor,
+            professorScore, comment,
+            upvotes: [], downvotes: [],
+            createdAt: new Date().toISOString()
+          });
+          const rate = await newRate.save();
 
-        //   // Update RateSummary
-        //   const ratesum = await RateSummary.findOne({
-        //     courseID,
-        //     courseTitle,
-        //     professor
-        //   });
-        //   var newRateSummary = new RateSummary({
-        //     courseID, courseTitle, professor,
-        //     numRate: 1,
-        //     avgProfScore: professorScore,
-        //     avgCourseScore: courseScore
-        //   });
-        //   if (ratesum) {
-        //     const temp = await RateSummary.updateOne({
-        //       courseID, courseTitle, professor
-        //     }, {
-        //       $set: {
-        //         avgProfScore: (ratesum.avgProfScore * ratesum.numRate + professorScore) / (ratesum.numRate + 1),
-        //         avgCourseScore: (ratesum.avgCourseScore * ratesum.numRate + courseScore) / (ratesum.numRate + 1),
-        //         numRate: ratesum.numRate + 1
-        //       }
-        //     })
-        //   } else {
-        //     await newRateSummary.save();
-        //   }
+          // Update RateSummary
+          const ratesum = await RateSummary.findOne({
+            courseID,
+            courseTitle,
+            professor
+          });
+          var newRateSummary = new RateSummary({
+            courseID, courseTitle, professor,
+            numRate: 1,
+            avgProfScore: professorScore,
+            avgCourseScore: courseScore
+          });
+          if (ratesum) {
+            const temp = await RateSummary.updateOne({
+              courseID, courseTitle, professor
+            }, {
+              $set: {
+                avgProfScore: (ratesum.avgProfScore * ratesum.numRate + professorScore) / (ratesum.numRate + 1),
+                avgCourseScore: (ratesum.avgCourseScore * ratesum.numRate + courseScore) / (ratesum.numRate + 1),
+                numRate: ratesum.numRate + 1
+              }
+            })
+          } else {
+            await newRateSummary.save();
+          }
 
-        //   // Update Prof Score
-        //   await Professor.updateOne({ name: professor }, 
-        //   {
-        //     $set: {
-        //       score: ((currProf.score * currProf.numRate) + professorScore) / (currProf.numRate + 1),
-        //       numRate: currProf.numRate + 1,
-        //     }
-        //   });
+          // Update Prof Score
+          await Professor.updateOne({ name: professor }, 
+          {
+            $set: {
+              score: ((currProf.score * currProf.numRate) + professorScore) / (currProf.numRate + 1),
+              numRate: currProf.numRate + 1,
+            }
+          });
 
-        //   // Update Course Score
-        //   await Course.updateOne({ courseID, courseTitle }, 
-        //   {
-        //     $set: {
-        //       score: ((currCourse.score * currCourse.numRate) + courseScore) / (currCourse.numRate + 1),
-        //       numRate: currCourse.numRate + 1
-        //     }
-        //   })
+          // Update Course Score
+          await Course.updateOne({ courseID, courseTitle }, 
+          {
+            $set: {
+              score: ((currCourse.score * currCourse.numRate) + courseScore) / (currCourse.numRate + 1),
+              numRate: currCourse.numRate + 1
+            }
+          })
 
-        //   return rate;
-        // } catch(err){
-        //   throw new Error(err);
-        // }
+          return rate;
+        } catch(err){
+          throw new Error(err);
+        }
       },
 
       async deleteRate(_, { rateId }, context){
