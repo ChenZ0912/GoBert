@@ -144,13 +144,13 @@ const CREATE_RATE_MUTATION = gql`
     postRate(
       rateInput: {
         courseID: $courseID
-		courseTitle: $courseTitle
-		courseScore: $courseScore
-		professor: $professor
-		professorScore: $professorScore
-		term: $term
-		anonymity: $anonymity
-		comment: $comment
+        courseTitle: $courseTitle
+        courseScore: $courseScore
+        professor: $professor
+        professorScore: $professorScore
+        term: $term
+        anonymity: $anonymity
+        comment: $comment
       }
     ) {
         username

@@ -115,7 +115,7 @@ module.exports = gql`
 	type Mutation{
 		register(registerInput: RegisterInput): User!
 		login(username: String!, password: String!): User!
-		postRate(rateInput: RateInput): RateOutput
+		postRate(query: String!): String
 		deleteRate(rateId: ID!): String
 	}
 `
