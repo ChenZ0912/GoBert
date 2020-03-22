@@ -16,10 +16,19 @@ const options = [
 ]
 
 function RateForm({
-    rateSummary: { professor, courseID, courseTitle }
+    rateSummary: { professor, courseID, courseTitle, ratings }
   }) {
-
+  
   const {user} = useContext(AuthContext);
+  const canDisplay = function () {
+    if (user) {
+      for ( var rating of ratings ) {
+        if (rating.username === user.username ) return false;
+      }
+    }
+    return true;
+  };
+
   const { values, onChange, onSubmit } = useForm(createRateCallback, {
     courseID,
     courseTitle,
@@ -49,7 +58,7 @@ function RateForm({
     }
   }
 
-  const rateForm = (
+  const rateForm = ( canDisplay() &&
     <>
       <Form onSubmit={onSubmit}>
           <Grid columns='equal'>
@@ -126,7 +135,7 @@ function RateForm({
 
   return (
     <>
-    { user ? (rateForm) : (
+    { user ? rateForm : (
       <a href="/login">Please LOGIN to share your opinions (●'◡'●)</a>
     ) }
     </>

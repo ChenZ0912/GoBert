@@ -26,11 +26,6 @@ function VoteButton({ id, upvotes, downvotes, username }) {
     } else setDown(false);
   }, [user, downvotes]);
 
-  function likeRate () { console.log("liked"); }
-  // const [likeRate] = useMutation(LIKE_POST_MUTATION, {
-  //   variables: { postId: id }
-  // });
-
   const upButton = user ? (
     up ? (
       <Button color="violet">
@@ -71,6 +66,20 @@ function VoteButton({ id, upvotes, downvotes, username }) {
     },
     variables: { id: id }
   });
+
+  const [likeRate] = useMutation(UP_RATE_MUTATION, {
+    update() {
+      window.history.go(0);
+    },
+    variables: { id: id }
+  });
+
+  const [dislikeRate] = useMutation(DOWN_RATE_MUTATION, {
+    update() {
+      window.history.go(0);
+    },
+    variables: { id: id }
+  });
   
   return (
     <div>
@@ -78,7 +87,7 @@ function VoteButton({ id, upvotes, downvotes, username }) {
       <MyPopup content={up ? 'Undo' : 'Agree'}>{upButton}</MyPopup>
       <Label basic color="violet" pointing="left">{upCount}</Label>
     </Button>
-    <Button as="div" labelPosition="right" onClick={likeRate}>
+    <Button as="div" labelPosition="right" onClick={dislikeRate}>
       <MyPopup content={down ? 'Undo' : 'Disagree'}>{downButton}</MyPopup>
       <Label basic color="violet" pointing="left">{downCount}</Label>
     </Button>
@@ -111,16 +120,16 @@ const DELETE_RATE_MUTATION = gql`
   }
 `;
 
-// const LIKE_POST_MUTATION = gql`
-//   mutation likePost($ratingId: ID!) {
-//     likePost(postId: $postId) {
-//       id
-//       likes {
-//         id
-//         username
-//       }
-//     }
-//   }
-// `;
+const UP_RATE_MUTATION = gql`
+  mutation upvote($id: ID!) {
+    upvote(rateId: $id)
+  }
+`;
+
+const DOWN_RATE_MUTATION = gql`
+  mutation downvote($id: ID!) {
+    downvote(rateId: $id)
+  }
+`;
 
 export default VoteButton;

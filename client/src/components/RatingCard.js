@@ -1,5 +1,5 @@
-import React from 'react';
-import { Card, Grid, Divider } from 'semantic-ui-react';
+import React, {useState} from 'react';
+import { Card, Checkbox, Divider, Grid } from 'semantic-ui-react';
 
 import RateForm from './RateForm';
 import VoteButton from './VoteButton';
@@ -8,6 +8,10 @@ function RatingCard({
   rateSummary: {professor, courseID, courseTitle,
     avgProfScore, avgCourseScore, numRate, ratings}
 }) {
+
+  const [showRating, setShow] = useState(false);
+  function handleRatings(e, {checked}) { setShow(checked); }
+
   return (
     <Card fluid color='violet'>
       <Card.Content>
@@ -18,9 +22,15 @@ function RatingCard({
         <Grid.Column floated='right' width={4}>
           <p>Overall Course Score: {avgCourseScore}/5<br/>
           Overall Professor Score: {avgProfScore}/5</p>
+          <Checkbox
+            label='SHOW RATINGS'
+            onChange={handleRatings}
+            slider
+          />
         </Grid.Column>
       </Grid>
       </Card.Content>
+      {showRating && (
       <Card.Content>
         {ratings && ratings.map((rating, index) => (
         <dl key={index}>
@@ -40,13 +50,12 @@ function RatingCard({
             </Grid.Column>
           </Grid.Row>
           <Divider/>
-        </Grid>
-        </dl> ))}
-        <RateForm rateSummary = {{professor, courseID, courseTitle, 
-                                avgProfScore, avgCourseScore, numRate, ratings}} />
-      </Card.Content>
+          </Grid>
+          </dl> ))}
+          <RateForm rateSummary = {{professor, courseID, courseTitle, ratings}} />
+        </Card.Content>
+      )}
     </Card>
-    
   );
 }
 
