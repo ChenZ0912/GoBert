@@ -67,7 +67,7 @@ const FETCH_PROF_QUERY = gql`
           comment
           upvotes
           downvotes
-          id
+          _id
         }
       }
     }

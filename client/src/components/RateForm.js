@@ -30,7 +30,7 @@ function RateForm({
     comment: ""    
   });
 
-  const { user } = useContext(AuthContext);
+  useContext(AuthContext);
   const [createRate, { error }] = useMutation(CREATE_RATE_MUTATION, {
     update(proxy, result) {
     //   const data = proxy.readQuery({
@@ -38,7 +38,7 @@ function RateForm({
     //   });
     //   data.getPosts = [result.data.createPost, ...data.getPosts];
     //   proxy.writeQuery({ query: FETCH_POSTS_QUERY, data });
-    //   values.body = '';
+      values.body = '';
     },
     variables: values
   });
@@ -142,7 +142,7 @@ const CREATE_RATE_MUTATION = gql`
     $comment: String!
   ) {
     postRate(
-      RateInput: {
+      rateInput: {
         courseID: $courseID
 		courseTitle: $courseTitle
 		courseScore: $courseScore
@@ -154,17 +154,6 @@ const CREATE_RATE_MUTATION = gql`
       }
     ) {
         username
-        anonymity
-        courseID
-        courseTitle
-        term
-        courseScore
-        professor
-        professorScore
-        comment
-        upvotes
-        downvotes
-        createdAt
     }
   }
 `;
