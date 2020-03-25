@@ -10,75 +10,85 @@ sections = []
 teaches = []
 professors = []
 # course_id,course_name,section_id,session,days/times,dates,instructor,status
-with open("course_num_fall.csv", 'r') as f:
-    reader = csv.reader(f, quotechar='¥', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True)
-    next(reader)
-    for row in reader:
-        
-        if len(row) == 9:
-            print(row)
-            row[1] += row.pop(3).split("Topic:")[1]
-        
-        temp = row[1].split("-", 2)
-        # print(temp)
-        course_id = temp[0] + temp[1].rstrip()
-        course_title = temp[2].lstrip()
-        
-        temp = row[2].split(" (")
-        class_no = temp[1][:-1]
-        term = "Spring 2020"
+# course_id,course_name,section,topic,session,daystimes,dates,instructor,status
+def getData(filename):
 
-        days_times = row[4].split(": ")[1]
-        dates = row[5].split(": ")[1]
-        session = row[3].split(": ")[1]
-        status = row[7].split(": ")[1]
+    with open(filename, 'r') as f:
+        reader = csv.DictReader(f, quotechar='¥', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True)
+        header = next(reader)
 
-        instructors = row[6].split(": ")[1].split(", ")
+        for row in reader:
 
-        curr_course = {
-            'courseID': course_id,
-            'courseTitle': course_title,
-            'numRate': 0,
-            'score': 0
-        }
-        if curr_course not in courses:
-            courses.append(curr_course)
+            temp = row['course_name'].split("-", 2)
+            # print(temp)
+            course_id = temp[0] + temp[1].rstrip()
+            course_title = temp[2].lstrip() + row['topic']
 
-        for instructor in instructors:
+            temp = row['section'].split(" (")
+            t = temp[0].split('-')[1]
+            section = temp[0]
 
-            curr_prof = {
-                'name': instructor,
-                'score': 0,
-                'numRate': 0
-            }
+            course_title = course_title + " " + t
+            class_no = temp[1][:-1]
+            if 'fall' in filename:
+                term = "Fall 2019"
+            else:
+                term = "Spring 2020"
 
-            if curr_prof not in professors:
-                professors.append(curr_prof)
+            days_times = row['days/times']
+            dates = row['dates']
+            session = row['session']
+            status = row['status']
 
-            curr_sec = {
+            instructors = row['instructor'].split(", ")
+
+            curr_course = {
                 'courseID': course_id,
                 'courseTitle': course_title,
-                'classNo': class_no,
-                'term': term,
-                'daystimes': days_times,
-                'dates': dates,
-                'session': session,
-                'professor': instructor,
-                'status': status
+                'numRate': 0,
+                'score': 0
             }
+            if curr_course not in courses:
+                courses.append(curr_course)
 
-            sections.append(curr_sec)
+            for instructor in instructors:
 
-            curr_teach = {
-                'courseID': course_id,
-                'courseTitle': course_title,
-                'professor': instructor
-            }
+                curr_prof = {
+                    'name': instructor,
+                    'score': 0,
+                    'numRate': 0
+                }
 
-            if curr_teach not in teaches:
-                teaches.append(curr_teach)
+                if curr_prof not in professors:
+                    professors.append(curr_prof)
 
-            
+                curr_sec = {
+                    'courseID': course_id,
+                    'courseTitle': course_title,
+                    'classNo': class_no,
+                    'term': term,
+                    'daystimes': days_times,
+                    'dates': dates,
+                    'session': session,
+                    'section': section,
+                    'professor': instructor,
+                    'status': status
+                }
+
+                sections.append(curr_sec)
+
+                curr_teach = {
+                    'courseID': course_id,
+                    'courseTitle': course_title,
+                    'professor': instructor
+                }
+
+                if curr_teach not in teaches:
+                    teaches.append(curr_teach)
+
+getData("course_num_fall.csv")
+getData("course_num_spring.csv")
+
 
 db['sections'].drop()
 db['courses'].drop()
