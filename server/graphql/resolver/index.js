@@ -15,10 +15,12 @@ module.exports = {
 		...searchResolvers.Query,
 		...rateResolvers.Query,
 		...shoppingCartResolvers.Query
+		// ...shoppingCartResolvers.getShoppingCart
 	},
 	Mutation: {
 		...usersResolvers.Mutation,
 		...rateResolvers.Mutation,
-		...voteResolvers.Mutation
+		...voteResolvers.Mutation,
+		...shoppingCartResolvers.Mutation
 	}
 }

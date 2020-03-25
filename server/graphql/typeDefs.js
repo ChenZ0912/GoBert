@@ -108,8 +108,9 @@ module.exports = gql`
 		getProfessorDetail(query: String!): Professor
 		getCourse(query: String!): [Course]
 		getCourseDetail(id: ID!): Course
+		getOneRating(rateId: ID!): Rate
 		getRatings(searchCourseInput: SearchCourseInput): [Rate]
-		getShoppingCart(username: String): [Course]
+		getShoppingCart(username: String!): [Course]
 	}
 
 	type Mutation{
@@ -119,5 +120,7 @@ module.exports = gql`
 		deleteRate(rateId: ID!): RateSummary
 		upvote(rateId: ID!): RateOutput
 		downvote(rateId: ID!): RateOutput
+
+		addToShoppingCart(username: String!, courseID: String!, courseTitle: String!): [Course]
 	}
 `

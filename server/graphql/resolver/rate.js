@@ -10,6 +10,13 @@ const checkAuth = require('../../utils/checkAuth');
 
 module.exports = {
     Query: {
+      async getOneRating(_, {rateId}){
+        try{
+          return await Rate.findById(rateId);
+        }catch (err) {
+          throw new Error(err);
+        }
+      },
       async getRatings(_,
       {
         searchCourseInput: {

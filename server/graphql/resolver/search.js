@@ -3,7 +3,6 @@ const escapeRegex = require("../../utils/escape");
 const Course = require('../../models/Course');
 
 
-
 module.exports = {
   Query: {
       async getSearchResult(_, {
