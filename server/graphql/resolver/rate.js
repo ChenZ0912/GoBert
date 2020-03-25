@@ -216,7 +216,22 @@ module.exports = {
                 }
               });
             }
-            return 'Post Delete Successfully';
+
+            // reutrn the rateSummary[ratings]
+            var rateSummary = await RateSummary.findOne({
+              courseID: rate.courseID,
+              courseTitle: rate.courseTitle,
+              professor: rate.professor
+            });
+
+            const ratings = await Rate.find({
+              courseID: rate.courseID,
+              courseTitle: rate.courseTitle,
+              professor: rate.professor
+            })
+
+            rateSummary['ratings'] = ratings;
+            return rateSummary;
           }else{
             throw new AuthenticationError('Action not allowed');
           }

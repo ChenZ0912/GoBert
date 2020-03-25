@@ -116,7 +116,7 @@ module.exports = gql`
 		register(registerInput: RegisterInput): User!
 		login(username: String!, password: String!): User!
 		postRate(rateInput: RateInput!): RateOutput
-		deleteRate(rateId: ID!): String
+		deleteRate(rateId: ID!): RateSummary
 		upvote(rateId: ID!): RateOutput
 		downvote(rateId: ID!): RateOutput
 	}
