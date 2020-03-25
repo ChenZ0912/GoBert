@@ -117,7 +117,7 @@ module.exports = gql`
 		login(username: String!, password: String!): User!
 		postRate(rateInput: RateInput!): RateOutput
 		deleteRate(rateId: ID!): String
-		upvote(rateId: ID!): String
-		downvote(rateId: ID!): String
+		upvote(rateId: ID!): RateOutput
+		downvote(rateId: ID!): RateOutput
 	}
 `

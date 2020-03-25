@@ -40,7 +40,10 @@ module.exports = {
           }
         });
 
-        return "updated";
+        return {
+          "upvotes": upvotes,
+          "downvotes": downvotes
+        };
       }catch(err){
         throw new Error(err);
       }
@@ -80,7 +83,10 @@ module.exports = {
             }
           });
 
-          return "updated";
+          return {
+            "upvotes": upvotes,
+            "downvotes": downvotes
+          };
         } catch (err) {
           throw new Error(err);
         }
