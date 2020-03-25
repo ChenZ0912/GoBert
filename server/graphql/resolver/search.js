@@ -61,6 +61,9 @@ module.exports = {
             var professors = await Professor.find({
                 name: fuzzyQuery
             });
+            for (let i = 0; i < professors.length; i++) {
+                professors[i]['category'] = 'Professor';
+            }
             var courses = await Course.find({
                 $or: [{
                 courseID: fuzzyQuery
@@ -69,9 +72,9 @@ module.exports = {
                 }]
             });
 
-            var result = professors.concat(courses);
+            
 
-            if (result.length === 0){
+            if (professors.length === 0 && courses.length === 0){
               console.log('failed to search using the exact mode, transit to blurry mode');
               professors = await Professor.find({
                 name: {
@@ -106,7 +109,7 @@ module.exports = {
                 delete courses[i].courseTitle;
             }
             
-            result = professors.concat(courses);
+            var result = professors.concat(courses);
             
             return result.sort(compare);;
 
