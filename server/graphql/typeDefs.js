@@ -44,6 +44,7 @@ module.exports = gql`
 		score: Float
 		numRate: Int
 		rateSummary: [RateSummary]
+		priority
 	}
 	type Section {
 		courseID: String
@@ -122,5 +123,6 @@ module.exports = gql`
 		downvote(rateId: ID!): RateOutput
 
 		addToShoppingCart(username: String!, courseID: String!, courseTitle: String!): [Course]
+		removeFromShoppingCart(username: String!, courseID: String!, courseTitle: String!): [Course]
 	}
 `

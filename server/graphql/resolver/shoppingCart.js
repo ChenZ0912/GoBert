@@ -25,7 +25,8 @@ module.exports = {
         async addToShoppingCart(_, {
             username,
             courseID,
-            courseTitle
+            courseTitle,
+            priority
         }, context) {
             const tempUser = checkAuth(context);
             if (tempUser.username === username) {
@@ -35,7 +36,8 @@ module.exports = {
                 var newShoppingCart = user.shoppingCart;
                 newShoppingCart.push({
                     'courseID': courseID,
-                    'courseTitle': courseTitle
+                    'courseTitle': courseTitle,
+                    'priority': priority
                 });
                 await User.updateOne({
                     username: tempUser.username
@@ -44,19 +46,42 @@ module.exports = {
                         shoppingCart: newShoppingCart
                     }
                 });
-                for (let index = 0; index < newShoppingCart.length; index++) {
-                    const element = newShoppingCart[index];
-                }
                 return newShoppingCart;
             } else {
                 throw new Error("User not match");
             }
-        }
-    }
+        },
+        async removeFromShoppingCart(_, {
+            username,
+            courseID,
+            courseTitle
+        }, context){
+            const tempUser = checkAuth(context);
+            if (tempUser.username === username) {
+              const user = await User.findOne({
+                username: tempUser.username
+              });
+              var newShoppingCart = user.shoppingCart;
+              for (let index = 0; index < newShoppingCart.length; index++) {
+                  const element = newShoppingCart[index]
+                  if (element.courseID == courseID && courseTitle){
+                    newShoppingCart.splice(index, 1);
+                  }
+              }
+              await User.updateOne({
+                username: tempUser.username
+              }, {
+                $set: {
+                  shoppingCart: newShoppingCart
+                }
+              });
 
-    
-
-    // async removeFromShoppingCart(){},
+              return newShoppingCart;
+            } else {
+              throw new Error("User not match");
+            }
+        },
 
     // async changeCoursePriority(){}
+    }
 }
