@@ -44,7 +44,7 @@ module.exports = gql`
 		score: Float
 		numRate: Int
 		rateSummary: [RateSummary]
-		priority
+		priority: String
 	}
 	type Section {
 		courseID: String
