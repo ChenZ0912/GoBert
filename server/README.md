@@ -67,10 +67,59 @@ mutation {
 
   deleteRate(rateId: "rateID")
 
-  upvote(rateId: "5e76d9a0f3a1f0c7f3043ba4")
+  upvote(rateId: "5e7bcd74a4ce7c00ed5c4770"){
+    alreadyRate
+    username
+    courseID
+    courseTitle
+    courseScore
+    professor
+    professorScore
+    term
+    anonymity
+    comment
+    upvotes
+    downvotes
+    createdAt
+    id
+  }
   
-  downvote(rateId:"5e76d9a0f3a1f0c7f3043ba4")
+  downvote(rateId:"5e7bcd74a4ce7c00ed5c4770"){
+    alreadyRate
+    username
+    courseID
+    courseTitle
+    courseScore
+    professor
+    professorScore
+    term
+    anonymity
+    comment
+    upvotes
+    downvotes
+    createdAt
+    id
+  }
 
+  # Shopping Carts
+  addToShoppingCart(username:"cindy123", courseID: "CSUY 2124", courseTitle: "Object Oriented Programming LEC", priority: "required"){
+    courseID
+    courseTitle
+    score
+    numRate
+    priority
+  }
+  removeFromShoppingCart(username:"cindy123", courseID: "CSGY 6413", courseTitle: "Compiler Design and Construction LEC"){
+    courseID
+    courseTitle
+  }
+  changeCoursePriority(username:"cindy123", courseID: "CSGY 6413", courseTitle: "Compiler Design and Construction LEC", priority: "required"){
+    courseID
+    courseTitle
+    score
+    numRate
+    priority
+  }
 }
 ```
 ##### Query API
@@ -147,20 +196,14 @@ query {
   }
 
   # you need to provide a token in authorization
-  getShoppingCart(username(optional):"cindy123"){
+  getShoppingCart(username:"cindy123"){
     courseID
-		courseTitle
+    courseTitle
     score
     numRate
-    ratings {
-      professor
-      courseID
-      courseTitle
-      avgProfScore
-      avgCourseScore
-      numRate
-    }
+    priority
   }
+
 }
 
 ```

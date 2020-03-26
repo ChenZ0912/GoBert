@@ -122,7 +122,8 @@ module.exports = gql`
 		upvote(rateId: ID!): RateOutput
 		downvote(rateId: ID!): RateOutput
 
-		addToShoppingCart(username: String!, courseID: String!, courseTitle: String!): [Course]
+		addToShoppingCart(username: String!, courseID: String!, courseTitle: String!, priority: String): [Course]
 		removeFromShoppingCart(username: String!, courseID: String!, courseTitle: String!): [Course]
+		changeCoursePriority(username: String!, courseID: String!, courseTitle: String!, priority: String!): [Course]
 	}
 `
