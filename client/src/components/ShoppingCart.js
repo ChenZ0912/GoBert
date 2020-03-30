@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { Button, Card, Container, Divider, Dropdown, Form, Grid } from 'semantic-ui-react';
@@ -7,23 +7,29 @@ import { AuthContext } from '../context/auth';
 
 function ShoppingCart() {
     const options = [
-        { key: 1, text: 'Required', value: 1 },
-        { key: 2, text: 'Interested', value: 2 },
-        { key: 3, text: 'Giveupable', value: 3 },
-        { key: 4, text: 'Remove', value: 4 },
+        { key: 1, text: 'Required', value: "required" },
+        { key: 2, text: 'Interested', value: "interested" },
+        { key: 3, text: 'Giveupable', value: "giveupable" },
+        { key: 4, text: 'Remove', value: "remove" }
     ]
 
     const { user } = useContext(AuthContext);
     const username = user.username;
     
+    
     const {
-        loading,
+        loading, 
         data: {getShoppingCart : results}
     } = useQuery(FETCH_SHOPPING_CART_QUERY, {
         variables: {
             username
         }
     });
+
+    function onChange (e, {name, value}) {
+        //name = value;
+        console.log(value);
+    }
 
     function selectAll() {
         var checkboxes = document.getElementsByName("selectedCourse");  
@@ -55,7 +61,8 @@ function ShoppingCart() {
                             button
                             selection
                             options={options}
-                            placeholder='Priority'/>
+                            value={result.priority}
+                            onChange={onChange}/>
                         <Form.Field control='input' type='checkbox' name="selectedCourse" 
                         value={result.courseID} style={{ margin: '7% 45% 0 45%' }}/>
                     </Grid.Row>
@@ -102,6 +109,7 @@ const FETCH_SHOPPING_CART_QUERY = gql`
       courseTitle
       score
       numRate
+      priority
     }
   }
 `;

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button, Form, Grid, Select } from 'semantic-ui-react';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
@@ -20,14 +20,12 @@ function RateForm({
   }) {
   
   const {user} = useContext(AuthContext);
-  const canDisplay = function () {
-    if (user) {
-      for ( var rating of ratings ) {
-        if (rating.username === user.username ) return false;
-      }
-    }
-    return true;
-  };
+  const [showRating, setShow] = useState(false);
+  useEffect(() => {
+    if (user && ratings.find((rating) => rating.username === user.username)) {
+      setShow(false);
+    } else setShow(true);
+  }, [user, ratings]);
 
   const { values, onChange, onSubmit } = useForm(createRateCallback, {
     courseID,
@@ -53,92 +51,85 @@ function RateForm({
 
   function createRateCallback() {
     if (values.courseScore !== 0 && values.profScore !== 0 && season !== "") {
-        values.term = season + " " + values.term;
-        createRate();
+      values.term = season + " " + values.term;
+      createRate();
     }
   }
 
-  const rateForm = ( canDisplay() &&
-    <>
-      <Form onSubmit={onSubmit}>
-          <Grid columns='equal'>
-              <Grid.Column>
-                <Form.Field
-                    compact
-                    required
-                    control={Select}
-                    label='Professor Score:'
-                    options={options}
-                    onChange={handleProf}
-                />
-              </Grid.Column>
-              <Grid.Column>
-                <Form.Field
-                    compact
-                    required
-                    control={Select}
-                    label='Course Score:'
-                    options={options}
-                    onChange={handleCourse}
-                />
-              </Grid.Column>
-              <Grid.Column>
-                <Form.Field
-                    compact
-                    required
-                    control={Select}
-                    label='Term:'
-                    options={[
-                        { key: 1, text: 'Spring', value: 'Spring' },
-                        { key: 2, text: 'Fall', value: 'Fall' },
-                    ]}
-                    onChange={handleTerm}
-                />
-              </Grid.Column>
-              <Grid.Column>
-                <Form.Input
-                    required
-                    name="term"
-                    label='Year:'
-                    placeholder="2020"
-                    onChange={onChange}
-                    value={values.year}
-                    error={error ? true : false}
-                />
-              </Grid.Column>
-          </Grid>
-        
-        <Form.Field required>
-          <label><br/>Share your experience with us!</label>
-          <Form.Input
-            required
-            name="comment"
-            placeholder="This course is ..."
-            onChange={onChange}
-            value={values.body}
-            error={error ? true : false}
-          />
-          <Button type="submit" color="violet" fluid>
-            Submit
-          </Button>
-        </Form.Field>
-      </Form>
-      {error && (
-        <div className="ui error message" style={{ marginBottom: 20 }}>
-          <ul className="list">
-            <li>{error.graphQLErrors[0] && error.graphQLErrors[0].message}</li>
-          </ul>
-        </div>
-      )}
-    </>
-  )
-
   return (
     <>
-    { user ? rateForm : (
-      <a href="/login">Please LOGIN to share your opinions (●'◡'●)</a>
-    ) }
-    </>
+    {showRating && (
+      <Form onSubmit={onSubmit}>
+        <Grid columns='equal'>
+          <Grid.Column>
+            <Form.Field
+              compact
+              required
+              control={Select}
+              label='Professor Score:'
+              options={options}
+              onChange={handleProf}
+            />
+          </Grid.Column>
+          <Grid.Column>
+            <Form.Field
+              compact
+              required
+              control={Select}
+              label='Course Score:'
+              options={options}
+              onChange={handleCourse}
+            />
+          </Grid.Column>
+          <Grid.Column>
+            <Form.Field
+              compact
+              required
+              control={Select}
+              label='Term:'
+              options={[
+                  { key: 1, text: 'Spring', value: 'Spring' },
+                  { key: 2, text: 'Fall', value: 'Fall' },
+              ]}
+              onChange={handleTerm}
+            />
+          </Grid.Column>
+          <Grid.Column>
+          <Form.Input
+            required
+            name="term"
+            label="Year:"
+            placeholder="2020"
+            onChange={onChange}
+            value={values.year}
+            error={error ? true : false}
+          />
+          </Grid.Column>
+        </Grid>
+      
+        <br/>
+        <Form.Input
+          required
+          name="comment"
+          placeholder="This course is ..."
+          label="Share your experience with us!"
+          onChange={onChange}
+          value={values.body}
+          error={error ? true : false}
+        />
+        <Button type="submit" color="violet" fluid>
+          Submit
+        </Button>
+      </Form>
+    )}
+    {error && (
+      <div className="ui error message" style={{ marginBottom: 20 }}>
+        <ul className="list">
+          <li>{error.graphQLErrors[0] && error.graphQLErrors[0].message}</li>
+        </ul>
+      </div>
+    )}
+  </>
   );
 }
 
