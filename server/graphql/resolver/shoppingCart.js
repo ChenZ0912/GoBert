@@ -4,6 +4,7 @@ const Course = require('../../models/Course');
 const checkAuth = require('../../utils/checkAuth');
 
 async function fromShoppingCartGetCourseInfo(courses) {
+
     for (let i = 0; i < courses.length; i++) {
         const currCourse = await Course.findOne({
             courseID: courses[i].courseID,
@@ -49,9 +50,16 @@ module.exports = {
             if (tempUser.username === username) {
                 try{
                     const user = await User.findOne({
-                    username: tempUser.username
+                        username: tempUser.username
                     });
                     var newShoppingCart = user.shoppingCart;
+                    for (let index = 0; index < newShoppingCart.length; index++) {
+                        const element = newShoppingCart[index];
+                        if(courseID === element.courseID && courseTitle === element.courseTitle){
+                            throw new Error( courseID + ' ' + courseTitle + ' is already in shopping cart');
+                        }
+                    }
+
                     newShoppingCart.push({
                         'courseID': courseID,
                         'courseTitle': courseTitle,
@@ -64,7 +72,7 @@ module.exports = {
                         shoppingCart: newShoppingCart
                     }
                     });
-                    return fromShoppingCartGetCourseInfo(newShoppingCart);
+                    return await fromShoppingCartGetCourseInfo(newShoppingCart);
                 } catch (err){
                     throw new Error(err);
                 }
@@ -89,18 +97,18 @@ module.exports = {
                     for (let index = 0; index < newShoppingCart.length; index++) {
                         const element = newShoppingCart[index]
                         if (element.courseID == courseID && courseTitle) {
-                        newShoppingCart.splice(index, 1);
+                            newShoppingCart.splice(index, 1);
+                            await User.updateOne({
+                                username: tempUser.username
+                            }, {
+                                $set: {
+                                    shoppingCart: newShoppingCart
+                                }
+                            });
+                            return (await fromShoppingCartGetCourseInfo([element]))[0];
                         }
                     }
-                    await User.updateOne({
-                        username: tempUser.username
-                    }, {
-                        $set: {
-                        shoppingCart: newShoppingCart
-                        }
-                    });
-
-                    return fromShoppingCartGetCourseInfo(newShoppingCart);
+                    throw new Error("Cannot find " + courseID + " " + courseTitle + " in user shopping cart");
                 } catch (err) {
                     throw new Error(err);
                 }
@@ -126,17 +134,19 @@ module.exports = {
                 for (let index = 0; index < newShoppingCart.length; index++) {
                     const element = newShoppingCart[index];
                     if (element.courseID === courseID && element.courseTitle === courseTitle){
-                        element.priority = priority;
+                        newShoppingCart[index].priority = priority;
+                        await User.updateOne({
+                            username: tempUser.username
+                        }, {
+                            $set: {
+                                shoppingCart: newShoppingCart
+                            }
+                        });
+                        return (await fromShoppingCartGetCourseInfo([element]))[0];
                     }
                 }
-                await User.updateOne({
-                  username: tempUser.username
-                }, {
-                  $set: {
-                    shoppingCart: newShoppingCart
-                  }
-                });
-                return fromShoppingCartGetCourseInfo(newShoppingCart);
+
+                throw new Error("Cannot find " + courseID + " " + courseTitle + " in user shopping cart");
               } catch (err) {
                 throw new Error(err);
               }

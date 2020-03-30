@@ -102,6 +102,8 @@ mutation {
   }
 
   # Shopping Carts
+
+  # addToShoppingCart -> [Course]
   addToShoppingCart(username:"cindy123", courseID: "CSUY 2124", courseTitle: "Object Oriented Programming LEC", priority: "required"){
     courseID
     courseTitle
@@ -109,10 +111,17 @@ mutation {
     numRate
     priority
   }
+
+  # removeFromShoppingCart -> Course
   removeFromShoppingCart(username:"cindy123", courseID: "CSGY 6413", courseTitle: "Compiler Design and Construction LEC"){
     courseID
     courseTitle
+    score
+    numRate
+    priority
   }
+
+  # changeCoursePriority -> Course
   changeCoursePriority(username:"cindy123", courseID: "CSGY 6413", courseTitle: "Compiler Design and Construction LEC", priority: "required"){
     courseID
     courseTitle
