@@ -44,11 +44,12 @@ function RatingCard({
       <Card.Content>
       <Grid>
         <Grid.Column floated='left' width={8}>
-          <h3>{courseID} {courseTitle}<br/>{professor}</h3>
+        <h3>{courseID} {courseTitle}<br/>{professor}</h3>
+        <span>[ Number of Ratings: {ratingCollection.length} ]</span>
         </Grid.Column>
         <Grid.Column floated='right' width={4}>
-          <p>Overall Course Score: {avgCourseScore}/5<br/>
-          Overall Professor Score: {avgProfScore}/5</p>
+          <span>Overall Course Score: {avgCourseScore}/5<br/>
+          Overall Professor Score: {avgProfScore}/5<br/><br/></span>
           <Checkbox
             label='SHOW RATINGS'
             onChange={handleRatings}
@@ -58,9 +59,9 @@ function RatingCard({
       </Grid>
       </Card.Content>
 
-      {showRating ? (
+      { showRating ?
       <Card.Content>
-        {ratingCollection && ratingCollection.map((rating, index) => (
+        { ratingCollection && ratingCollection.map((rating, index) => (
         <dl key={index}>
         <Grid divided>
           <Grid.Row stretched>
@@ -93,7 +94,7 @@ function RatingCard({
                 onConfirm={e => {
                   e.preventDefault();
                   setConfirmOpen(false);
-                  deleteRate({variables: {id: rating._id}})
+                  deleteRate({variables: {id: rating._id}});
                 }}
               />
             </Grid.Column>
@@ -106,13 +107,13 @@ function RatingCard({
           <RateForm rateSummary = {{professor, courseID, courseTitle, ratings: ratingCollection}} />
         }
       </Card.Content>
-      ): 
+      : ( user && 
         <Card.Content>
           {askToRate ? 
-          <span>Share your opinions by clicking on <b>SHOW RATINGS</b> (●'◡'●)</span>
-          : <span>Check out the ratings!!! Click on <b>SHOW RATINGS</b> (●ˇ∀ˇ●)</span> }
+            <span>Share your opinions by clicking on <b>SHOW RATINGS</b> (●'◡'●)</span>
+            : <span>Check out the ratings!!! Click on <b>SHOW RATINGS</b> (●ˇ∀ˇ●)</span>}
         </Card.Content>
-      }
+      )}
 
       {!user &&
         <Card.Content>

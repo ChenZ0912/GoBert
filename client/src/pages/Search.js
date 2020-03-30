@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
-import { Container,Transition } from 'semantic-ui-react';
+import { Container, Transition } from 'semantic-ui-react';
 import SearchCard from '../components/SearchCard';
 
 function Search(props) {

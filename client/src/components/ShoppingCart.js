@@ -1,34 +1,86 @@
-import React, { useContext, useState } from 'react';
-import { useQuery } from '@apollo/react-hooks';
+import React, { useContext } from 'react';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { Button, Card, Container, Divider, Dropdown, Form, Grid } from 'semantic-ui-react';
 
 import { AuthContext } from '../context/auth';
 
 function ShoppingCart() {
+    const { user } = useContext(AuthContext);
     const options = [
         { key: 1, text: 'Required', value: "required" },
         { key: 2, text: 'Interested', value: "interested" },
         { key: 3, text: 'Giveupable', value: "giveupable" },
-        { key: 4, text: 'Remove', value: "remove" }
+        { key: 4, text: 'Delete', value: "remove", icon: "trash"}
     ]
-
-    const { user } = useContext(AuthContext);
-    const username = user.username;
-    
-    
     const {
         loading, 
         data: {getShoppingCart : results}
     } = useQuery(FETCH_SHOPPING_CART_QUERY, {
-        variables: {
-            username
-        }
+        variables: { username: user.username }
     });
 
+    const [changePriority] = useMutation(CHANGE_PRIORITY_MUTATION, {
+        update(cache, mutationResult) {
+            if (mutationResult.data["changeCoursePriority"]) {
+                const data = cache.readQuery({
+                    query: FETCH_SHOPPING_CART_QUERY,
+                    variables: { username: user.username }
+                });
+                const result = mutationResult.data["changeCoursePriority"];
+                for (var course of data.getShoppingCart) {
+                    if (course.courseID === result["courseID"] && 
+                    course.courseTitle === result["courseTitle"]) {
+                        course.priority = result["priority"];
+                        break;
+                    }
+                };
+                cache.writeQuery({ query: FETCH_SHOPPING_CART_QUERY, data });
+            }
+        }
+    })
+
+    const [removeFromCart] = useMutation(REMOVE_FROM_CART_MUTATION, {
+        update(cache, mutationResult) {
+            if (mutationResult.data["removeFromShoppingCart"]) {
+                const data = cache.readQuery({
+                    query: FETCH_SHOPPING_CART_QUERY,
+                    variables: { username: user.username }
+                });
+                const result = mutationResult.data["removeFromShoppingCart"];
+                const cart = data.getShoppingCart;
+                for (var i = 0; i < cart.length; i++) {
+                    if (cart[i].courseID === result["courseID"] && 
+                    cart[i].courseTitle === result["courseTitle"]) {
+                        data.getShoppingCart.splice(i, 1);
+                        break;
+                    }
+                }
+                cache.writeQuery({ query: FETCH_SHOPPING_CART_QUERY, data });
+            }
+        }
+    })
+
     function onChange (e, {name, value}) {
-        //name = value;
-        console.log(value);
+        const course = JSON.parse(name);
+        if (value === 'remove') {
+            removeFromCart(
+                {variables: {
+                    username: user.username,
+                    courseID: course.id,
+                    courseTitle: course.title
+                }
+            })
+        } else {
+            changePriority(
+                {variables: {
+                    username: user.username,
+                    courseID: course.id,
+                    courseTitle: course.title,
+                    priority: value
+                }
+            })
+        }
     }
 
     function selectAll() {
@@ -60,6 +112,7 @@ function ShoppingCart() {
                             fluid
                             button
                             selection
+                            name={JSON.stringify({ id: result.courseID, title: result.courseTitle })}
                             options={options}
                             value={result.priority}
                             onChange={onChange}/>
@@ -110,6 +163,45 @@ const FETCH_SHOPPING_CART_QUERY = gql`
       score
       numRate
       priority
+    }
+  }
+`;
+
+const CHANGE_PRIORITY_MUTATION = gql`
+  mutation changeCoursePriority(
+    $username: String!,
+    $courseID: String!,
+    $courseTitle: String!,
+    $priority: String!
+  ) {
+    changeCoursePriority(
+        username: $username, 
+        courseID: $courseID,
+        courseTitle: $courseTitle,
+        priority: $priority
+    ) {
+      courseID
+      courseTitle
+      score
+      numRate
+      priority
+    }
+  }
+`;
+
+const REMOVE_FROM_CART_MUTATION = gql`
+  mutation removeFromShoppingCart(
+    $username: String!,
+    $courseID: String!,
+    $courseTitle: String!
+  ) {
+    removeFromShoppingCart(
+        username: $username, 
+        courseID: $courseID,
+        courseTitle: $courseTitle
+    ) {
+      courseID
+      courseTitle
     }
   }
 `;
