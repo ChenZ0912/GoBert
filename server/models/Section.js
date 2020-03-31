@@ -5,7 +5,7 @@ const sectionSchema = new Schema({
 	courseTitle: String,
 	term: String,
 	classNo: String,
-	daysTimes: String,
+	daystimes: String,
 	location: String,
 	room: String,
 	status: String,

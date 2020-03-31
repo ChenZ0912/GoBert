@@ -11,6 +11,8 @@ module.exports = gql`
 		name: String
 		_id: String
 	}
+
+
 	type Rate {
 		username: String
 		anonymity: Boolean
@@ -54,7 +56,7 @@ module.exports = gql`
 		courseTitle: String
 		term: String
 		classNo: String
-		daysTimes: String
+		daystimes: String
 		location: String
 		room: String
 		status: String
@@ -99,6 +101,12 @@ module.exports = gql`
 		createdAt: String
 		id: String
 	}
+
+	type scheduleOutput {
+		noSection: [Course]
+		schedule: [[Section]]  
+	}
+
 	input RegisterInput {
 		username: String!
 		password: String!
@@ -115,8 +123,7 @@ module.exports = gql`
 		getOneRating(rateId: ID!): Rate
 		getRatings(searchCourseInput: SearchCourseInput): [Rate]
 		getShoppingCart(username: String!): [Course]
-		generateSchedule(username: String!, term: String!): String
-
+		generateSchedule(username: String!, term: String!): scheduleOutput
 	}
 
 	type Mutation{

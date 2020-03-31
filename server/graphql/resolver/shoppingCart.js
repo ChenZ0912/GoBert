@@ -4,11 +4,11 @@ const Course = require('../../models/Course');
 const Section = require('../../models/Section');
 const checkAuth = require('../../utils/checkAuth');
 
-var product = require('cartesian-product');
-
+const product = require('cartesian-product');
+const dateConverter = require('date-and-time');
+const pattern = dateConverter.compile('h:m A');
 
 async function fromShoppingCartGetCourseInfo(courses) {
-
     for (let i = 0; i < courses.length; i++) {
         const currCourse = await Course.findOne({
             courseID: courses[i].courseID,
@@ -18,6 +18,25 @@ async function fromShoppingCartGetCourseInfo(courses) {
         courses[i]['score'] = currCourse.score;
     }
     return courses;
+}
+
+// format "10:40am - 12:30pm", "12:20pm - 13:50pm"
+// return true
+function timeOverlap(time1, time2) {
+    var tl = time1.replace(/am/g, " AM");
+    tl = tl.replace(/pm/g, " PM");
+    var tr = time2.replace(/am/g, " AM");
+    tr = tr.replace(/pm/g, " PM");
+
+    const t1 = tl.split(" - ");
+    const t2 = tr.split(" - ");
+
+    const t1start = dateConverter.parse(t1[0], pattern);
+    const t1end = dateConverter.parse(t1[1], pattern);
+    const t2start = dateConverter.parse(t2[0], pattern);
+    const t2end = dateConverter.parse(t2[1], pattern);
+
+    return (t1start <= t2start && t2start <= t1end) || (t2start <= t1start && t1start <= t2end);
 }
 
 module.exports = {
@@ -47,9 +66,12 @@ module.exports = {
             username, term
         },
         context){
+
             const tempUser = checkAuth(context);
             if (username === tempUser.username) {
               try {
+                
+                var result = {};
                 const user = await User.findOne({
                   username: tempUser.username
                 });
@@ -59,7 +81,6 @@ module.exports = {
                 const cart = user.shoppingCart;
                 var schedules = [];
                 for (let i = 0; i < cart.length; i++) {
-
                     const sections = await Section.find({
                         courseID: cart[i].courseID,
                         courseTitle: cart[i].courseTitle,
@@ -69,13 +90,84 @@ module.exports = {
 
                     if (sections.length !== 0){
                         schedules.push(sections);
+                    } else {
+                        if (result.noSection){
+                            result.noSection.push(cart[i]);
+                        } else {
+                            // either no open section, or wrong semester
+                            result['noSection'] = [cart[i]];
+                        }
                     }
                 }
                 
                 // cartesian products to find all potential schedules
-                var potentialSchedule = product(schedules);
+                const allSchedules = product(schedules);
                 
-                return 'test successfully';
+                
+                for (let i = 0; i < allSchedules.length; i++) {
+                    const oneSchedule = allSchedules[i];
+                    // parse all section into weekdays: Mo Tu We Th Fr Sa Su
+                    var sectionByDays = [[], [], [], [], [], [], []];
+                    for (let j = 0; j < oneSchedule.length; j++) {
+                        const oneSection = oneSchedule[j];
+                        const t = oneSection.daystimes.split(/ (.+)/);
+                        const days = t[0];
+                        if (days.includes('Mo')) {
+                            sectionByDays[0].push(oneSection);
+                        }
+                        if (days.includes('Tu')) {
+                            sectionByDays[1].push(oneSection);
+                        }
+                        if (days.includes('We')) {
+                            sectionByDays[2].push(oneSection);
+                        }
+                        if (days.includes('Th')) {
+                            sectionByDays[3].push(oneSection);
+                        }
+                        if (days.includes('Fr')) {
+                            sectionByDays[4].push(oneSection);
+                        }
+                        if (days.includes('Sa')) {
+                            sectionByDays[5].push(oneSection);
+                        }
+                        if (days.includes('Su')) {
+                            sectionByDays[6].push(oneSection);
+                        }
+                    }
+                }
+
+                // check if daystimes conflict within one schedule
+                var conflictFlag = false;
+                var possibleSchedules = [];
+                for (let i = 0; i < allSchedules.length; i++) {
+                    const oneSchedule = allSchedules[i];
+                    for (let j = 0; j < sectionByDays.length; j++) {
+                        const oneDay = sectionByDays[j];
+
+                        for (let k = 0; k < oneDay.length; k++) {
+                        const oneTime = oneDay[k].daystimes;
+                        for (let m = k + 1; m < oneDay.length; m++) {
+                            const secTime = oneDay[m].daystimes;
+                            const time1 = oneTime.split(/ (.+)/)[1];
+                            const time2 = secTime.split(/ (.+)/)[1];
+                            conflictFlag = timeOverlap(time1, time2);
+                            if (conflictFlag) {
+                                break;
+                            }
+                        }
+                        }
+                        if (conflictFlag) {
+                            break;
+                        }
+                    }
+                    if (!conflictFlag) {
+                        possibleSchedules.push(oneSchedule);
+                    }
+                }
+                
+                result['schedule'] = possibleSchedules;
+                console.log(result);
+                return result;
               } catch (err) {
                 throw new Error(err);
               }

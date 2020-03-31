@@ -2,12 +2,19 @@ const Course = require('../../models/Course');
 const Professor = require('../../models/Professor');
 const Rate = require('../../models/Rate');
 const RateSummary = require('../../models/RateSummary');
+const Section = require('../../models/Section');
 
 module.exports = {
     Mutation: {
         async clearAll(_, {
             password
         }){ 
+            // await Section.updateMany({}, {
+            //   $rename: {
+            //     "daystimes": "dt"
+            //   }
+            // });
+            // return "halo";
             if (password !== 'Kaixuan'){
                 throw new Error('incorrect password');
             }

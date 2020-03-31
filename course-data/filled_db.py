@@ -67,7 +67,7 @@ def getData(filename):
                     'courseTitle': course_title,
                     'classNo': class_no,
                     'term': term,
-                    'daystimes': days_times,
+                    'dt': days_times,
                     'dates': dates,
                     'session': session,
                     'section': section,
@@ -91,10 +91,10 @@ getData("course_num_spring.csv")
 
 
 db['sections'].drop()
-db['courses'].drop()
-db['teaches'].drop()
-db['professors'].drop()
+# db['courses'].drop()
+# db['teaches'].drop()
+# db['professors'].drop()
 db['sections'].insert_many(sections)
-db['courses'].insert_many(courses)
-db['teaches'].insert_many(teaches)
-db['professors'].insert_many(professors)
+# db['courses'].insert_many(courses)
+# db['teaches'].insert_many(teaches)
+# db['professors'].insert_many(professors)

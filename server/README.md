@@ -215,6 +215,20 @@ query {
     priority
   }
 
+  generateSchedule(username: "cindy123", term: "Spring 2020"){
+    noSection{
+      courseID
+      courseTitle
+      priority
+    }
+    schedule{
+      courseID
+      courseTitle
+      daystimes
+      professor
+    }
+  }
+
 }
 
 ```
