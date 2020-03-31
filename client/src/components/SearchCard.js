@@ -7,7 +7,7 @@ import gql from 'graphql-tag';
 import { AuthContext } from '../context/auth';
 
 function SearchCard({
-  result: { category, name, score, numRate, _id}
+  result: { category, professor, courseID, courseTitle, score, numRate, _id}
 }) {
   const { user } = useContext(AuthContext);
   const options = [
@@ -17,10 +17,13 @@ function SearchCard({
   ];
 
   var link = "/";
+  var name = "N/A"
   if (category === "Course") {
     link = "/rateCourse/"+_id;
+    name = courseID + ": " + courseTitle
   } else if (category === "Professor") {
-    link = "/rateProf/"+name;
+    link = "/rateProf/"+professor;
+    name = professor;
   }
 
   const [add, setAdd] = useState(true);
@@ -31,14 +34,14 @@ function SearchCard({
     }
   });
 
-  function onChange (e, {text, value}) {
+  function onChange (e, {value}) {
     const course = name.split(': ');
     if (course.length >= 2) {
       addToCart( {
         variables: {
           username: user.username, 
-          courseID: course[0],
-          courseTitle: course[1],
+          courseID: courseID,
+          courseTitle: courseTitle,
           priority: value,
         }
       })

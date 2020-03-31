@@ -37,7 +37,9 @@ const FETCH_SERACH_QUERY = gql`
   query($input: String!) {
     getSearchResult(query: $input) {
       category
-      name
+      professor
+      courseID
+      courseTitle
       score
       numRate
       _id

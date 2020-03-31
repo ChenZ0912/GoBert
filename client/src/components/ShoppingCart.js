@@ -85,9 +85,16 @@ function ShoppingCart() {
 
     function selectAll() {
         var checkboxes = document.getElementsByName("selectedCourse");  
-        for (var i=0; i<checkboxes.length; i++)  {
-            checkboxes[i].checked = true;
-          }
+        var isDeselect = true;
+        for (var checkbox of checkboxes)  {
+            if (!checkbox.checked) {
+                isDeselect = false;
+                break;
+            }
+        }
+        for (var i = 0; i<checkboxes.length; i++)  {
+            isDeselect ? checkboxes[i].checked=false : checkboxes[i].checked=true;
+        }
     }
 
     function onSubmit() {
@@ -131,7 +138,7 @@ function ShoppingCart() {
         </Card>
         <Grid style={{ marginLeft: '5px' }}>
             <Grid.Column width={3}>
-                <Button fluid color="violet" onClick={selectAll}>Select All</Button>
+                <Button fluid color="violet" onClick={selectAll}>Select/Deselect All</Button>
             </Grid.Column>
             <Grid.Column width={13}>
                 <Button fluid color="violet" type="submit">Generate Schedule</Button>
