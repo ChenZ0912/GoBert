@@ -19,7 +19,7 @@ function Home() {
         </Container>
       )}
 
-      <nav className='bottom'>
+      <nav class="footer">
         <a href="/" className='box'>About</a>
         <a href="/" className='box'>FAQs</a>
         <a href="/" className='box'>Contact Us</a>

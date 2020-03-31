@@ -9,6 +9,7 @@ import RateForm from './RateForm';
 import VoteButton from './VoteButton';
 
 function RatingCard({
+  category,
   rateSummary: {professor, courseID, courseTitle,
     avgProfScore, avgCourseScore, numRate, ratings}
 }) {
@@ -44,8 +45,11 @@ function RatingCard({
       <Card.Content>
       <Grid>
         <Grid.Column floated='left' width={8}>
-        <h3>{courseID} {courseTitle}<br/>{professor}</h3>
-        <span>[ Number of Ratings: {ratingCollection.length} ]</span>
+          {category === "professor" ? 
+          <h3>{courseID} {courseTitle}</h3>:
+          <h3>{professor}</h3>
+          }
+          <span><br/>[ Number of Ratings: {ratingCollection.length} ]</span>
         </Grid.Column>
         <Grid.Column floated='right' width={4}>
           <span>Overall Course Score: {avgCourseScore}/5<br/>

@@ -35,7 +35,7 @@ function RateProf(props) {
             {results.rateSummary &&
               results.rateSummary.map((rateSummary, index) => (
                 <dl key={index}>
-                  <RatingCard rateSummary={rateSummary} />
+                  <RatingCard category="professor" rateSummary={rateSummary} />
                 </dl>  
               ))}
           </Transition.Group>
