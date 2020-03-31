@@ -3,9 +3,12 @@ const { gql } = require('apollo-server');
 module.exports = gql`
 	type searchResult {
 		category: String
-		name: String
+		professor: String
+		courseID: String
+		courseTitle: String
 		score: Float
 		numRate: Int
+		name: String
 		_id: String
 	}
 	type Rate {
@@ -113,6 +116,7 @@ module.exports = gql`
 		getRatings(searchCourseInput: SearchCourseInput): [Rate]
 		getShoppingCart(username: String!): [Course]
 		generateSchedule(username: String!, term: String!): String
+
 	}
 
 	type Mutation{
@@ -126,5 +130,6 @@ module.exports = gql`
 		addToShoppingCart(username: String!, courseID: String!, courseTitle: String!, priority: String): [Course]
 		removeFromShoppingCart(username: String!, courseID: String!, courseTitle: String!): Course
 		changeCoursePriority(username: String!, courseID: String!, courseTitle: String!, priority: String!): Course
+		clearAll(password: String): String
 	}
 `

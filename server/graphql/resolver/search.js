@@ -61,18 +61,15 @@ module.exports = {
             var professors = await Professor.find({
                 name: fuzzyQuery
             });
-            for (let i = 0; i < professors.length; i++) {
-                professors[i]['category'] = 'Professor';
-            }
+
             var courses = await Course.find({
                 $or: [{
-                courseID: fuzzyQuery
+                  courseID: fuzzyQuery
                 }, {
-                courseTitle: fuzzyQuery
+                  courseTitle: fuzzyQuery
                 }]
             });
 
-            
 
             if (professors.length === 0 && courses.length === 0){
               console.log('failed to search using the exact mode, transit to blurry mode');
@@ -82,10 +79,6 @@ module.exports = {
                 }
               });
 
-              // console.log(professors);
-              for (let i = 0; i < professors.length; i++) {
-                  professors[i]['category'] = 'Professor';
-              }
 
               courses = await Course.find({
                   $or: [
@@ -102,11 +95,14 @@ module.exports = {
               });
             }
 
+            for (let i = 0; i < professors.length; i++) {
+              professors[i]['category'] = 'Professor';
+              professors[i]['professor'] = professors[i]['name'];
+            }
+
             for (let i = 0; i < courses.length; i++) {
-                courses[i]['category'] = 'Course';
-                courses[i]['name'] = courses[i]['courseID'] + ': ' + courses[i]['courseTitle'];
-                delete courses[i].courseID;
-                delete courses[i].courseTitle;
+              courses[i]['category'] = 'Course';
+              courses[i]['name'] = courses[i]['courseID'] + ': ' + courses[i]['courseTitle'];
             }
             
             var result = professors.concat(courses);

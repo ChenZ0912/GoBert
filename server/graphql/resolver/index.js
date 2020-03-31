@@ -6,6 +6,8 @@ const rateResolvers = require('./rate');
 const shoppingCartResolvers = require('./shoppingCart');
 const voteResolvers = require('./vote');
 
+const clearResolver = require('./clear');
+
 module.exports = {
 	Query: {
 		...searchProfessorResolvers.ProfQuery.GetProfessorByName,
@@ -21,6 +23,7 @@ module.exports = {
 		...usersResolvers.Mutation,
 		...rateResolvers.Mutation,
 		...voteResolvers.Mutation,
-		...shoppingCartResolvers.Mutation
+		...shoppingCartResolvers.Mutation,
+		...clearResolver.Mutation
 	}
 }

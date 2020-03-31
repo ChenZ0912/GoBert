@@ -137,10 +137,12 @@ query {
   # This Query will return a combined result for course & professor
   getSearchResult(query: "2124"){
     category
-    name
+    professor
+    courseID
+    courseTitle
+    _id
     score
     numRate
-    _id
   }
 
   # the id returned by getSearchResult
