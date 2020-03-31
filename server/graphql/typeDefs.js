@@ -112,6 +112,7 @@ module.exports = gql`
 		getOneRating(rateId: ID!): Rate
 		getRatings(searchCourseInput: SearchCourseInput): [Rate]
 		getShoppingCart(username: String!): [Course]
+		generateSchedule(username: String!, term: String!): String
 	}
 
 	type Mutation{

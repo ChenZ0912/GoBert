@@ -1,7 +1,11 @@
 
 const User = require('../../models/User');
 const Course = require('../../models/Course');
+const Section = require('../../models/Section');
 const checkAuth = require('../../utils/checkAuth');
+
+var product = require('cartesian-product');
+
 
 async function fromShoppingCartGetCourseInfo(courses) {
 
@@ -37,6 +41,48 @@ module.exports = {
             }else {
                 throw new Error("User not match");
             }
+        },
+
+        async generateSchedule(_, {
+            username, term
+        },
+        context){
+            const tempUser = checkAuth(context);
+            if (username === tempUser.username) {
+              try {
+                const user = await User.findOne({
+                  username: tempUser.username
+                });
+                // Assume all courses are required
+                // TODO add priority
+                // get all the sections
+                const cart = user.shoppingCart;
+                var schedules = [];
+                for (let i = 0; i < cart.length; i++) {
+
+                    const sections = await Section.find({
+                        courseID: cart[i].courseID,
+                        courseTitle: cart[i].courseTitle,
+                        status: "Open",
+                        term: term
+                    });
+
+                    if (sections.length !== 0){
+                        schedules.push(sections);
+                    }
+                }
+                
+                // cartesian products to find all potential schedules
+                var potentialSchedule = product(schedules);
+                
+                return 'test successfully';
+              } catch (err) {
+                throw new Error(err);
+              }
+
+            } else {
+              throw new Error("User not match");
+            }
         }
     },
     Mutation: {
@@ -59,20 +105,30 @@ module.exports = {
                             throw new Error( courseID + ' ' + courseTitle + ' is already in shopping cart');
                         }
                     }
+                    
+                    const courseExist = await Course.findOne({
+                        courseID: courseID,
+                        courseTitle: courseTitle
+                    });
 
-                    newShoppingCart.push({
-                        'courseID': courseID,
-                        'courseTitle': courseTitle,
-                        'priority': priority
-                    });
-                    await User.updateOne({
-                        username: tempUser.username
-                    }, {
-                    $set: {
-                        shoppingCart: newShoppingCart
+                    if (courseExist){
+                        newShoppingCart.push({
+                            'courseID': courseID,
+                            'courseTitle': courseTitle,
+                            'priority': priority
+                        });
+                        await User.updateOne({
+                            username: tempUser.username
+                        }, {
+                        $set: {
+                            shoppingCart: newShoppingCart
+                        }
+                        });
+                        return await fromShoppingCartGetCourseInfo(newShoppingCart);
+                    } else {
+                        throw new Error(courseID + ' ' + courseTitle + ' does not exist')
                     }
-                    });
-                    return await fromShoppingCartGetCourseInfo(newShoppingCart);
+
                 } catch (err){
                     throw new Error(err);
                 }
