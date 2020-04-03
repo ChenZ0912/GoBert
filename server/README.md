@@ -208,11 +208,14 @@ query {
 
   # you need to provide a token in authorization
   getShoppingCart(username:"cindy123"){
-    courseID
-    courseTitle
-    score
-    numRate
-    priority
+    courses{
+      courseID
+      score
+      numRate
+      priority
+      courseTitle
+    }
+    semesters
   }
 
   generateSchedule(username: "cindy123", term: "Spring 2020"){
@@ -220,12 +223,22 @@ query {
       courseID
       courseTitle
       priority
+      reason
     }
     schedule{
       courseID
       courseTitle
-      daystimes
+      daystimes{
+        TBA
+        daysOfWeek
+        start
+        end
+      }
       professor
+      classNo
+      term
+      _id
+      priority
     }
   }
 

@@ -102,9 +102,35 @@ module.exports = gql`
 		id: String
 	}
 
+	type NoSection {
+		courseID: String
+		courseTitle: String
+		priority: String
+		reason: String
+	}
+
+	type DateFormat{
+		TBA: String
+		daysOfWeek: [Int]
+		start: String
+		end: String
+	}
+
+	type Schedule {
+		_id: String
+		courseID: String
+		courseTitle: String
+		professor: String
+		priority: String
+		daystimes: DateFormat
+		classNo: String
+		term: String
+	}
 	type scheduleOutput {
-		noSection: [Course]
-		schedule: [[Section]]  
+		noSection: [NoSection]
+		schedule: [
+		  [Schedule]
+		]
 	}
 
 	input RegisterInput {
@@ -112,6 +138,11 @@ module.exports = gql`
 		password: String!
 		confirmPassword: String!
 		email: String
+	}
+
+	type ShoppingCart{
+		semesters: [String]
+		courses: [Course]
 	}
 
 	type Query{
@@ -122,7 +153,7 @@ module.exports = gql`
 		getCourseDetail(id: ID!): Course
 		getOneRating(rateId: ID!): Rate
 		getRatings(searchCourseInput: SearchCourseInput): [Rate]
-		getShoppingCart(username: String!): [Course]
+		getShoppingCart(username: String!): ShoppingCart
 		generateSchedule(username: String!, term: String!): scheduleOutput
 	}
 
