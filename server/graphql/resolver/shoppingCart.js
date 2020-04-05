@@ -48,13 +48,13 @@ function convertDaystimes(schedules){
 
             const dt = schedules[i][j].daystimes;
             var newDT = {
-                "TBA": "",
+                "TBA": false,
                 "daysOfWeek": [],
                 "start": "",
                 "end": ""
             };
             if (dt === "TBA") {
-                newDT['TBA'] = "TBA";
+                newDT['TBA'] = true;
             }else{
                 if (dt.includes('Su')) {
                     newDT['daysOfWeek'].push(0);
@@ -77,12 +77,29 @@ function convertDaystimes(schedules){
                 if (dt.includes('Sa')) {
                     newDT['daysOfWeek'].push(6);
                 }
-                var timing = dt.split(/ (.+)/)[1];
-                timing = timing.replace(/am/g, ":00");
-                timing = timing.replace(/pm/g, ":00");
+                // timing = "10:30am - 1:30pm"
+                const timing = dt.split(/ (.+)/)[1];
+                // convert 12 hour to 24 hour manner
+                var toBeUpdated = timing.split(' - ');
+                var start = toBeUpdated[0];
+                var end = toBeUpdated[1];
 
-                newDT['start'] = timing.split(' - ')[0];
-                newDT['end'] = timing.split(' - ')[1];
+                function convertTo24(t){
+                    if (t.includes('am')){
+                        t = t.replace(/am/g, ":00");
+                    }
+                    if (t.includes('pm')){
+                        var temp = t.split(':');
+                        if (temp[0] !== '12'){
+                            t = (parseInt(temp[0]) + 12).toString() + ":" + temp[1];
+                        }
+                        t = t.replace(/pm/g, ":00");
+                    }
+                    return t;
+                }
+
+                newDT['start'] = convertTo24(start);
+                newDT['end'] = convertTo24(end);
             }
 
 
@@ -94,7 +111,8 @@ function convertDaystimes(schedules){
                 'professor': elem.professor,
                 'classNo': elem.classNo,
                 'term': elem.term,
-                '_id': elem.course_id
+                '_id': elem.course_id,
+                'dates': elem.dates
             }
             schedules[i][j] = obj;
         }

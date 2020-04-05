@@ -239,6 +239,7 @@ query {
       term
       _id
       priority
+      dates
     }
   }
 
