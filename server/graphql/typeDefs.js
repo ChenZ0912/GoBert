@@ -110,7 +110,7 @@ module.exports = gql`
 	}
 
 	type DateFormat{
-		TBA: String
+		TBA: Boolean
 		daysOfWeek: [Int]
 		start: String
 		end: String
@@ -123,6 +123,7 @@ module.exports = gql`
 		professor: String
 		priority: String
 		daystimes: DateFormat
+		dates: String
 		classNo: String
 		term: String
 	}

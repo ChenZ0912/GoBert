@@ -10,7 +10,8 @@ const sectionSchema = new Schema({
 	room: String,
 	status: String,
 	professor: String,
-	priority: String
+	priority: String,
+	dates: String
 })
 
 module.exports = model('sections', sectionSchema);
