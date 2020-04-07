@@ -234,8 +234,9 @@ function cleanSchedule(allSchedules){
 
     }
 
-
-    return convertDaystimes(possibleSchedules);
+    var test = convertDaystimes(possibleSchedules);
+    return test;
+    // return convertDaystimes(possibleSchedules);
 }
 
 // format "10:40am - 12:30pm", "12:20pm - 13:50pm"
@@ -283,20 +284,20 @@ module.exports = {
         },
 
         async generateSchedule(_, {
-            username, term
+            username, term, intendedCourses
         },
         context){
 
             const tempUser = checkAuth(context);
             if (username === tempUser.username) {
               try { 
-                const user = await User.findOne({
-                    username: tempUser.username
-                });
+                // const user = await User.findOne({
+                //     username: tempUser.username
+                // });
                 // Assume all courses are required
                 // TODO add priority
                 // get all the sections
-                var cart = user.shoppingCart;
+                var cart = intendedCourses;
                 var allSections = [];
                 var priority = {};
                 var result = {};
@@ -347,10 +348,10 @@ module.exports = {
                         return sections1.find(a => (a.professor + a.daystimes) === id)
                     })
 
-                    for (let i = 0; i < sectionWithPriorty.length; i++) {
-                        const element = sectionWithPriorty[i];
-                        sectionWithPriorty[i]['priority'] = priority[element.courseID + element.courseTitle];
-                        sectionWithPriorty[i]['course_id'] = course_id[element.courseID + element.courseTitle];
+                    for (let j = 0; j < sectionWithPriorty.length; j++) {
+                        const element = sectionWithPriorty[j];
+                        sectionWithPriorty[j]['priority'] = priority[element.courseID + element.courseTitle];
+                        sectionWithPriorty[j]['course_id'] = course_id[element.courseID + element.courseTitle];
                     }
                     allSections.push(sectionWithPriorty);
                 }

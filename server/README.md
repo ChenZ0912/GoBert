@@ -218,7 +218,10 @@ query {
     semesters
   }
 
-  generateSchedule(username: "cindy123", term: "Spring 2020"){
+  generateSchedule(username: "cindy123", term: "Spring 2020", intendedCourses:[{
+    courseID: "CSUY 2124",
+    courseTitle: "Object Oriented Programming LAB"
+  }]){
     noSection{
       courseID
       courseTitle
@@ -239,7 +242,7 @@ query {
       term
       _id
       priority
-      dates
+      dates 
     }
   }
 

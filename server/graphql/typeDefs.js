@@ -127,11 +127,10 @@ module.exports = gql`
 		classNo: String
 		term: String
 	}
+
 	type scheduleOutput {
 		noSection: [NoSection]
-		schedule: [
-		  [Schedule]
-		]
+		schedule: [[Schedule]]
 	}
 
 	input RegisterInput {
@@ -145,7 +144,10 @@ module.exports = gql`
 		semesters: [String]
 		courses: [Course]
 	}
-
+	input shoppingCartItem {
+		courseID: String
+		courseTitle: String
+	}
 	type Query{
 		getSearchResult(query: String!): [searchResult]
 		getProfessorByName(query: String!): [Professor]
@@ -155,7 +157,7 @@ module.exports = gql`
 		getOneRating(rateId: ID!): Rate
 		getRatings(searchCourseInput: SearchCourseInput): [Rate]
 		getShoppingCart(username: String!): ShoppingCart
-		generateSchedule(username: String!, term: String!): scheduleOutput
+		generateSchedule(username: String!, term: String!, intendedCourses: [shoppingCartItem]!): scheduleOutput
 	}
 
 	type Mutation{
