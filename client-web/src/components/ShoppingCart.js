@@ -106,19 +106,17 @@ function ShoppingCart() {
         }
     }
 
-    // const [scheduleInput, setInput] = useState({username: user.username,
-    //     term: "Spring 2020"});
     const [scheduleInput, setInput] = useState({});
-    function generateSchedule(e,  {value}) {
+    function generateSchedule(e, {value}) {
+        var intendedCourses = [];
         var checkboxes = document.getElementsByName("selectedCourse");  
         for (var i = 0; i < checkboxes.length; i++) {
-            if(checkboxes[i].checked) {
-                console.log(checkboxes[i].value);
-            }
+            if(checkboxes[i].checked) intendedCourses.push(checkboxes[i].value);
         }
         setInput({
             username: user.username,
-            term: value
+            term: value,
+            intendedCourses: intendedCourses
         });
     }
 
@@ -134,9 +132,8 @@ function ShoppingCart() {
                 {results.courses.map((result, index) => (
                     <dl key={index}>
                     <Grid style={{ marginLeft: '5px' }}>
-                        <Grid.Row>
+                        
                         <Grid.Column width={3}>
-                        <Grid.Row>
                             <Dropdown
                                 fluid button selection
                                 name={JSON.stringify({ id: result.courseID, title: result.courseTitle })}
@@ -144,14 +141,15 @@ function ShoppingCart() {
                                 value={result.priority}
                                 onChange={onChange}/>
                             <Form.Field control='input' type='checkbox' name="selectedCourse" 
-                            value={result.courseID} style={{ margin: '7% 45% 0 45%' }}/>
-                        </Grid.Row>
+                            value={result._id} 
+                            style={{ margin: '7% 45% 0 45%' }}/>
                         </Grid.Column>
-                        <Grid.Column width={13}>
+
+                        <Grid.Column width={10}>
                             <h2>{result.courseID} {result.courseTitle}</h2>
                             <p>Course Score: {result.score} (based on {result.numRate} ratings)</p>
                         </Grid.Column>
-                        </Grid.Row>
+                        
                     </Grid>
                     </dl>
                 ))}
@@ -163,7 +161,7 @@ function ShoppingCart() {
                 <Grid.Column width={13}>
                 <Button.Group fluid color='violet'>
                     <Dropdown
-                        fluid labeled button selection
+                        fluid labeled button selection clearable
                         icon='calendar alternate'
                         className='button icon'
                         text='Generate Schedule'
@@ -191,6 +189,7 @@ const FETCH_SHOPPING_CART_QUERY = gql`
         score
         numRate
         priority
+        _id
       }
       semesters
     }
