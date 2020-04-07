@@ -25,6 +25,7 @@ async function fromShoppingCartGetCourseInfo(courses) {
         });
         courses[i]['numRate'] = currCourse.numRate;
         courses[i]['score'] = currCourse.score;
+        courses[i]['_id'] = currCourse.id;
     }
 
     result['courses'] = courses;
@@ -116,22 +117,6 @@ function convertDaystimes(schedules){
     }
 
     return schedules;
-}
-
-function unflatten(allSchedules){
-    var result = [];
-    allSchedules.forEach(element => {
-        result = result.concat(element);
-    });
-    return result;
-}
-
-function lengthOfSubSchedule(allSchedules){
-    var scheduleLength = [];
-    allSchedules.forEach(element => {
-        scheduleLength.push(element.length);
-    });
-    return scheduleLength;
 }
 
 function cleanSchedule(allSchedules){
@@ -304,24 +289,21 @@ module.exports = {
             const tempUser = checkAuth(context);
             if (username === tempUser.username) {
               try { 
-                // const user = await User.findOne({
-                //     username: tempUser.username
-                // });
+                const user = await User.findOne({
+                    username: tempUser.username
+                });
                 // Assume all courses are required
                 // TODO add priority
                 // get all the sections
-                var cart = intendedCourses;
+                var cart = user.shoppingCart.filter(elem => intendedCourses.includes(elem.course_id.toString()));
+                // var cart = user.shoppingCart;
                 var allSections = [];
                 var priority = {};
                 var result = {};
                 var course_id = {};
                 for (let i = 0; i < cart.length; i++) {
                     priority[cart[i].courseID + cart[i].courseTitle] = cart[i].priority;
-                    course_id[cart[i].courseID + cart[i].courseTitle] = 
-                        (await Course.findOne({
-                            courseID: cart[i].courseID,
-                            courseTitle: cart[i].courseTitle
-                        }))._id;
+                    course_id[cart[i].courseID + cart[i].courseTitle] = cart[i].course_id;
                     
                     // no open section
                     const sections1 = await Section.find({
@@ -369,9 +351,7 @@ module.exports = {
                     allSections.push(sectionWithPriorty);
                 }
                 // cartesian products to find all potential schedule
-                const possibleSchedules = cleanSchedule(product(allSections));
-                result['schedule'] = unflatten(possibleSchedules);
-                result['scheduleLength'] = lengthOfSubSchedule(possibleSchedules);
+                result['schedule'] = cleanSchedule(product(allSections));
                 return result;
               } catch (err) {
                 throw new Error(err);
@@ -412,6 +392,7 @@ module.exports = {
                         newShoppingCart.push({
                             'courseID': courseID,
                             'courseTitle': courseTitle,
+                            'course_id': courseExist._id,
                             'priority': priority
                         });
                         await User.updateOne({

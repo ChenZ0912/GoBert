@@ -50,6 +50,7 @@ module.exports = gql`
 		numRate: Int
 		rateSummary: [RateSummary]
 		priority: String
+		_id: String
 	}
 	type Section {
 		courseID: String
@@ -126,8 +127,7 @@ module.exports = gql`
 
 	type scheduleOutput {
 		noSection: [NoSection]
-		schedule: [Schedule]
-		scheduleLength: [Int]
+		schedule: [[Schedule]]
 	}
 
 	input RegisterInput {
@@ -154,7 +154,7 @@ module.exports = gql`
 		getOneRating(rateId: ID!): Rate
 		getRatings(searchCourseInput: SearchCourseInput): [Rate]
 		getShoppingCart(username: String!): ShoppingCart
-		generateSchedule(username: String!, term: String!, intendedCourses: [shoppingCartItem]!): scheduleOutput
+		generateSchedule(username: String!, term: String!, intendedCourses: [String]): scheduleOutput
 	}
 
 	type Mutation{
