@@ -109,20 +109,16 @@ module.exports = gql`
 		reason: String
 	}
 
-	type DateFormat{
-		TBA: Boolean
-		daysOfWeek: [Int]
-		start: String
-		end: String
-	}
-
 	type Schedule {
 		_id: String
 		courseID: String
 		courseTitle: String
 		professor: String
 		priority: String
-		daystimes: DateFormat
+		TBA: Boolean
+		daysOfWeek: [Int]
+		start: String
+		end: String
 		dates: String
 		classNo: String
 		term: String

@@ -46,36 +46,46 @@ function convertDaystimes(schedules){
     for (let i = 0; i < schedules.length; i++) {
         for (let j = 0; j < schedules[i].length; j++) {
 
-            const dt = schedules[i][j].daystimes;
-            var newDT = {
+            const elem = schedules[i][j];
+            var obj = {
+                'courseID': elem.courseID,
+                'courseTitle': elem.courseTitle,
+                'professor': elem.professor,
+                'classNo': elem.classNo,
+                'term': elem.term,
                 "TBA": false,
                 "daysOfWeek": [],
                 "start": "",
-                "end": ""
-            };
+                "end": "",
+                '_id': elem.course_id,
+                'dates': elem.dates
+            }
+
+            const dt = schedules[i][j].daystimes;
+
             if (dt === "TBA") {
-                newDT['TBA'] = true;
+                obj['TBA'] = true;
             }else{
                 if (dt.includes('Su')) {
-                    newDT['daysOfWeek'].push(0);
+                    obj['daysOfWeek'].push(0);
                 }
                 if (dt.includes('Mo')) {
-                    newDT['daysOfWeek'].push(1);
+                    obj['daysOfWeek'].push(1);
                 }
                 if (dt.includes('Tu')) {
-                    newDT['daysOfWeek'].push(2);
+                    obj['daysOfWeek'].push(2);
                 }
                 if (dt.includes('We')) {
-                    newDT['daysOfWeek'].push(3);
+                    obj['daysOfWeek'].push(3);
                 }
                 if (dt.includes('Tu')) {
-                    newDT['daysOfWeek'].push(4);
+                    obj['daysOfWeek'].push(4);
                 }
                 if (dt.includes('Fr')) {
-                    newDT['daysOfWeek'].push(5);
+                    obj['daysOfWeek'].push(5);
                 }
                 if (dt.includes('Sa')) {
-                    newDT['daysOfWeek'].push(6);
+                    obj['daysOfWeek'].push(6);
                 }
                 // timing = "10:30am - 1:30pm"
                 const timing = dt.split(/ (.+)/)[1];
@@ -98,21 +108,8 @@ function convertDaystimes(schedules){
                     return t;
                 }
 
-                newDT['start'] = convertTo24(start);
-                newDT['end'] = convertTo24(end);
-            }
-
-
-            const elem = schedules[i][j];
-            var obj = {
-                'courseID': elem.courseID,
-                'courseTitle': elem.courseTitle,
-                'daystimes': newDT,
-                'professor': elem.professor,
-                'classNo': elem.classNo,
-                'term': elem.term,
-                '_id': elem.course_id,
-                'dates': elem.dates
+                obj['start'] = convertTo24(start);
+                obj['end'] = convertTo24(end);
             }
             schedules[i][j] = obj;
         }

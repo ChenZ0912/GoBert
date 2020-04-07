@@ -231,12 +231,10 @@ query {
     schedule{
       courseID
       courseTitle
-      daystimes{
-        TBA
-        daysOfWeek
-        start
-        end
-      }
+      TBA
+      daysOfWeek
+      start
+      end
       professor
       classNo
       term
