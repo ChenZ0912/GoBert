@@ -1,9 +1,18 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { Button, Card, Container, Divider, Dropdown, Form, Grid } from 'semantic-ui-react';
 
 import { AuthContext } from '../context/auth';
+import Scheduler from './Scheduler';
+
+function getSemesters (semesters) {
+    var options = [];
+    for (var i = 0; i < semesters.length; ++i) {
+        options.push({key: i+1, text: "Semester: "+semesters[i], value: semesters[i]})
+    }
+    return options;
+}
 
 function ShoppingCart() {
     const { user } = useContext(AuthContext);
@@ -28,7 +37,7 @@ function ShoppingCart() {
                     variables: { username: user.username }
                 });
                 const result = mutationResult.data["changeCoursePriority"];
-                for (var course of data.getShoppingCart) {
+                for (var course of data.getShoppingCart.courses) {
                     if (course.courseID === result["courseID"] && 
                     course.courseTitle === result["courseTitle"]) {
                         course.priority = result["priority"];
@@ -48,11 +57,11 @@ function ShoppingCart() {
                     variables: { username: user.username }
                 });
                 const result = mutationResult.data["removeFromShoppingCart"];
-                const cart = data.getShoppingCart;
+                const cart = data.getShoppingCart.courses;
                 for (var i = 0; i < cart.length; i++) {
                     if (cart[i].courseID === result["courseID"] && 
                     cart[i].courseTitle === result["courseTitle"]) {
-                        data.getShoppingCart.splice(i, 1);
+                        data.getShoppingCart.courses.splice(i, 1);
                         break;
                     }
                 }
@@ -97,57 +106,21 @@ function ShoppingCart() {
         }
     }
 
-    function onSubmit() {
+    // const [scheduleInput, setInput] = useState({username: user.username,
+    //     term: "Spring 2020"});
+    const [scheduleInput, setInput] = useState({});
+    function generateSchedule(e,  {value}) {
         var checkboxes = document.getElementsByName("selectedCourse");  
         for (var i = 0; i < checkboxes.length; i++) {
             if(checkboxes[i].checked) {
                 console.log(checkboxes[i].value);
             }
         }
+        setInput({
+            username: user.username,
+            term: value
+        });
     }
-
-    const shoppingCart = (results && results.length !== 0) ? (
-        <Form onSubmit={onSubmit}>
-        <Card fluid>
-            {results.map((result, index) => (
-                <dl key={index}>
-                <Grid style={{ marginLeft: '5px' }}>
-                    <Grid.Row>
-                    <Grid.Column width={3}>
-                    <Grid.Row>
-                        <Dropdown
-                            fluid
-                            button
-                            selection
-                            name={JSON.stringify({ id: result.courseID, title: result.courseTitle })}
-                            options={options}
-                            value={result.priority}
-                            onChange={onChange}/>
-                        <Form.Field control='input' type='checkbox' name="selectedCourse" 
-                        value={result.courseID} style={{ margin: '7% 45% 0 45%' }}/>
-                    </Grid.Row>
-                    </Grid.Column>
-                    <Grid.Column width={13}>
-                        <h2>{result.courseID} {result.courseTitle}</h2>
-                        <p>Course Score: {result.score} (based on {result.numRate} ratings)</p>
-                    </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-                </dl>
-            ))}
-        </Card>
-        <Grid style={{ marginLeft: '5px' }}>
-            <Grid.Column width={3}>
-                <Button fluid color="violet" onClick={selectAll}>Select/Deselect All</Button>
-            </Grid.Column>
-            <Grid.Column width={13}>
-                <Button fluid color="violet" type="submit">Generate Schedule</Button>
-            </Grid.Column>
-        </Grid>
-        </Form>
-    ) : (
-        <h3>Your shopping cart is empty.</h3>
-    );
 
     return (
         <Container style={{ marginTop: '7em' }}>
@@ -155,9 +128,56 @@ function ShoppingCart() {
             <Divider/>
             {loading ? (
                 <h3>Loading results..</h3>
-            ) : (
-                shoppingCart
-            )}
+            ) : ( results && results.courses && results.courses.length !== 0) ? (
+            <Form>
+            <Card fluid>
+                {results.courses.map((result, index) => (
+                    <dl key={index}>
+                    <Grid style={{ marginLeft: '5px' }}>
+                        <Grid.Row>
+                        <Grid.Column width={3}>
+                        <Grid.Row>
+                            <Dropdown
+                                fluid button selection
+                                name={JSON.stringify({ id: result.courseID, title: result.courseTitle })}
+                                options={options}
+                                value={result.priority}
+                                onChange={onChange}/>
+                            <Form.Field control='input' type='checkbox' name="selectedCourse" 
+                            value={result.courseID} style={{ margin: '7% 45% 0 45%' }}/>
+                        </Grid.Row>
+                        </Grid.Column>
+                        <Grid.Column width={13}>
+                            <h2>{result.courseID} {result.courseTitle}</h2>
+                            <p>Course Score: {result.score} (based on {result.numRate} ratings)</p>
+                        </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                    </dl>
+                ))}
+            </Card>
+            <Grid style={{ marginLeft: '5px' }}>
+                <Grid.Column width={3}>
+                    <Button fluid color="violet" onClick={selectAll}>Select / Deselect All</Button>
+                </Grid.Column>
+                <Grid.Column width={13}>
+                <Button.Group fluid color='violet'>
+                    <Dropdown
+                        fluid labeled button selection
+                        icon='calendar alternate'
+                        className='button icon'
+                        text='Generate Schedule'
+                        options={getSemesters(results.semesters)}
+                        onChange={generateSchedule}
+                    />
+                </Button.Group>
+                </Grid.Column>
+            </Grid>
+            {scheduleInput.term && <Scheduler scheduleInput={scheduleInput}/>}
+            </Form>
+        ) : (
+            <h3>Your shopping cart is empty.</h3>
+        )}
         </Container>
     )
 }
@@ -165,11 +185,14 @@ function ShoppingCart() {
 const FETCH_SHOPPING_CART_QUERY = gql`
   query($username: String!) {
     getShoppingCart(username: $username) {
-      courseID
-      courseTitle
-      score
-      numRate
-      priority
+      courses{
+        courseID
+        courseTitle
+        score
+        numRate
+        priority
+      }
+      semesters
     }
   }
 `;
