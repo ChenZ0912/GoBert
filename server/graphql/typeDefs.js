@@ -126,7 +126,8 @@ module.exports = gql`
 
 	type scheduleOutput {
 		noSection: [NoSection]
-		schedule: [[Schedule]]
+		schedule: [Schedule]
+		scheduleLength: [Int]
 	}
 
 	input RegisterInput {

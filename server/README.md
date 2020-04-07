@@ -242,6 +242,7 @@ query {
       priority
       dates 
     }
+    scheduleLength
   }
 
 }

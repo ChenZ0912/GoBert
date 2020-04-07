@@ -118,6 +118,22 @@ function convertDaystimes(schedules){
     return schedules;
 }
 
+function unflatten(allSchedules){
+    var result = [];
+    allSchedules.forEach(element => {
+        result = result.concat(element);
+    });
+    return result;
+}
+
+function lengthOfSubSchedule(allSchedules){
+    var scheduleLength = [];
+    allSchedules.forEach(element => {
+        scheduleLength.push(element.length);
+    });
+    return scheduleLength;
+}
+
 function cleanSchedule(allSchedules){
 
     var possibleSchedules = [];
@@ -354,7 +370,8 @@ module.exports = {
                 }
                 // cartesian products to find all potential schedule
                 const possibleSchedules = cleanSchedule(product(allSections));
-                result['schedule'] = possibleSchedules;
+                result['schedule'] = unflatten(possibleSchedules);
+                result['scheduleLength'] = lengthOfSubSchedule(possibleSchedules);
                 return result;
               } catch (err) {
                 throw new Error(err);
