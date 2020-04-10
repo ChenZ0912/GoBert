@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Form, Grid, Select } from 'semantic-ui-react';
+import { Button, Form, Grid, Rating, Select } from 'semantic-ui-react';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 
@@ -7,13 +7,6 @@ import { AuthContext } from '../context/auth';
 import { useForm } from '../util/hooks';
 
 var season = "";
-const options = [
-    { key: 1, text: '1', value: 1.0 },
-    { key: 2, text: '2', value: 2.0 },
-    { key: 3, text: '3', value: 3.0 },
-    { key: 4, text: '4', value: 4.0 },
-    { key: 5, text: '5', value: 5.0 },
-]
 
 function RateForm({
     rateSummary: { professor, courseID, courseTitle, ratings }
@@ -45,13 +38,14 @@ function RateForm({
       variables: values
     });
 
-  function handleProf (e, { value }) { values.professorScore = value; }
-  function handleCourse (e, { value }) { values.courseScore = value; }
+  function handleProf (e, { rating }) { values.professorScore = rating; }
+  function handleCourse (e, { rating }) { values.courseScore = rating; }
   function handleTerm (e, { value }) { season = value; }
 
   function createRateCallback() {
     if (values.courseScore !== 0 && values.profScore !== 0 && season !== "") {
       values.term = season + " " + values.term;
+      console.log(values)
       createRate();
     }
   }
@@ -62,24 +56,12 @@ function RateForm({
       <Form onSubmit={onSubmit}>
         <Grid columns='equal'>
           <Grid.Column>
-            <Form.Field
-              compact
-              required
-              control={Select}
-              label='Professor Score:'
-              options={options}
-              onChange={handleProf}
-            />
+            <Form.Field required label='Professor Score:' style={{marginLeft: '5px'}}/>
+            <Rating maxRating={5} icon='star' size="massive" onRate={handleProf}/>
           </Grid.Column>
           <Grid.Column>
-            <Form.Field
-              compact
-              required
-              control={Select}
-              label='Course Score:'
-              options={options}
-              onChange={handleCourse}
-            />
+            <Form.Field required label='Course Score:' style={{marginLeft: '5px'}}/>
+            <Rating maxRating={5} icon='star' size="massive" onRate={handleCourse}/>
           </Grid.Column>
           <Grid.Column>
             <Form.Field

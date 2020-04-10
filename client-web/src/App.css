@@ -41,3 +41,8 @@
 .box:hover {
   color: #330662;
 }
+
+.event {
+  white-space: pre-line;
+  text-align: center;
+}

@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent } from 'semantic-ui-react';
+import { Card, CardContent, Icon, Container } from 'semantic-ui-react';
+import MyPopup from '../util/MyPopup';
+import ReactDOM from 'react-dom';
 
 import '@fullcalendar/core/main.css';
 import '@fullcalendar/timegrid/main.css';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
+
+var lockedCourse = [];
 
 function getCourses (schedule) {
   var colors = ["rgb(134,227,206)", "rgb(208,230,165)", 
@@ -14,7 +18,9 @@ function getCourses (schedule) {
     // generate extra colors if needed
     var found = true;
     while (found){
-      var color = "rgb("+(Math.random()*100+150)+","+(Math.random()*100+150)+","+(Math.random()*100+150)+")";
+      var color = "rgb("+(Math.random()*100+150)+","
+                        +(Math.random()*100+150)+","
+                        +(Math.random()*100+150)+")";
       found = colors.includes(color);
       if (!found) colors.push(color);
     }
@@ -26,23 +32,34 @@ function getCourses (schedule) {
     const course = schedule[i];
     if (course.TBA) {
       events.push({
-        title: course.courseID+' ('+course.classNo+') Time: TBA\n'+course.courseTitle+' '+course.professor,
+        title: course.courseID+' - '+course.professor+' (Time: TBA)',
         url: "/rateCourse/"+course._id,
         daysOfWeek: [0],
         duration: { days: 7 },
         backgroundColor: colors[i],
         borderColor: colors[i],
-        textColor: "black"
+        textColor: "black",
+        extendedProps: {
+          course: course.courseTitle,
+          classNo: course.classNo,
+          locked: lockedCourse.includes(course.classNo)
+        }
       }) 
     } else {
       events.push({
-        title: course.courseID+' ('+course.classNo+')\n '+course.courseTitle+'\n'+course.professor,
+        title: ('\n'+course.start.slice(0,-3)+' - '+course.end.slice(0,-3)+'\n'+
+                course.courseID+'\n'+course.professor),
         url: "/rateCourse/"+course._id,
         daysOfWeek: course.daysOfWeek,
         startTime: course.start,
         endTime: course.end,
         backgroundColor: colors[i],
         borderColor: colors[i],
+        extendedProps: {
+          course: course.courseTitle,
+          classNo: course.classNo,
+          locked: lockedCourse.includes(course.classNo)
+        }
         // startRecur:
         // endRecur:
       })
@@ -54,6 +71,7 @@ function getCourses (schedule) {
 function Scheduler({scheduleInput}) {
   const [loading, setLoading] = useState(true);
   const [results, setResults] = useState({});
+  const [schedules, setSchedules] = useState([]);
   useEffect(() => {
     fetch('http://localhost:4000', {
       method: 'POST',
@@ -62,20 +80,66 @@ function Scheduler({scheduleInput}) {
         'Accept': 'application/json',
         'Authorization': "Bearer "+localStorage.getItem('jwtToken')
       },
-      body: JSON.stringify({query: `{generateSchedule( username:${JSON.stringify(scheduleInput.username)} term:${JSON.stringify(scheduleInput.term)} intendedCourses:${JSON.stringify(scheduleInput.intendedCourses)}){noSection{ courseID courseTitle priority reason } schedule{ courseID courseTitle TBA daysOfWeek start end professor classNo term _id priority dates }}}`})
+      body: JSON.stringify({query: `{generateSchedule( 
+        username:${JSON.stringify(scheduleInput.username)} 
+        term:${JSON.stringify(scheduleInput.term)} 
+        intendedCourses:${JSON.stringify(scheduleInput.intendedCourses)}){
+          noSection{ courseID courseTitle priority reason } 
+          schedule{ courseID courseTitle TBA daysOfWeek start end 
+            professor classNo term _id priority dates }}}`})
     })
       .then(r => r.json())
       .then(data => {
-        if (data["errors"]) {
-          setLoading(true);
-          setResults([]);
-        } else {
+        if (!data["errors"]) {
           setLoading(false);
           setResults(data["data"]["generateSchedule"]);
+          setSchedules(data["data"]["generateSchedule"]["schedule"])
         }
       }
     );
   }, [])
+
+  const lockCourse=(e, {value})=>{
+    const classNo = value.extendedProps.classNo;
+    const locked = value.extendedProps.locked
+
+    if (locked) 
+      lockedCourse = lockedCourse.filter(function(value){ return value !== classNo;})
+    else lockedCourse.push(classNo);
+    
+    const isLock = lockedCourse.includes(classNo);
+    value.setExtendedProp( "locked",  isLock);
+    
+    var schedulesTemp = results["schedule"].filter(function(schedule){ 
+      for (var lockCourse of lockedCourse) {
+        var flag = false;
+        for (var course of schedule) {
+          if (course.classNo === lockCourse) {
+            flag = true;
+            break;
+          }
+        }
+        if (flag === false) return false;
+      }
+      return true;
+    })
+    setSchedules(schedulesTemp);
+  }
+  
+  const onRender=(info) => {
+    ReactDOM.render(
+      <MyPopup content={info.event} courseCallback={lockCourse}>
+        <Container fluid>
+          {info.event.extendedProps.locked ? 
+          <Icon disabled color="black" name='lock' style={{float: "right", marginRight: "5px"}}/> : 
+          <Icon disabled color="black" name='lock open' style={{float: "right", marginRight: "5px"}}/>}
+          <div className="event">{info.event.title}<br/></div>
+        </Container>
+      </MyPopup>,
+      info.el,
+    );
+    return info.el
+  }
 
   return (
     <>
@@ -94,11 +158,11 @@ function Scheduler({scheduleInput}) {
         }
           
         <CardContent>
-        {results["schedule"] && ((!results["noSection"] && scheduleInput.intendedCourses.length !== 0) 
+        {schedules && ((!results["noSection"] && scheduleInput.intendedCourses.length !== 0) 
         ||(results["noSection"] && scheduleInput.intendedCourses.length - results["noSection"].length !== 0)) ?
           <>
-          <h3><br/>Generated {results["schedule"].length} Schedules</h3>
-          {results["schedule"].map((schedule, index) => (
+          <h3><br/>Generated {schedules.length} Schedules</h3>
+          {schedules.map((schedule, index) => (
               <dl key={index}> 
               <FullCalendar
                 defaultView="timeGridWeek"
@@ -110,6 +174,7 @@ function Scheduler({scheduleInput}) {
                 columnHeaderFormat = {{weekday: 'long'}}
                 plugins={[timeGridPlugin]}
                 events={getCourses(schedule)}
+                eventRender={onRender}
               />
               </dl>
             ))}
