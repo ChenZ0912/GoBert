@@ -43,7 +43,6 @@ function getCourses (schedule) {
         endTime: course.end,
         backgroundColor: colors[i],
         borderColor: colors[i],
-        textColor: "white"
         // startRecur:
         // endRecur:
       })
@@ -104,6 +103,9 @@ function Scheduler({scheduleInput}) {
               <FullCalendar
                 defaultView="timeGridWeek"
                 defaultDate = '1999-01-25'
+                scrollTime = '08:00:00'
+                slotDuration = '00:20:00'
+                contentHeight = {725}
                 header={{left: false, right: false}}
                 columnHeaderFormat = {{weekday: 'long'}}
                 plugins={[timeGridPlugin]}
