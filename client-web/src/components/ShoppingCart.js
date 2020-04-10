@@ -9,7 +9,7 @@ import Scheduler from './Scheduler';
 function getSemesters (semesters) {
     var options = [];
     for (var i = 0; i < semesters.length; ++i) {
-        options.push({key: i+1, text: "Semester: "+semesters[i], value: semesters[i]})
+        options.push({key: i+1, text: semesters[i], value: semesters[i]})
     }
     return options;
 }
@@ -106,7 +106,17 @@ function ShoppingCart() {
         }
     }
 
+    const [clear, setClear] = useState(false);
     const [scheduleInput, setInput] = useState({});
+    // const [scheduleInput, setInput] = useState({
+    //     username: user.username,
+    //     term: "Fall 2019",
+    //     intendedCourses: ["5e790d64199406c82611abb9"]
+    // });
+    function clearSchedule() {
+        setInput({});
+        setClear(false);
+    }
     function generateSchedule(e, {value}) {
         var intendedCourses = [];
         var checkboxes = document.getElementsByName("selectedCourse");  
@@ -118,6 +128,7 @@ function ShoppingCart() {
             term: value,
             intendedCourses: intendedCourses
         });
+        setClear(true);
     }
 
     return (
@@ -132,7 +143,6 @@ function ShoppingCart() {
                 {results.courses.map((result, index) => (
                     <dl key={index}>
                     <Grid style={{ marginLeft: '5px' }}>
-                        
                         <Grid.Column width={3}>
                             <Dropdown
                                 fluid button selection
@@ -149,25 +159,25 @@ function ShoppingCart() {
                             <h2>{result.courseID} {result.courseTitle}</h2>
                             <p>Course Score: {result.score} (based on {result.numRate} ratings)</p>
                         </Grid.Column>
-                        
                     </Grid>
                     </dl>
                 ))}
             </Card>
-            <Grid style={{ marginLeft: '5px' }}>
+            <Grid style={{ marginLeft: '5px', marginRight: '5px'}}>
                 <Grid.Column width={3}>
                     <Button fluid color="violet" onClick={selectAll}>Select / Deselect All</Button>
                 </Grid.Column>
                 <Grid.Column width={13}>
-                <Button.Group fluid color='violet'>
+                <Button.Group fluid color="violet">
+                    {clear ? <Button onClick={clearSchedule}>Clear</Button>:
                     <Dropdown
-                        fluid labeled button selection clearable
+                        labeled button selection
                         icon='calendar alternate'
                         className='button icon'
-                        text='Generate Schedule'
+                        text="Generate Schedule For Semester ..."
                         options={getSemesters(results.semesters)}
                         onChange={generateSchedule}
-                    />
+                    />}
                 </Button.Group>
                 </Grid.Column>
             </Grid>

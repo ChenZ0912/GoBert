@@ -7,15 +7,43 @@ import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 
 function getCourses (schedule) {
-  var events = []
-  for (var course of schedule ) {
-    if (!course.TBA) {
+  var colors = ["rgb(134,227,206)", "rgb(208,230,165)", 
+  "rgb(255,221,148)", "rgb(250,137,123)", "rgb(204,171,219)" ];
+  const colorSize = colors.length;
+  for (var j = 0; j < (schedule.length-colorSize); ++j) {
+    // generate extra colors if needed
+    var found = true;
+    while (found){
+      var color = "rgb("+(Math.random()*100+150)+","+(Math.random()*100+150)+","+(Math.random()*100+150)+")";
+      found = colors.includes(color);
+      if (!found) colors.push(color);
+    }
+  }
+  colors.sort(() => Math.random() - 0.5); // shuffle colors
+
+  var events = [];
+  for (var i = 0; i < schedule.length; ++i) {
+    const course = schedule[i];
+    if (course.TBA) {
+      events.push({
+        title: course.courseID+' ('+course.classNo+') Time: TBA\n'+course.courseTitle+' '+course.professor,
+        url: "/rateCourse/"+course._id,
+        daysOfWeek: [0],
+        duration: { days: 7 },
+        backgroundColor: colors[i],
+        borderColor: colors[i],
+        textColor: "black"
+      }) 
+    } else {
       events.push({
         title: course.courseID+' ('+course.classNo+')\n '+course.courseTitle+'\n'+course.professor,
         url: "/rateCourse/"+course._id,
         daysOfWeek: course.daysOfWeek,
         startTime: course.start,
         endTime: course.end,
+        backgroundColor: colors[i],
+        borderColor: colors[i],
+        textColor: "white"
         // startRecur:
         // endRecur:
       })
@@ -54,6 +82,9 @@ function Scheduler({scheduleInput}) {
     <>
     {!loading && results &&
       <Card fluid style={{marginBottom: "50px"}}>
+        <Card.Content>
+          <h2 align="center">{scheduleInput.term}</h2>
+        </Card.Content>
         {results["noSection"] &&
           <CardContent>
           <h3><br/>Oh No! The following courses are NOT availble</h3>
@@ -72,7 +103,7 @@ function Scheduler({scheduleInput}) {
               <dl key={index}> 
               <FullCalendar
                 defaultView="timeGridWeek"
-                // defaultDate = '1999-01-25'
+                defaultDate = '1999-01-25'
                 header={{left: false, right: false}}
                 columnHeaderFormat = {{weekday: 'long'}}
                 plugins={[timeGridPlugin]}

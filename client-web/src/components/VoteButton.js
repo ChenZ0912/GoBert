@@ -84,11 +84,11 @@ function VoteButton({ id, upvotes, downvotes, username }) {
   
   return (
     <div>
-    <Button as="div" labelPosition="right" onClick={likeRate}>
+    <Button as="div" labelPosition="right" onClick={user && likeRate}>
       <MyPopup content={up ? 'Undo' : 'Agree'}>{upButton}</MyPopup>
       <Label basic color="violet" pointing="left">{upvote.length}</Label>
     </Button>
-    <Button as="div" labelPosition="right" onClick={dislikeRate}>
+    <Button as="div" labelPosition="right" onClick={user && dislikeRate}>
       <MyPopup content={down ? 'Undo' : 'Disagree'}>{downButton}</MyPopup>
       <Label basic color="violet" pointing="left">{downvote.length}</Label>
     </Button>
