@@ -86,7 +86,7 @@ $(document).ready(function() {
 
   $("#signup").click(function() {
     register_url = "http://www.gobertweb.com:3000/register"
-    chrome.tabs.create({url : login_url});
+    chrome.tabs.create({url : register_url});
   });
 });
 
