@@ -25,7 +25,7 @@ function Register(props) {
       }
     ) {
       context.login(userData);
-      // props.history.push('/');
+      props.history.push('/');
     },
     onError(err) {
       setErrors(err.graphQLErrors[0].extensions.exception.errors);
