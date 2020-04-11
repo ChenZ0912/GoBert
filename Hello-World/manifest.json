@@ -9,18 +9,20 @@
         "16": "icon16.png"
     },
     "background": {
-        "scripts": ["background.js"]
+        "scripts": ["background.js"],
+        "js": ["jquery.min.js", "content.js"]
     },
     "browser_action": {
         "default_icon": "icon16.png",
         "default_popup": "popup.html"
     },
     "content_scripts": [{
-        "matches": ["https://sis.portal.nyu.edu/*"],
+        "matches": ["http://localhost:3000/*"],
         "js": ["jquery.min.js", "content.js"]
     }],
     "permissions": [
-    "tabs",
-    "contextMenus"
+      "tabs",
+      "contextMenus",
+      "storage"
     ]
 }

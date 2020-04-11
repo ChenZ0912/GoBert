@@ -21,3 +21,10 @@ chrome.contextMenus.create({
 });
 
 
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if (request.type == "authorized-token") {
+    console.log("Received token from login page");
+    console.log(request['token']);
+  }
+});
+

@@ -1,15 +1,34 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
-  "icons": [
-    {
-    "src": "favicon.ico",
-    "sizes": "64x64 32x32 24x24 16x16",
-    "type": "image/x-icon"
-    }
+  "manifest_version": 2,
+  "name": "Hello World",
+  "version": "1.0",
+  "description": "Hello world extension for senior design",
+  "icons": {
+    "128": "icon128.png",
+    "48": "icon48.png",
+    "16": "icon16.png"
+  },
+  "background": {
+    "scripts": ["background.js"],
+    "js": ["jquery.min.js", "content.js"]
+  },
+  "browser_action": {
+    "default_icon": "icon16.png",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [{
+    "matches": ["*://www.gobertweb.com/*"],
+    "js": ["jquery.min.js", "content.js"]
+  }],
+  "permissions": [
+    "tabs",
+    "contextMenus",
+    "storage",
+    "*://www.gobertweb.com/*"
   ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "externally_connectable": {
+    "matches": [
+      "*://www.gobertweb.com/*"
+    ]
+  }
 }

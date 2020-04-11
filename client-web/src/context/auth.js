@@ -1,3 +1,4 @@
+/* global chrome */
 import React, { useReducer, createContext } from 'react';
 import jwtDecode from 'jwt-decode';
 
@@ -47,11 +48,13 @@ function AuthProvider(props) {
       type: 'LOGIN',
       payload: userData
     });
+    chrome.runtime.sendMessage("kcncjpngdbbdmoabngjceggoohhojgaa", {type: "authorized-token", data: userData});
   }
 
   function logout() {
     localStorage.removeItem('jwtToken');
     dispatch({ type: 'LOGOUT' });
+    chrome.runtime.sendMessage("kcncjpngdbbdmoabngjceggoohhojgaa", {type: "log-out"});
   }
 
   return (
