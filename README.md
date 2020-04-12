@@ -5,4 +5,4 @@
 **See** [frontend README.md](./docs/getting-started.md)
 
 ## Turn on backend
-**See** [Server README.md] (./docs/getting-started.md) for backend
+**See** [backend README.md](./server/README.md)
