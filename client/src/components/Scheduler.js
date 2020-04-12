@@ -8,6 +8,7 @@ import '@fullcalendar/timegrid/main.css';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 
+/* eslint-disable */
 var lockedCourse = [];
 
 function getCourses (schedule) {

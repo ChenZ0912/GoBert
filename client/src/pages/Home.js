@@ -14,7 +14,7 @@ function Home() {
         </Container>
       ): (
         <Container text textAlign='center'>
-          <Image src='logo.png' size='big' centered/>
+          <Image src='/src/logo.png' size='big' centered/>
           <p>LOGIN for more services: view shopping cart, generate schedules... o(*￣▽￣*)ブ</p>
         </Container>
       )}

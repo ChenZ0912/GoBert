@@ -42,19 +42,20 @@ function authReducer(state, action) {
 function AuthProvider(props) {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
+  const chromeID = "ohpjceobjpbbfeneogckdhagflacjamb";
   function login(userData) {
     localStorage.setItem('jwtToken', userData.token);
     dispatch({
       type: 'LOGIN',
       payload: userData
     });
-    chrome.runtime.sendMessage("kcncjpngdbbdmoabngjceggoohhojgaa", {type: "authorized-token", data: userData});
+    chrome.runtime.sendMessage(chromeID, {type: "authorized-token", data: userData});
   }
 
   function logout() {
     localStorage.removeItem('jwtToken');
     dispatch({ type: 'LOGOUT' });
-    chrome.runtime.sendMessage("kcncjpngdbbdmoabngjceggoohhojgaa", {type: "log-out"});
+    chrome.runtime.sendMessage(chromeID, {type: "log-out"});
   }
 
   return (

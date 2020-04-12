@@ -23,6 +23,11 @@ function Login(props) {
       }
     ) {
       context.login(userData);
+      if (props.history.length > 5) {
+        props.history.go(-1);
+      } else {
+        props.history.push('/');
+      }
     },
     onError(err) {
       setErrors(err.graphQLErrors[0].extensions.exception.errors);
