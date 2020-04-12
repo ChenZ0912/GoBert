@@ -1,8 +1,8 @@
 ## Start Web Application
 - Use the following commands:
 ```
-- npm install
-- npm start
+npm install
+npm start
 ```
 
 ## Add Chrome Extension
