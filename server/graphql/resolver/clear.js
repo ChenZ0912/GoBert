@@ -6,6 +6,55 @@ const Section = require('../../models/Section');
 
 module.exports = {
     Mutation: {
+        async getFirstLastName(_, {
+            password
+        }){
+            // await Professor.update({}, {
+            //     $set:{
+            //         firstname: "f",
+            //         lastname: "l"
+            //     }
+            // })
+            const professors = await Professor.find({});
+            for (let i = 0; i < professors.length; i++) {
+                const elem = professors[i];
+                var temp = elem.name.split(' ');
+                var fname = temp[0];
+                var lname = temp[temp.length - 1];
+                await Professor.updateOne({
+                  name: elem.name
+                }, {
+                  $set: {
+                    firstname: fname,
+                    lastname: lname
+                  }
+                });
+            }
+
+            return 'updated all professors fname and lname';
+        },
+        async getFullCourseName(_, {
+            password
+        }){
+            const courses = await Course.find({});
+            for (let i = 0; i < courses.length; i++) {
+                const elem = courses[i];
+                var total = (elem.courseID + ' ' + elem.courseTitle).replace(/[^a-zA-Z0-9 ]+/g, "");
+                total = total.replace(/\s\s+/g, ' ');
+                var total_concat = total.replace(/\s/g, '');
+                await Course.updateOne({
+                    courseID: elem.courseID,
+                    courseTitle: elem.courseTitle
+                }, {
+                    $set: {
+                        _total: total,
+                        _total_concat: total_concat
+                    }
+                });
+            }
+
+            return 'updated all courses';
+        },
         async clearAll(_, {
             password
         }){ 
@@ -122,12 +171,16 @@ module.exports = {
             // update rateSummary;
             for (let i = 0; i < rateSummaries.length; i++) {
                 const element = rateSummaries[i];
-                await Professor.updateOne({
-                    courseID: element.courseID,
-                    courseTitle: element.courseTitle,
-                    name: element.professor
+                await RateSummary.updateOne({
+                    courseID: element['courseID'],
+                    courseTitle: element['courseTitle'],
+                    professor: element['professor']
                 }, {
-                    $set: element
+                    $set: {
+                        numRate: element['numRate'],
+                        avgProfScore: element['avgProfScore'],
+                        avgCourseScore: element['avgCourseScore']
+                    }
                 });
             }
 

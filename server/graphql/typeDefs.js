@@ -12,7 +12,6 @@ module.exports = gql`
 		_id: String
 	}
 
-
 	type Rate {
 		username: String
 		anonymity: Boolean
@@ -169,5 +168,7 @@ module.exports = gql`
 		removeFromShoppingCart(username: String!, courseID: String!, courseTitle: String!): Course
 		changeCoursePriority(username: String!, courseID: String!, courseTitle: String!, priority: String!): Course
 		clearAll(password: String): String
+		getFirstLastName(password: String): String
+		getFullCourseName(password: String): String
 	}
 `

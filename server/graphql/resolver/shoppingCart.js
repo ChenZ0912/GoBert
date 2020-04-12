@@ -24,7 +24,7 @@ async function fromShoppingCartGetCourseInfo(courses) {
             courseTitle: courses[i].courseTitle
         });
         courses[i]['numRate'] = currCourse.numRate;
-        courses[i]['score'] = currCourse.score;
+        courses[i]['score'] = Math.round((currCourse.score + Number.EPSILON) * 100) / 100;
         courses[i]['_id'] = currCourse.id;
     }
 

@@ -66,10 +66,13 @@ module.exports = {
                     }
                 }else{
                   rating['ratings'] = ratings;
+                  rating['avgProfScore'] = Math.round((rating['avgProfScore'] + Number.EPSILON) * 100) / 100
+                  rating['avgCourseScore'] = Math.round((rating['avgCourseScore'] + Number.EPSILON) * 100) / 100
                 }
                 profStats.push(rating);
             }
-
+          
+          professor['score'] = Math.round((professor['score'] + Number.EPSILON) * 100) / 100
           professor['rateSummary'] = profStats;
           return professor;
         } catch (err) {

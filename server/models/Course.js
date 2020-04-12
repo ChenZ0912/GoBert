@@ -6,6 +6,8 @@ const courseSchema = new Schema({
 	score: Number,
 	numRate: Number,
 	_id: Schema.Types.ObjectId,
+	_total: String,
+	_total_concat: String
 })
 
 module.exports = model('courses', courseSchema);

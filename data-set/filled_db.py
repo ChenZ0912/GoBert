@@ -22,7 +22,7 @@ def getData(filename):
             temp = row['course_name'].split("-", 2)
             # print(temp)
             course_id = temp[0] + temp[1].rstrip()
-            course_title = temp[2].lstrip() + row['topic']
+            course_title = temp[2].lstrip()+ " " + row['topic']
 
             temp = row['section'].split(" (")
             t = temp[0].split('-')[1]
@@ -90,11 +90,11 @@ getData("course_num_fall.csv")
 getData("course_num_spring.csv")
 
 
-db['sections'].drop()
+# db['sections'].drop()
 # db['courses'].drop()
 # db['teaches'].drop()
-# db['professors'].drop()
-db['sections'].insert_many(sections)
+db['professors'].drop()
+# db['sections'].insert_many(sections)
 # db['courses'].insert_many(courses)
 # db['teaches'].insert_many(teaches)
 # db['professors'].insert_many(professors)
