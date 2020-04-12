@@ -2,7 +2,7 @@
 **See** [getting started guide](./docs/getting-started.md)
 
 ## Turn on frontend
-**See** [Client README.md] (./client/README.md) for frontend
+**See** [Client README.md] (./docs/getting-started.md) for frontend
 
 ## Turn on backend
-**See** [Server README.md] (./server/README.md) for backend
+**See** [Server README.md] (./docs/getting-started.md) for backend
