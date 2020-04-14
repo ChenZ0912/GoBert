@@ -42,7 +42,7 @@ function authReducer(state, action) {
 function AuthProvider(props) {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  const chromeID = "ohpjceobjpbbfeneogckdhagflacjamb";
+  const chromeID = "bfbalokigfoojkfpoahhlhlkkpnnfodp";
   function login(userData) {
     localStorage.setItem('jwtToken', userData.token);
     dispatch({
