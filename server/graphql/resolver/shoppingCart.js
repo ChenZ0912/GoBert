@@ -1,6 +1,8 @@
 
 const User = require('../../models/User');
 const Course = require('../../models/Course');
+const Professor = require('../../models/Professor');
+const RateSummary = require('../../models/RateSummary');
 const Section = require('../../models/Section');
 const Semester = require('../../models/Semester');
 const checkAuth = require('../../utils/checkAuth');
@@ -8,6 +10,9 @@ const checkAuth = require('../../utils/checkAuth');
 const product = require('cartesian-product');
 const dateConverter = require('date-and-time');
 const pattern = dateConverter.compile('h:m A');
+//blue green, green, light yellow, red-orange, light purple, light brown, light green
+const colorPanel = ['#86E3CE', '#D0E6A5', '#FFDD94', '#FA897B', '#CCABDB', '#cab6a2', '#d2dbc9']
+const closedColor = '#757575'
 
 async function fromShoppingCartGetCourseInfo(courses) {
     const allSemesters = await Semester.find({});
@@ -59,10 +64,18 @@ function convertDaystimes(schedules){
                 "start": "",
                 "end": "",
                 '_id': elem.course_id,
-                'dates': elem.dates
+                'dates': elem.dates,
+                "duration": elem.daystimes,
+                "status": elem.status,
+                "color": elem.color,
+                "priority": elem.priority,
+                "courseScore": elem.courseScore,
+                "professorScore": elem.professorScore,
+                "courseScoreWithProfessor": elem.courseScoreWithProfessor,
+                "professorScoreWithCourse": elem.professorScoreWithCourse
             }
 
-            const dt = schedules[i][j].daystimes;
+            const dt = elem.daystimes;
 
             if (dt === "TBA") {
                 obj['TBA'] = true;
@@ -168,57 +181,9 @@ function cleanSchedule(allSchedules){
                     const time2 = secTime.split(/ (.+)/)[1];
                     conflictFlag = timeOverlap(time1, time2);
                     if (conflictFlag){
-                        if (oneSection.priority === 'required' && secSection.priority === 'required') {
-                            break;
-                        }
-                        conflictFlag = false;
-                        if (oneSection.priority === 'required') {
-                            // get rid of the second section
-                            oneSchedule = removeSectionFromSchedule(secSection, oneSchedule);
-                            break;
-                        }
-                        if (secSection.priority === 'required'){
-                            // get rid of the first section
-                           oneSchedule = removeSectionFromSchedule(oneSection, oneSchedule);
-                           break;
-                        }
-                        // fancy part comes: we need to generate a different schedule for the following
-                        if (oneSection.priority === 'interested' && secSection.priority === 'interested') {
-                            allSchedules.push(removeSectionFromSchedule(oneSection, oneSchedule));
-                            allSchedules.push(removeSectionFromSchedule(secSection, oneSchedule));
-                            // reset conflictFlag to true, so that this schedule will not be generated
-                            conflictFlag = true;
-                        }
-                        if (oneSection.priority === 'interested'){
-                            // get rid of the second section
-                            oneSchedule = removeSectionFromSchedule(secSection, oneSchedule);
-                            break;
-                        }
-
-                        if (secSection.priority === 'interested'){
-                            // get rid of the first section
-                            oneSchedule = removeSectionFromSchedule(oneSection, oneSchedule);
-                            break;
-                        }
-
-                        // same fancy part
-                        if (oneSection.priority === 'giveupable' && secSection.priority === 'giveupable') {
-                            allSchedules.push(removeSectionFromSchedule(oneSection, oneSchedule));
-                            allSchedules.push(removeSectionFromSchedule(secSection, oneSchedule));
-                            // reset conflictFlag to true, so that this schedule will not be generated
-                            conflictFlag = true;
-                        }
-                        if (oneSection.priority === 'giveupable') {
-                            // get rid of the second section
-                            oneSchedule = removeSectionFromSchedule(secSection, oneSchedule);
-                            break;
-                        }
-
-                        if (secSection.priority === 'giveupable') {
-                            // get rid of the first section
-                            oneSchedule = removeSectionFromSchedule(oneSection, oneSchedule);
-                            break;
-                        }
+                        allSchedules.push(removeSectionFromSchedule(oneSection, oneSchedule));
+                        allSchedules.push(removeSectionFromSchedule(secSection, oneSchedule));
+                        break;
                     }
                 }
                 if (conflictFlag) { break; }
@@ -232,10 +197,96 @@ function cleanSchedule(allSchedules){
 
     }
 
-    var test = convertDaystimes(possibleSchedules);
-    return test;
+    var unsortedSchedules = convertDaystimes(possibleSchedules);
+    return unsortedSchedules;
     // return convertDaystimes(possibleSchedules);
 }
+
+// [[section]]
+// rankSchedule give the schedule a rank
+// required and Open: 20
+// required and Closed: 0 
+// Interested and open: 4
+// Interested and Closed: 0
+// TBA and open: 0
+// TBA and Closed: -5
+function rankSchedule(allSchedules){
+    var scores = []; // [index, scheduleScore]
+    for (let i = 0; i < allSchedules.length; i++) {
+        var scheduleScore = 0;
+        // console.log("schedule", i);
+        for (let j = 0; j < allSchedules[i].length; j++) {
+            var priority = allSchedules[i][j].priority;
+            var status = allSchedules[i][j].status;
+            // console.log(allSchedules[i][j].courseTitle, priority, status, allSchedules[i][j].TBA);
+            if (allSchedules[i][j]['TBA'] && status === 'Open') {
+              // console.log('TBA && Open');
+              continue;
+            }
+            
+            if (allSchedules[i][j]['TBA'] && priority === 'required' && status !== 'Open') {
+              // console.log('TBA && !Open');
+              scheduleScore -= 20;
+              continue;
+            }
+
+            if (allSchedules[i][j]['TBA']) {
+                // console.log('TBA && !Open');
+                scheduleScore -= 25;
+                continue;
+            }
+
+            // required
+            if (priority === 'required' && status === 'Open'){
+                // console.log('required && Open');
+                scheduleScore += 20;
+                continue;
+            }
+            if (priority === 'required' && status === 'Closed') {
+                scheduleScore -= 5;
+                continue;
+            }
+            // waitlist
+            if (priority === 'required') {
+                scheduleScore -= 3;
+                continue;
+            }
+
+            // interested
+            if (priority === 'interested' && status === 'Open'){
+                // console.log('interested && Open');
+                scheduleScore += 4;
+                continue;
+            }
+            if (priority === 'interested' && status === 'Closed'){
+                scheduleScore -= 12;
+                continue;
+            }
+            // waitlist
+            if (priority === 'interested'){
+                scheduleScore -= 8;
+                continue;
+            }
+        }
+        scores.push([i, scheduleScore]);
+    }
+
+    var sortedScores = scores.sort(function(a, b){
+        // return < 0 to sort a in front of b
+        return b[1] - a[1]; 
+    });
+
+    var sortedSchedules = [];
+
+    // sort teh schedule based on the sortedScores;
+    for (let i = 0; i < allSchedules.length; i++) {
+        sortedSchedules.push(allSchedules[sortedScores[i][0]]);
+    }
+
+    console.log("schedules scores", scores);
+    return sortedSchedules;
+}
+
 
 // format "10:40am - 12:30pm", "12:20pm - 13:50pm"
 // return true
@@ -282,10 +333,9 @@ module.exports = {
         },
 
         async generateSchedule(_, {
-            username, term, intendedCourses
+            username, term, intendedCourses, onlyOpen
         },
         context){
-
             const tempUser = checkAuth(context);
             if (username === tempUser.username) {
               try { 
@@ -299,12 +349,31 @@ module.exports = {
                 // var cart = user.shoppingCart;
                 var allSections = [];
                 var priority = {};
+                var colormap = {};
                 var result = {};
                 var course_id = {};
+
+                var courseContainSection = 0;
                 for (let i = 0; i < cart.length; i++) {
-                    priority[cart[i].courseID + cart[i].courseTitle] = cart[i].priority;
-                    course_id[cart[i].courseID + cart[i].courseTitle] = cart[i].course_id;
+                    const map_key = cart[i].courseID + cart[i].courseTitle;
+
+                    priority[map_key] = cart[i].priority;
+                    course_id[map_key] = cart[i].course_id;
                     
+                    colormap[map_key] = colorPanel[courseContainSection % colorPanel.length];
+                    
+                    // round to 2 digits
+                    var course_score = Math.round(((await Course.findOne({
+                      courseID: cart[i].courseID,
+                      courseTitle: cart[i].courseTitle
+                    })).score + Number.EPSILON) * 100) / 100;
+
+                    // for scoring to display in frontend
+                    var professor_name = "";
+                    // professor_name-> overall score
+                    var professor_score = {};
+                    // professor_name-> *course&professor specific{courseS, profS}
+                    var course_score_with_professor = {};
                     // no open section
                     const sections1 = await Section.find({
                         courseID: cart[i].courseID,
@@ -317,6 +386,7 @@ module.exports = {
                         courseTitle: cart[i].courseTitle,
                         term: term
                     });
+
                     if (sections1.length === 0){
                         cart[i]['reason'] = "No open section in " + term;
                         if (result['noSection']){
@@ -324,8 +394,11 @@ module.exports = {
                         } else {
                             result['noSection'] = [cart[i]];
                         }
-                        continue;
+                        if (onlyOpen === true){
+                            continue;
+                        }
                     }
+
                     if (sections2.length === 0) {
                         cart[i]['reason'] = "Course not offer in " + term;
                         if (result['noSection']) {
@@ -336,22 +409,85 @@ module.exports = {
                         continue;
                     }
 
-                    // there are some sections that only the classNo is different.
-                    // remove those given we need scheduling. This also solves the TBA duplicates.
-                    var sectionWithPriorty = Array.from(new Set(sections1.map(a => (a.professor + a.daystimes))))
-                    .map(id => {
-                        return sections1.find(a => (a.professor + a.daystimes) === id)
-                    })
+                    var sectionWithPriorty = [];
+                    
+                    if (onlyOpen == true){
+                        // there are some sections that only the classNo is different.
+                        // remove those given we need scheduling. This also solves the TBA duplicates.
+                        sectionWithPriorty = Array.from(new Set(sections1.map(a => (a.professor + a.daystimes + a.status))))
+                            .map(id => {
+                                return sections1.find(a => (a.professor + a.daystimes + a.status) === id)
+                            })
+                    } else {
+                        // there are some sections that only the classNo is different.
+                        // remove those given we need scheduling. This also solves the TBA duplicates.
+                        sectionWithPriorty = Array.from(new Set(sections2.map(a => (a.professor + a.daystimes + a.status))))
+                            .map(id => {
+                                return sections2.find(a => (a.professor + a.daystimes + a.status) === id)
+                            })
+                    }
+
+                    courseContainSection += 1;
 
                     for (let j = 0; j < sectionWithPriorty.length; j++) {
                         const element = sectionWithPriorty[j];
+                        // gathering info
+                        professor_name = element.professor;
+                        if (!professor_score.hasOwnProperty(professor_name)) {
+                            const p = await Professor.findOne({
+                              name: professor_name
+                            });
+                            if (p){
+                                professor_score[professor_name] = Math.round((p.score + Number.EPSILON) * 100) / 100;
+                            }else{
+                                professor_score[professor_name] = 0;
+                            }
+                        }
+                        if(!course_score_with_professor.hasOwnProperty(professor_name)){
+                            const rate_summary = await RateSummary.findOne({
+                                courseID: element.courseID,
+                                courseTitle: element.courseTitle,
+                                professor: professor_name
+                            });
+                            // console.log(rate_summary);
+                            if (rate_summary){
+                                course_score_with_professor[professor_name] = {
+                                    // Math.round((result[i]['score'] + Number.EPSILON) * 100) / 100
+                                    // Math.round((rate_summary.avgCourseScore + Number.EPSILON) * 100) / 100
+                                    "profS": Math.round((rate_summary.avgProfScore + Number.EPSILON) * 100) / 100,
+                                    "courseS": Math.round((rate_summary.avgCourseScore + Number.EPSILON) * 100) / 100
+                                };
+                            } else {
+                                course_score_with_professor[professor_name] = {
+                                    "profS": 0,
+                                    "courseS": 0
+                                };
+                            }
+                        }
+
+                        // console.log(course_score_with_professor);
+
                         sectionWithPriorty[j]['priority'] = priority[element.courseID + element.courseTitle];
                         sectionWithPriorty[j]['course_id'] = course_id[element.courseID + element.courseTitle];
+                        sectionWithPriorty[j]['courseScore'] = course_score;
+                        sectionWithPriorty[j]['professorScore'] = professor_score[professor_name];
+                        sectionWithPriorty[j]['courseScoreWithProfessor'] = course_score_with_professor[professor_name]['courseS'];
+                        sectionWithPriorty[j]['professorScoreWithCourse'] = course_score_with_professor[professor_name]['profS'];
+                        sectionWithPriorty[j]['color'] = colormap[element.courseID + element.courseTitle];
+                        if (sectionWithPriorty[j]['status'] !== "Open") {
+                            sectionWithPriorty[j]['color'] = closedColor;
+                        }
                     }
                     allSections.push(sectionWithPriorty);
                 }
+                console.log("color mapping", colormap);
                 // cartesian products to find all potential schedule
-                result['schedule'] = cleanSchedule(product(allSections));
+                var unsortedSchedules = cleanSchedule(product(allSections));
+                var sortedSchedules = rankSchedule(unsortedSchedules);
+                result['schedule'] = sortedSchedules;
+                result['noSection'] = result['noSection'].filter(function unique(value, index, self){
+                    return self.indexOf(value) === index;
+                });
                 return result;
               } catch (err) {
                 throw new Error(err);

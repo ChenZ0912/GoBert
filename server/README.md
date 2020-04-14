@@ -65,7 +65,20 @@ mutation {
     createdAt
   }
 
-  deleteRate(rateId: "rateID")
+  deleteRate(rateId: "rateID"){
+    professor
+    ratings{
+      comment
+      upvotes
+      courseScore
+      professorScore
+    }
+    avgProfScore
+    avgCourseScore
+    courseID
+    courseTitle
+    numRate
+  }
 
   upvote(rateId: "5e7bcd74a4ce7c00ed5c4770"){
     alreadyRate
@@ -221,10 +234,14 @@ query {
     semesters
   }
 
-  generateSchedule(username: "cindy123", term: "Spring 2020", intendedCourses:[{
-    courseID: "CSUY 2124",
-    courseTitle: "Object Oriented Programming LAB"
-  }]){
+  generateSchedule(username: "cindy123", term: "Spring 2020", onlyOpen: false,
+    intendedCourses:[
+      "5e790d64199406c82611abb9", 
+      "5e790d64199406c82611abc7", 
+      "5e790d64199406c82611abba", 
+      "5e790d64199406c82611bda5",
+    	"5e790d64199406c826119d7e",
+    	"5e790d64199406c82611be3d"]){
     noSection{
       courseID
       courseTitle
@@ -243,7 +260,14 @@ query {
       term
       _id
       priority
-      dates 
+      dates
+      duration
+      status
+      color // if status !== 'Open', color will be fixed. greyish color.
+      courseScore
+      professorScore
+      courseScoreWithProfessor
+      professorScoreWithCourse
     }
   }
 

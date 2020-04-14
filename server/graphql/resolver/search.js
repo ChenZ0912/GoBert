@@ -47,6 +47,7 @@ async function searchProfessor(query){
       fname = name[0].trim();
       lname = name[name.length - 1].trim();
     }
+
     professors = await Professor.find({
       firstname: new RegExp(escapeRegex(fname), 'gi'),
       lastname: new RegExp(escapeRegex(lname), 'gi')
@@ -68,6 +69,7 @@ async function searchProfessor(query){
       lname = name[0].trim();
       fname = name[name.length - 1].trim();
     }
+    
     professors = await Professor.find({
       firstname: new RegExp(escapeRegex(fname), 'gi'),
       lastname: new RegExp(escapeRegex(lname), 'gi')

@@ -119,9 +119,16 @@ module.exports = gql`
 		daysOfWeek: [Int]
 		start: String
 		end: String
+		duration: String
 		dates: String
 		classNo: String
 		term: String
+		status: String
+		color: String
+		professorScore: Float
+		courseScore: Float
+		professorScoreWithCourse: Float
+		courseScoreWithProfessor: Float
 	}
 
 	type scheduleOutput {
@@ -153,7 +160,7 @@ module.exports = gql`
 		getOneRating(rateId: ID!): Rate
 		getRatings(searchCourseInput: SearchCourseInput): [Rate]
 		getShoppingCart(username: String!): ShoppingCart
-		generateSchedule(username: String!, term: String!, intendedCourses: [String]): scheduleOutput
+		generateSchedule(username: String!, term: String!, intendedCourses: [String], onlyOpen: Boolean): scheduleOutput
 	}
 
 	type Mutation{
