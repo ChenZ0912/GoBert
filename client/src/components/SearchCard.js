@@ -7,7 +7,7 @@ import gql from 'graphql-tag';
 import { AuthContext } from '../context/auth';
 
 function SearchCard({
-  result: { category, professor, courseID, courseTitle, score, numRate, _id}
+  result: { category, professor, courseID, courseTitle, score, numRate, _id }
 }) {
   const { user } = useContext(AuthContext);
   const options = [
@@ -39,7 +39,7 @@ function SearchCard({
     if (course.length >= 2) {
       addToCart( {
         variables: {
-          username: user.username, 
+          username: user.username,
           courseID: courseID,
           courseTitle: courseTitle,
           priority: value,
@@ -87,7 +87,7 @@ const ADD_TO_CART_MUTATION = gql`
     $priority: String!
   ) {
     addToShoppingCart(
-      username: $username, 
+      username: $username,
       courseID: $courseID,
       courseTitle: $courseTitle,
       priority: $priority

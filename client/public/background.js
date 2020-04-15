@@ -1,6 +1,5 @@
 window.result = {}
 chrome.storage.local.clear();
-
 function onClickHandler(info, tab) {
   console.log(`${info.selectionText}`);
   fetch('http://localhost:4000', {
@@ -9,7 +8,7 @@ function onClickHandler(info, tab) {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     },
-    body: JSON.stringify({query: `{getSearchResult(query:"${info.selectionText}"){category professor courseID courseTitle _id score numRate}}`})
+    body: JSON.stringify({query: `{getSearchResult(query:"${info.selectionText}"){category professor courseID courseTitle score numRate}}`})
   })
     .then(r => r.json())
     .then(data => { window.result = data; chrome.runtime.sendMessage({type :"course-selection", result: result}); })

@@ -1,8 +1,10 @@
-function generateTableHead(table, data) {
+const addToShoppingCartClass = "add-to-shoppingcart"
+function generateTableHead(table, keys) {
   let thead = table.createTHead();
   let row = thead.insertRow();
-  for (let key of data) {
-    console.log(key);
+
+  for (let key of keys) {
+    if (key == undefined) continue;
     let th = document.createElement("th");
     th.setAttribute("scope", "row");
     let text = document.createTextNode(key);
@@ -11,25 +13,59 @@ function generateTableHead(table, data) {
   }
 }
 
-function generateTable(table, data) {
+function generateTable(table, data, keys, isCourse) {
+  let tbody = table.createTBody();
   for (let element of data) {
-    let row = table.insertRow();
-    for (key in element) {
+    let row = tbody.insertRow();
+    let course_data = []
+    for (let key of keys) {
+      if (key == undefined) continue;
       let cell = row.insertCell();
       let text = document.createTextNode(element[key]);
       cell.appendChild(text);
+      if (key == "courseID" || key == "courseTitle") {
+        course_data.push(element[key]);
+      }
+    }
+    if (isCourse) {
+      let cell = row.insertCell();
+      generateSubmitButtonInTable(cell, course_data);
     }
   }
 }
 
+function generateSubmitButtonInTable(cell, course_data)  {
+  let button = document.createElement("button");
+  button.classList.add(addToShoppingCartClass)
+  button.classList.add("btn");
+  button.classList.add("btn-info")
+  button.setAttribute("type", "submit");
+  button.setAttribute("data-course", JSON.stringify(course_data))
+  let text = document.createTextNode("Add");
+  button.appendChild(text);
+  cell.appendChild(button);
+}
 function render(array) {
+  console.log("Render: ");
+  console.log(array);
   $(".table").empty();
   const table = document.querySelector(".table")
   if (array != undefined) {
+    const category = array[0]["category"];
     const keys = Object.keys(array[0]);
-    generateTableHead(table,keys);
-    generateTable(table,array);
-    $(".search-result").html(table)
+    var isCourse = false;
+    if (category == "Professor") {
+      delete keys[2];
+      delete keys[3];
+    } else if (category == "Course") {
+      isCourse = true;
+      delete keys[1];
+    }
+    console.log("Keys are: ")
+    console.log(keys);
+    generateTableHead(table, keys);
+    generateTable(table, array, keys, isCourse);
+    $(".search-result").html(table);
   }
 }
 
@@ -65,14 +101,14 @@ window.onload = function() {
 $(document).ready(function() {
   $("#search-submit").click(function() {
     console.log("Submitted");
-    let input = $("input").val();
+    let input = $("#search-input").val();
     fetch('http://localhost:4000', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      body: JSON.stringify({query: `{getSearchResult(query:"${input}"){category professor courseID courseTitle _id score numRate}}`})
+      body: JSON.stringify({query: `{getSearchResult(query:"${input}"){category professor courseID courseTitle score numRate}}`})
     })
       .then(r => r.json())
       .then(result => render(result.data['getSearchResult']) );
@@ -90,3 +126,47 @@ $(document).ready(function() {
   });
 });
 
+$(document).on('click', '.'+addToShoppingCartClass, function () {
+  var course_info = $(this).data('course');
+  console.log(course_info);
+  chrome.storage.local.get({"jwtToken":"not-logined"}, function(items) {
+    let user = items["jwtToken"]["username"]
+    let token = items["jwtToken"]["token"]
+    console.log(token)
+    fetch('http://localhost:4000', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({query: `
+    mutation {
+      addToShoppingCart(
+        username: "${user}",
+        courseID:  "${course_info[0]}",
+        courseTitle: "${course_info[1]}",
+        priority: "required"
+      ) {
+          courseID
+          courseTitle
+          score
+          numRate
+          priority
+        }
+     }`})
+    }).then(r => r.json())
+      .then(response => {
+        if (response["errors"]) {
+          alert(response["errors"][0]["message"])
+        } else {
+          alert("Successfully added to shopping cart. Go to Gobert homepage for further operations.")
+        }
+      });
+  })
+});
+
+$(document).on('click', '#username', function () {
+  homepage_url = "http://www.gobertweb.com:3000"
+  chrome.tabs.create({url : homepage_url});
+});
