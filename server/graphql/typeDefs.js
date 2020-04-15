@@ -1,7 +1,7 @@
 const { gql } = require('apollo-server');
 
 module.exports = gql`
-	type searchResult {
+	type GobertResult {
 		category: String
 		professor: String
 		courseID: String
@@ -10,6 +10,22 @@ module.exports = gql`
 		numRate: Int
 		name: String
 		_id: String
+	}
+
+	type RmpResult {
+		category: String
+    	name: String,
+		score: String,
+		department: String,
+		wouldTakeAgain: String,
+		levelOfDifficulty: String,
+		tags: [String],
+		_id: String
+	}
+
+	type searchResult{
+		gobert: [GobertResult]
+		rmp: [RmpResult]
 	}
 
 	type Rate {
@@ -27,6 +43,7 @@ module.exports = gql`
 		createdAt: String
 		_id: String
 	}
+
 	type RateSummary {
 		professor: String
 		courseID: String
@@ -152,7 +169,7 @@ module.exports = gql`
 		courseTitle: String
 	}
 	type Query{
-		getSearchResult(query: String!): [searchResult]
+		getSearchResult(query: String!): searchResult
 		getProfessorByName(query: String!): [Professor]
 		getProfessorDetail(query: String!): Professor
 		getCourse(query: String!): [Course]
