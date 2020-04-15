@@ -150,14 +150,26 @@ mutation {
 ```
 query {
   # This Query will return a combined result for course & professor
-  getSearchResult(query: "2124"){
-    category
-    professor
-    courseID
-    courseTitle
-    _id
-    score
-    numRate
+  getSearchResult(query: "csuy 2124") {
+    gobert{
+      category
+      professor
+      courseID
+      courseTitle
+      _id
+      score
+      numRate
+    }
+		rmp {
+      category
+      name
+      score
+      department
+      wouldTakeAgain
+      levelOfDifficulty
+      tags
+      _id
+    }
   }
 
   # the id returned by getSearchResult
