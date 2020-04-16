@@ -119,8 +119,13 @@ async function searchProfessor(query){
       }
       lname = name[0].trim();
     } else {
+
       var name = query.split(' ');
       fname = name[0].trim();
+      if (fname.includes('.')){
+        var temp = fname.split('.');
+        fname = temp[0].trim();
+      }
       lname = name[name.length - 1].trim();
     }
 
@@ -265,12 +270,12 @@ module.exports = {
       info){
         try {
           const gobertResult = await searchGobert(query);
-          const rmpResult = await searchRMP(query);
-          const result = {
-            "gobert": gobertResult,
-            "rmp": rmpResult
-          }
-          return result;
+          // const rmpResult = await searchRMP(query);
+          // const result = {
+          //   "gobert": gobertResult,
+          //   "rmp": rmpResult
+          // }
+          return gobertResult;
         } catch (err) {
             throw new Error(err);
         }

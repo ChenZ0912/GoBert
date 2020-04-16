@@ -24,8 +24,20 @@ module.exports = gql`
 	}
 
 	type searchResult{
-		gobert: [GobertResult]
-		rmp: [RmpResult]
+		category: String
+		name: String
+		courseID: String
+		courseTitle: String
+		score: Float
+		numRate: Int
+		
+		rscore: Float
+		rnumRate: Int
+		department: String
+		wouldTakeAgain: String
+		levelOfDifficulty: Float
+		tags: [String]
+		_id: String
 	}
 
 	type Rate {
@@ -58,6 +70,13 @@ module.exports = gql`
 		score: Float
 		numRate: Int
 		rateSummary: [RateSummary]
+		_id: String,
+		rnumRate: Int,
+		rscore: Float,
+		department: String,
+		wouldTakeAgain: String,
+		levelOfDifficulty: String,
+		tags: [String]
 	}
 	type Course {
 		courseID: String
@@ -169,7 +188,7 @@ module.exports = gql`
 		courseTitle: String
 	}
 	type Query{
-		getSearchResult(query: String!): searchResult
+		getSearchResult(query: String!): [searchResult]
 		getProfessorByName(query: String!): [Professor]
 		getProfessorDetail(query: String!): Professor
 		getCourse(query: String!): [Course]
