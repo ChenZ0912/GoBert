@@ -7,7 +7,7 @@ import gql from 'graphql-tag';
 import { AuthContext } from '../context/auth';
 
 function SearchCard({
-  result: { category, professor, courseID, courseTitle, score, numRate, _id }
+  result: { name, category, professor, courseID, courseTitle, score, numRate, _id }
 }) {
   const { user } = useContext(AuthContext);
   const options = [
@@ -16,14 +16,19 @@ function SearchCard({
       { key: 3, text: 'Giveupable', value: "giveupable" }
   ];
 
-  var link = "/";
-  var name = "N/A"
+  var link = "/404";
   if (category === "Course") {
     link = "/rateCourse/"+_id;
     name = courseID + ": " + courseTitle
   } else if (category === "Professor") {
     link = "/rateProf/"+professor;
     name = professor;
+  }
+
+  // Process RMP Data
+  if (!numRate) { 
+    category = "Professor"; 
+    numRate = "From RMP - To be changed - DO NOT CLICK";
   }
 
   const [add, setAdd] = useState(true);

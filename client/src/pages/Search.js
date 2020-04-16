@@ -17,16 +17,22 @@ function Search(props) {
     }
   });
 
+  console.log(results);
+
   return (
     <Container style={{ marginTop: '7em' }}>
        {loading ? (
           <h1>Loading results..</h1>
         ) : (
           <Transition.Group>
-            {results &&
-              results.map((result, index) => (
+            {results["gobert"] &&
+              results["gobert"].map((result, index) => (
                 <dl key={index}> <SearchCard result={result} /> </dl>
               ))}
+            {results["rmp"] &&
+            results["rmp"].map((result, index) => (
+              <dl key={index}> <SearchCard result={result} /> </dl>
+            ))}
           </Transition.Group>
         )}
     </Container>
@@ -36,13 +42,25 @@ function Search(props) {
 const FETCH_SERACH_QUERY = gql`
   query($input: String!) {
     getSearchResult(query: $input) {
-      category
-      professor
-      courseID
-      courseTitle
-      score
-      numRate
-      _id
+      gobert {
+        category
+        professor
+        courseID
+        courseTitle
+        score
+        numRate
+        _id
+      }
+      rmp {
+        category
+        name
+        score
+        department
+        wouldTakeAgain
+        levelOfDifficulty
+        tags
+        _id
+      }
     }
   }
 `;
