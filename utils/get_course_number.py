@@ -20,16 +20,16 @@ def wait_for_load_screen(driver):
         print("Reloading screen is being an asshole")
 
 
-f = open("course_num_spring.csv", "w")
+f = open("course_num_fall_2020.csv", "w")
 fieldnames = ['course_id', 'course_name', 'section', 'topic', 'session', 'days/times', 'dates', 'instructor', 'status', 'wait list total']
 writer = csv.DictWriter(f, fieldnames=fieldnames, quotechar='¥', delimiter=',', quoting=csv.QUOTE_ALL, skipinitialspace=True)
 writer.writeheader()
 
-term_urls = ['1204', '1202', '1198', '1196', '1194', '1192', '1188', '1186', '1184', '1182', '1178']
+term_urls = ['1208', '1204', '1202', '1198', '1196', '1194', '1192', '1188', '1186', '1184', '1182', '1178']
 school_count = [32, 20, 35, 31, 34, 19, 35, 31, 35, 15, 36]
 
 driver = webdriver.Chrome()
-driver.get("https://m.albert.nyu.edu/app/catalog/classSearch/1204")
+driver.get("https://m.albert.nyu.edu/app/catalog/classSearch/1208")
 delay = 5 # seconds
 reload_delay = 20
 
