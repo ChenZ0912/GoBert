@@ -1,7 +1,9 @@
 import React, { useContext } from 'react';
 import { Image, Container } from 'semantic-ui-react';
 import { AuthContext } from '../context/auth';
+import Logo from "../util/Graphics/logo.png";
 import ShoppingCart from '../components/ShoppingCart';
+
 
 function Home() {
   const { user } = useContext(AuthContext);
@@ -14,7 +16,7 @@ function Home() {
         </Container>
       ): (
         <Container text textAlign='center'>
-          <Image src='/src/logo.png' size='big' centered/>
+          <Image src={Logo} size='big' centered/>
           <p>LOGIN for more services: view shopping cart, generate schedules... o(*￣▽￣*)ブ</p>
         </Container>
       )}
