@@ -3,7 +3,7 @@ import { Container, Divider, Icon } from 'semantic-ui-react';
 
 function About() {
     return (
-        <Container className='center'>
+        <Container style={{ margin: '80px' }} className='center'>
             <h1>About GoBert</h1>
             <p> Our project, GoBbert, was inspired by the schedule making process at NYU. 
                 First, it is important to have a good schedule that really fits the students’ interests 
