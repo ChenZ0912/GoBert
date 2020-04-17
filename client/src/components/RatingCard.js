@@ -10,50 +10,59 @@ import VoteButton from './VoteButton';
 
 function RatingCard({
   category,
-  rateSummary: {professor, courseID, courseTitle,
-    avgProfScore, avgCourseScore, numRate, ratings}
+  rateSummary: { professor, courseID, courseTitle, avgProfScore, avgCourseScore, ratings }
 }) {
 
   const {user} = useContext(AuthContext);
-  const [showRating, setShow] = useState(false);
+  const [ askToRate, setAsk ] = useState(true);
+  const [ values, setVal ] = useState({
+    avgProfScore: avgProfScore,
+    avgCourseScore: avgCourseScore,
+    ratings: ratings
+  });
+  
+  // Show ratings
+  const [ showRating, setShow ] = useState(true);
   function handleRatings(e, {checked}) { setShow(checked); }
 
-  const [ratingCollection, setCollection ] = useState(ratings);
-  const [askToRate, setAskToRate] = useState(true);
+  // Ask user to rate if not rated
   useEffect(() => {
-    if (user && ratingCollection.find((rating) => rating.username === user.username)) {
-      setAskToRate(false);
-    } 
-  }, [user, ratingCollection]);
+    if (user && (ratings).find((rating) => rating.username === user.username)) {
+      setAsk(false);
+    }
+  }, [user, ratings]);
 
+  // Delete a rating
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleteRate] = useMutation(DELETE_RATE_MUTATION, {
     update(cache, mutationResult) {
       if (mutationResult.data["deleteRate"]) {
-        var newRatings = mutationResult.data["deleteRate"]["ratings"]
-        if (user && newRatings.find((rating) => rating.username === user.username)) {
-          setAskToRate(false);
-        } else setAskToRate(true);
-        setCollection(newRatings);
+        var result = mutationResult.data["deleteRate"];
+
+        values.ratings = result["ratings"];
+        values.avgProfScore = result["avgProfScore"];
+        values.avgCourseScore = result["avgCourseScore"];
+        (user && values.ratings.find((rating) => rating.username === user.username)) ?
+          setAsk(false) : setAsk(true);
+        setVal(values);
       }
     },
   });
 
   return (
     <Card fluid color='violet'>
-
       <Card.Content>
       <Grid>
-        <Grid.Column floated='left' width={8}>
-          {category === "professor" ? 
-          <h3>{courseID} {courseTitle}</h3>:
-          <h3>{professor}</h3>
+        <Grid.Column width={11}>
+          { category === "Professor" ? 
+            <h3>{courseID} {courseTitle}</h3> : 
+            <a href={"/rateProf/"+professor}> <h3>{professor}</h3> </a> 
           }
-          <span><br/>[ Number of Ratings: {ratingCollection.length} ]</span>
+          <span><br/>[ Number of Ratings: {values.ratings.length} ]</span>
         </Grid.Column>
-        <Grid.Column floated='right' width={4}>
-          <span>Overall Course Score: {avgCourseScore}/5<br/>
-          Overall Professor Score: {avgProfScore}/5<br/><br/></span>
+        <Grid.Column width={5}>
+          <span>Overall Course Score: {values.avgCourseScore}/5<br/>
+          Overall Professor Score: {values.avgProfScore}/5<br/><br/></span>
           <Checkbox
             label='SHOW RATINGS'
             onChange={handleRatings}
@@ -65,7 +74,7 @@ function RatingCard({
 
       { showRating ?
       <Card.Content>
-        { ratingCollection && ratingCollection.map((rating, index) => (
+        { values.ratings.map((rating, index) => (
         <dl key={index}>
         <Grid divided>
           <Grid.Row stretched>
@@ -108,7 +117,8 @@ function RatingCard({
           </Grid>
         </dl> ))}
         {user && askToRate &&
-          <RateForm rateSummary = {{professor, courseID, courseTitle, ratings: ratingCollection}} />
+          <RateForm formInput = {{professor, courseID, courseTitle, vals: values}} 
+            setAsk={setAsk} setVals={setVal}/>
         }
       </Card.Content>
       : ( user && 
@@ -131,15 +141,13 @@ function RatingCard({
 const DELETE_RATE_MUTATION = gql`
   mutation deleteRate($id: ID!) {
     deleteRate(rateId: $id) {
+      avgProfScore
+      avgCourseScore
       ratings{
         username
-        username
         anonymity
-        courseID
-        courseTitle
         term
         courseScore
-        professor
         professorScore
         comment
         upvotes

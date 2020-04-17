@@ -15,6 +15,7 @@ import Register from './pages/Register';
 import RateCourse from './pages/RateCourse';
 import RateProf from './pages/RateProf';
 import Search from './pages/Search';
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Container>
           <MenuBar />
           <Route exact path="/" component={Home} />
+          <Route exact path="/404" component={NotFound} />
           <AuthRoute exact path="/login" component={Login} />
           <AuthRoute exact path="/register" component={Register} />
           <Route exact path="/search/:input" component={Search} />
