@@ -1,5 +1,6 @@
 const { ApolloServer } = require('apollo-server-express');
 const express = require('express');
+const expressPlayground = require('graphql-playground-middleware-express').default
 const mongoose = require('mongoose');
 const path = require('path');
 
@@ -21,6 +22,9 @@ const server = new ApolloServer({
 });
 
 app.use(express.static('public'));
+
+// graphql playground
+app.get('/playground', expressPlayground({ endpoint: '/graphql' }))
 
 app.get('*', (req, res) => {
 	res.sendFile(path.resolve(__dirname, 'public', 'index.html'));

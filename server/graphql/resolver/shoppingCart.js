@@ -218,6 +218,9 @@ function rankSchedule(allSchedules){
         for (let j = 0; j < allSchedules[i].length; j++) {
             var priority = allSchedules[i][j].priority;
             var status = allSchedules[i][j].status;
+            if (allSchedules[i][j].professor === "Staff"){
+                scheduleScore -= 5;
+            }
             // console.log(allSchedules[i][j].courseTitle, priority, status, allSchedules[i][j].TBA);
             if (allSchedules[i][j]['TBA'] && status === 'Open') {
               // console.log('TBA && Open');
@@ -351,6 +354,7 @@ module.exports = {
                 var priority = {};
                 var colormap = {};
                 var result = {};
+                result['noSection'] = [];
                 var course_id = {};
 
                 var courseContainSection = 0;
@@ -389,11 +393,7 @@ module.exports = {
 
                     if (sections1.length === 0){
                         cart[i]['reason'] = "No open section in " + term;
-                        if (result['noSection']){
                             result['noSection'].push(cart[i]);
-                        } else {
-                            result['noSection'] = [cart[i]];
-                        }
                         if (onlyOpen === true){
                             continue;
                         }
@@ -401,11 +401,7 @@ module.exports = {
 
                     if (sections2.length === 0) {
                         cart[i]['reason'] = "Course not offer in " + term;
-                        if (result['noSection']) {
-                            result['noSection'].push(cart[i]);
-                        } else {
-                            result['noSection'] = [cart[i]];
-                        }
+                        result['noSection'].push(cart[i]);
                         continue;
                     }
 

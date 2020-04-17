@@ -1,12 +1,13 @@
 {
-  "name": "ZhiClasses-API-Graphql",
+  "name": "Gobert-server",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "deploy": "cd ../client && npm run build && git push heroku master"
   },
   "keywords": [],
   "author": "",
@@ -18,6 +19,7 @@
     "cartesian-product": "^2.1.2",
     "date-and-time": "^0.13.1",
     "graphql": "^14.6.0",
+    "graphql-playground-middleware-express": "^1.7.14",
     "jsonwebtoken": "^8.5.1",
     "leven": "^3.1.0",
     "mongoose": "^5.9.2",

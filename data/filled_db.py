@@ -42,9 +42,11 @@ def getData(filename):
 
             course_title = course_title + " " + t
             class_no = temp[1][:-1]
-            if 'fall' in filename:
+            if filename == 'course_num_fall_2020.csv':
+                term = "Fall 2020"
+            if filename == 'course_num_fall.csv':
                 term = "Fall 2019"
-            else:
+            if filename == 'course_num_spring.csv':
                 term = "Spring 2020"
 
             days_times = row['days/times']
@@ -77,7 +79,7 @@ def getData(filename):
                     'courseTitle': course_title,
                     'classNo': class_no,
                     'term': term,
-                    'dt': days_times,
+                    'daystimes': days_times,
                     'dates': dates,
                     'session': session,
                     'section': section,
@@ -116,12 +118,14 @@ def getRMP(filename):
         
             if rating['levelOfDifficulty'] == '':
                 rating['levelOfDifficulty'] = '0'
-            rating['numRate'] = 0
+
+            if rating['numRating'] == '':
+                rating['numRating'] = '0'
 
             rmp[rating['name']] = {
                 "name": rating['name'],
                 "rscore": float(rating['score']),
-                "rnumRate": int(rating['numRate']),
+                "rnumRate": int(rating['numRating']),
                 "department": rating['department'],
                 "wouldTakeAgain": wouldTakeAgain,
                 "levelOfDifficulty": float(rating['levelOfDifficulty']),
