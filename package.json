@@ -1,0 +1,13 @@
+{
+  "name": "Gobert-Awesome",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "cd server && npm run prod",
+    "deploy": "cd client && npm run build && git push heroku master"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

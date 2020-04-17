@@ -74,7 +74,7 @@ function Scheduler({scheduleInput}) {
   const [results, setResults] = useState({});
   const [schedules, setSchedules] = useState([]);
   useEffect(() => {
-    fetch('http://localhost:4000', {
+    fetch('/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -91,6 +91,7 @@ function Scheduler({scheduleInput}) {
     })
       .then(r => r.json())
       .then(data => {
+        console.log(data);
         if (!data["errors"]) {
           setLoading(false);
           setResults(data["data"]["generateSchedule"]);

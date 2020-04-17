@@ -42,7 +42,7 @@ mutation {
   postRate(
       rateInput: {
       	courseID: "CSUY 2124"
-        courseTitle: "Object Oriented Programming"
+        courseTitle: "Object Oriented Programming LAB"
         courseScore: 4.5
         professor: "John Sterling"
         professorScore: 5.0
@@ -80,7 +80,7 @@ mutation {
     numRate
   }
 
-  upvote(rateId: "5e7bcd74a4ce7c00ed5c4770"){
+  upvote(rateId: "rateID"){
     alreadyRate
     username
     courseID
@@ -97,7 +97,7 @@ mutation {
     id
   }
   
-  downvote(rateId:"5e7bcd74a4ce7c00ed5c4770"){
+  downvote(rateId: "rateID"){
     alreadyRate
     username
     courseID
@@ -166,7 +166,7 @@ query {
   }
 
   # the id returned by getSearchResult
-  getCourseDetail(id: "5e5af12f4cf31e4f4f440eaa"){
+  getCourseDetail(id: "5e991dd09302c2f4d17b41fc"){
     courseID
     courseTitle
     score

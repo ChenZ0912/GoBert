@@ -3,6 +3,7 @@ const Professor = require('../../models/Professor');
 const Rate = require('../../models/Rate');
 const RateSummary = require('../../models/RateSummary');
 const Section = require('../../models/Section');
+const User = require('../../models/User');
 
 module.exports = {
     Mutation: {
@@ -67,6 +68,32 @@ module.exports = {
             if (password !== 'Kaixuan'){
                 throw new Error('incorrect password');
             }
+
+            const users = await User.find({});
+
+            for (let i = 0; i < users.length; i++) {
+                var cart = users[i].shoppingCart;
+                for (let j = 0; j < cart.length; j++) {
+                    var c = cart[j];
+                    console.log(c, c.courseID, c.courseTitle);
+                    const course_id = (await Course.findOne({
+                        courseID: c.courseID,
+                        courseTitle: c.courseTitle
+                    }))._id.toString();
+                    
+                    cart[j].course_id = course_id;
+                }
+
+                await User.updateOne({
+                    username: users[i].username
+                }, {
+                    $set: {
+                        shoppingCart: cart
+                    }
+                });
+            }
+
+
             const rates = await Rate.find({});
             const courses = [];
             const professors = [];

@@ -171,7 +171,7 @@ async function searchCourse(query){
       $or: [{
         _total: new RegExp(fuzzyQuery, 'gi')
       }, {
-        _total_concat: new RegExp(fuzzyQuery, 'gi')
+        _total_concat: new RegExp(fuzzyQuery.replace(' ', ''), 'gi')
       }]
   })
 }
