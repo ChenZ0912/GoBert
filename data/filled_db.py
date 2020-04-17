@@ -30,7 +30,11 @@ def getData(filename):
             temp = row['course_name'].split("-", 2)
             # print(temp)
             course_id = temp[0] + temp[1].rstrip()
-            course_title = temp[2].lstrip()+ " " + row['topic']
+
+            course_title = temp[2].lstrip()
+
+            if row['topic'] != '':
+                course_title += " " + row['topic']
 
             temp = row['section'].split(" (")
             t = temp[0].split('-')[1]
@@ -155,14 +159,6 @@ def getRMP(filename):
         totalCount += 1
 
 
-for course in courses:
-    course['numRate'] = 0
-    course['score'] = 0
-
-for prof in professors:
-    prof['numRate'] = 0
-    prof['score'] = 0
-
 
 getData("course_num_fall.csv")
 getData("course_num_spring.csv")
@@ -172,6 +168,18 @@ getRMP("rmp/RMPdata.json")
 
 # print(professors)
 print(notFoundCount, totalCount)
+
+
+for i in range(len(courses)):
+    courses[i]['numRate'] = 0
+    courses[i]['score'] = 0
+    courses[i]['_total'] = tokenize(courses[i]['courseID'] + " " + courses[i]['courseTitle'])
+    courses[i]['_total_concat'] = dewhitespace(courses[i]['_total'])
+
+for i in range(len(professors)):
+    professors[i]['numRate'] = 0
+    professors[i]['score'] = 0
+
 
 # _total = tokenize(course_id + " " + course_title)
 # 'numRate': 0,
