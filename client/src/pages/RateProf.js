@@ -12,6 +12,10 @@ function RateProf(props) {
     loading,
     data: {getProfessorDetail : results}
   } = useQuery(FETCH_PROF_QUERY, {
+    onError() {
+      // Show error page
+      props.history.push('/404');
+    },
     variables: {
       name
     }

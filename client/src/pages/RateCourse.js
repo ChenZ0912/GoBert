@@ -12,6 +12,10 @@ function RateCourse(props) {
     loading,
     data: {getCourseDetail : results}
   } = useQuery(FETCH_COURSE_QUERY, {
+    onError() {
+      // Show error page
+      props.history.push('/404');
+    },
     variables: {
       id
     }

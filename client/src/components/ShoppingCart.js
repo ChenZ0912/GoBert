@@ -19,8 +19,7 @@ function ShoppingCart() {
     const options = [
         { key: 1, text: 'Required', value: "required" },
         { key: 2, text: 'Interested', value: "interested" },
-        { key: 3, text: 'Giveupable', value: "giveupable" },
-        { key: 4, text: 'Delete', value: "remove", icon: "trash"}
+        { key: 3, text: 'Delete', value: "remove", icon: "trash"}
     ]
     const {
         loading, 
