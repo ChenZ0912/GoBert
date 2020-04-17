@@ -26,8 +26,7 @@
     "start": "react-scripts start",
     "build": "rm -r ../server/public && react-scripts build && mv build ../server/public",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "deploy": "npm run build && git push heroku master"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"

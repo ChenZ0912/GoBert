@@ -38,14 +38,16 @@ async function fromShoppingCartGetCourseInfo(courses) {
 }
 
 function removeSectionFromSchedule(section, schedule){
+    var result = [];
     for (let i = 0; i < schedule.length; i++) {
         const element = schedule[i];
         if (element.courseID === section.courseID && element.courseTitle === section.courseTitle) {
-            schedule.splice(i, 1);
-            break;
+            // schedule.splice(i, 1);
+            continue;
         }
+        result.push(element);
     }
-    return schedule;
+    return result;
 }
 
 function convertDaystimes(schedules){
@@ -75,8 +77,15 @@ function convertDaystimes(schedules){
                 "professorScoreWithCourse": elem.professorScoreWithCourse
             }
 
-            const dt = elem.daystimes;
-
+            var dt = "";
+            if (elem.daystimes){
+                dt = elem.daystimes;
+            } else {
+                // we already modify this
+                continue;
+            }
+            
+            // console.log(elem);
             if (dt === "TBA") {
                 obj['TBA'] = true;
             }else{
@@ -198,6 +207,7 @@ function cleanSchedule(allSchedules){
     }
 
     var unsortedSchedules = convertDaystimes(possibleSchedules);
+
     return unsortedSchedules;
     // return convertDaystimes(possibleSchedules);
 }

@@ -4,7 +4,7 @@
   "description": "",
   "main": "server/server.js",
   "scripts": {
-    "start": "cd server && npm i && npm start",
+    "start": "cd server && npm run prod",
     "deploy": "cd client && npm run build && git push heroku master"
   },
   "keywords": [],
