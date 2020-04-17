@@ -97,8 +97,9 @@ module.exports = {
             avgProfScore: professorScore,
             avgCourseScore: courseScore
           });
+
           if (ratesum) {
-            const temp = await RateSummary.updateOne({
+            await RateSummary.updateOne({
               courseID, courseTitle, professor
             }, {
               $set: {
@@ -106,9 +107,13 @@ module.exports = {
                 avgCourseScore: (ratesum.avgCourseScore * ratesum.numRate + courseScore) / (ratesum.numRate + 1),
                 numRate: ratesum.numRate + 1
               }
-            })
+            });
+
+            newRateSummary = await RateSummary.findOne({
+              courseID, courseTitle, professor
+            });
           } else {
-            await newRateSummary.save();
+            newRateSummary = await newRateSummary.save();
           }
 
           // Update Prof Score
@@ -129,7 +134,7 @@ module.exports = {
             }
           })
 
-          return rate;
+          return await newRateSummary;
         } catch(err){
           throw new Error(err);
         }
