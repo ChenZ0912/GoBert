@@ -30,7 +30,7 @@ function RateForm(
     setVal(values); 
   }
 
-  // A year is considered valid if it is within last 10 years
+  // A year is considered valid if it is within last 5 years
   const year = new Date().getFullYear() + 1;
 
   function onSubmit() {
@@ -39,7 +39,7 @@ function RateForm(
       errorTemp = "Please provide a course score.";
     else if (values.profScore === 0)
       errorTemp="Please provide a professor score.";
-    else if (values.year < (year-10) || values.year > year)
+    else if (values.year < (year-5) || values.year > year)
       errorTemp="Please provide a valid year.";
     else if (values.term === "")
       errorTemp="Please select a term.";
@@ -75,9 +75,8 @@ function RateForm(
       }
     },
     onError(error) {
-      console.log(error)
-      // if (error.graphQLErrors) 
-      //   setError(error.graphQLErrors[0].message);
+      if (error.graphQLErrors) 
+        setError(error.graphQLErrors[0].message);
     }
   });
 
