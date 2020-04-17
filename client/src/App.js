@@ -10,6 +10,7 @@ import AuthRoute from './util/AuthRoute';
 
 import MenuBar from './components/MenuBar';
 import Home from './pages/Home';
+import About from './pages/About';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import RateCourse from './pages/RateCourse';
@@ -25,6 +26,7 @@ function App() {
           <MenuBar />
           <Switch>
             <Route exact path="/" component={Home} />
+            <Route exact path="/about" component={About} />
             <AuthRoute exact path="/login" component={Login} />
             <AuthRoute exact path="/register" component={Register} />
             <Route exact path="/search/:input" component={Search} />

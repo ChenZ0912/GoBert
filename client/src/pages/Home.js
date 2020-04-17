@@ -22,9 +22,9 @@ function Home() {
       )}
 
       <nav className="footer">
-        <a href="/" className='box'>About</a>
-        <a href="/" className='box'>FAQs</a>
-        <a href="/" className='box'>Contact Us</a>
+        <a href="/about" className='box'>About</a>
+        <a href="/about" className='box'>FAQs</a>
+        <a href="/about" className='box'>Contact Us</a>
         <p className='box'>@2020 GoBert, Inc.</p>
       </nav>
     </div>
