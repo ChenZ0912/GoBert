@@ -134,7 +134,17 @@ module.exports = {
             }
           })
 
+          const ratings = await Rate.find({
+            courseID: courseID,
+            courseTitle: courseTitle,
+            professor: professor
+          })
+
+          newRateSummary['ratings'] = ratings;
+          newRateSummary.avgCourseScore = Math.round((newRateSummary.avgCourseScore + Number.EPSILON) * 100) / 100
+          newRateSummary.avgProfScore = Math.round((newRateSummary.avgProfScore + Number.EPSILON) * 100) / 100
           return await newRateSummary;
+
         } catch(err){
           throw new Error(err);
         }
@@ -243,6 +253,8 @@ module.exports = {
             })
 
             rateSummary['ratings'] = ratings;
+            rateSummary.avgCourseScore = Math.round((rateSummary.avgCourseScore + Number.EPSILON) * 100) / 100
+            rateSummary.avgProfScore = Math.round((rateSummary.avgProfScore + Number.EPSILON) * 100) / 100
             return rateSummary;
           }else{
             throw new AuthenticationError('Action not allowed');
