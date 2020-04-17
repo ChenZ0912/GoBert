@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Hello World</title>
+    <script src="jquery.min.js"></script>
+    <script src="popup.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="popup.css">
+</head>
+<body>
+  <div class="container-lg">
+    <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">GoBert</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto not-login">
+              <li class="nav-item active">
+                <a class="nav-link" id="login" href="#">Log in</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="signup" href="#">Sign up</a>
+              </li>
+            </ul>
+
+            <ul class="navbar-nav mr-auto logined">
+              <li class="nav-item active">
+                <a class="nav-link" id="username" href="#"></a>
+              </li>
+            </ul>
+          <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" id="search-input" type="search" placeholder="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="search-submit">Search</button>
+          </form>
+        </div>
+    </nav>
+    <div class="container-lg search-result">
+        <table class="table table-responsive-sm">
+
+        </table>
+    </div>
+  </div>
+
+</body>
+</html>
