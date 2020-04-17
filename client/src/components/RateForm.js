@@ -67,27 +67,17 @@ function RateForm(
     update(cache, mutationResult) {
       if (mutationResult.data["postRate"]) {
         var results = mutationResult.data["postRate"];
-        vals.ratings.push({
-          username: results.username,
-          courseScore: results.courseScore,
-          professorScore: results.professorScore,
-          anonymity: results.anonymity,
-          comment: results.comment,
-          upvotes: results.upvotes,
-          downvotes: results.downvotes,
-          term: results.term,
-          _id: results.id
-        });
+        vals.avgProfScore = results.avgProfScore;
+        vals.avgCourseScore = results.avgCourseScore;
+        vals.ratings = results.ratings;
         setVals(vals);
         setAsk(results.alreadyRate);
       }
     },
     onError(error) {
-      if (error.graphQLErrors) 
-        setError(error.graphQLErrors[0].message);
-    },
-    onCompleted() {
-      //window.history.go(0);
+      console.log(error)
+      // if (error.graphQLErrors) 
+      //   setError(error.graphQLErrors[0].message);
     }
   });
 
@@ -184,19 +174,19 @@ const CREATE_RATE_MUTATION = gql`
         comment: $comment
       }
     ) {
-      alreadyRate
-      username
-      courseID
-      courseTitle
-      courseScore
-      professor
-      professorScore
-      term
-      anonymity
-      comment
-      upvotes
-      downvotes
-      id
+      avgProfScore
+      avgCourseScore
+      ratings{
+        username
+        anonymity
+        term
+        courseScore
+        professorScore
+        comment
+        upvotes
+        downvotes
+        _id
+      }
     }
   }
 `;

@@ -22,7 +22,7 @@ function RatingCard({
   });
   
   // Show ratings
-  const [ showRating, setShow ] = useState(true);
+  const [ showRating, setShow ] = useState(false);
   function handleRatings(e, {checked}) { setShow(checked); }
 
   // Ask user to rate if not rated
