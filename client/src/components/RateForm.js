@@ -30,7 +30,7 @@ function RateForm(
     setVal(values); 
   }
 
-  // A year is considered valid if it is within last 10 years
+  // A year is considered valid if it is within last 5 years
   const year = new Date().getFullYear() + 1;
 
   function onSubmit() {
@@ -39,7 +39,7 @@ function RateForm(
       errorTemp = "Please provide a course score.";
     else if (values.profScore === 0)
       errorTemp="Please provide a professor score.";
-    else if (values.year < (year-10) || values.year > year)
+    else if (values.year < (year-5) || values.year > year)
       errorTemp="Please provide a valid year.";
     else if (values.term === "")
       errorTemp="Please select a term.";
@@ -67,17 +67,9 @@ function RateForm(
     update(cache, mutationResult) {
       if (mutationResult.data["postRate"]) {
         var results = mutationResult.data["postRate"];
-        vals.ratings.push({
-          username: results.username,
-          courseScore: results.courseScore,
-          professorScore: results.professorScore,
-          anonymity: results.anonymity,
-          comment: results.comment,
-          upvotes: results.upvotes,
-          downvotes: results.downvotes,
-          term: results.term,
-          _id: results.id
-        });
+        vals.avgProfScore = results.avgProfScore;
+        vals.avgCourseScore = results.avgCourseScore;
+        vals.ratings = results.ratings;
         setVals(vals);
         setAsk(results.alreadyRate);
       }
@@ -85,9 +77,6 @@ function RateForm(
     onError(error) {
       if (error.graphQLErrors) 
         setError(error.graphQLErrors[0].message);
-    },
-    onCompleted() {
-      //window.history.go(0);
     }
   });
 
@@ -184,19 +173,19 @@ const CREATE_RATE_MUTATION = gql`
         comment: $comment
       }
     ) {
-      alreadyRate
-      username
-      courseID
-      courseTitle
-      courseScore
-      professor
-      professorScore
-      term
-      anonymity
-      comment
-      upvotes
-      downvotes
-      id
+      avgProfScore
+      avgCourseScore
+      ratings{
+        username
+        anonymity
+        term
+        courseScore
+        professorScore
+        comment
+        upvotes
+        downvotes
+        _id
+      }
     }
   }
 `;

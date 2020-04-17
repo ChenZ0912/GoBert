@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Container } from 'semantic-ui-react';
 
 import 'semantic-ui-css/semantic.min.css';
@@ -23,13 +23,15 @@ function App() {
       <Router>
         <Container>
           <MenuBar />
-          <Route exact path="/" component={Home} />
-          <Route exact path="/404" component={NotFound} />
-          <AuthRoute exact path="/login" component={Login} />
-          <AuthRoute exact path="/register" component={Register} />
-          <Route exact path="/search/:input" component={Search} />
-          <Route exact path="/rateProf/:name" component={RateProf} />
-          <Route exact path="/rateCourse/:id" component={RateCourse} />
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <AuthRoute exact path="/login" component={Login} />
+            <AuthRoute exact path="/register" component={Register} />
+            <Route exact path="/search/:input" component={Search} />
+            <Route exact path="/rateProf/:name" component={RateProf} />
+            <Route exact path="/rateCourse/:id" component={RateCourse} />
+            <Route>{NotFound}</Route>
+          </Switch>
         </Container>
       </Router>
     </AuthProvider>
