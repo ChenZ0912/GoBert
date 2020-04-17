@@ -43,6 +43,9 @@ module.exports = {
                     var course = await Course.findOne({
                         _id: ObjectId(id)
 					});
+					if (!course){
+						throw new Error("Cannot find Course");
+					}
 					const sections = await Teach.find({
 						courseID: course.courseID,
 						courseTitle: course.courseTitle,

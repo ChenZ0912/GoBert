@@ -35,6 +35,10 @@ module.exports = {
             var professor = await Professor.findOne({
                 name: query
             });
+
+            if (!professor){
+              throw new Error("Cannot find professor " + query);
+            }
             var teaches = await Teach.find({
                 professor: query
             })
