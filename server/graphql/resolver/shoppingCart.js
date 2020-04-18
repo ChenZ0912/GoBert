@@ -222,6 +222,7 @@ function cleanSchedule(allSchedules){
 // TBA and open: 0
 // TBA and Closed: -5
 function rankSchedule(allSchedules){
+    console.log("sort schedules");
     var scores = []; // [index, scheduleScore]
     for (let i = 0; i < allSchedules.length; i++) {
         var scheduleScore = 0;
@@ -298,6 +299,7 @@ function rankSchedule(allSchedules){
     }
 
     // deduplicate schedules based on classNo
+    console.log("deduplicate schedules");
     let i = 0;
     let targetLength = sortedSchedules.length - 1;
     while (i < targetLength) {
@@ -314,7 +316,8 @@ function rankSchedule(allSchedules){
         }
         currSections = currSections.sort();
         nextSections = nextSections.sort();
-        if (currSections === nextSections){
+        
+        if (JSON.stringify(currSections) == JSON.stringify(nextSections)) {
             sortedSchedules.splice(i, 1);
             targetLength -= 1;
         } else {
@@ -323,7 +326,6 @@ function rankSchedule(allSchedules){
 
     }
 
-    console.log("schedules scores", scores);
     return sortedSchedules;
 }
 
@@ -473,7 +475,12 @@ module.exports = {
                                 professor_score[professor_name] = Math.round((p.score + Number.EPSILON) * 100) / 100;
                                 if(p.rscore){
                                     professor_rscore[professor_name] = p.rscore;
+                                }else {
+                                    professor_rscore[professor_name] = 0;
                                 }
+                            } else {
+                                professor_score[professor_name] = 0;
+                                professor_rscore[professor_name] = 0;
                             }
                         }
 
