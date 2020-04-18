@@ -79,7 +79,6 @@ function RatingCard({
         <Grid divided>
           <Grid.Row stretched>
             <Grid.Column width={4}>
-              {rating.courseTitle}
               <span>Course Score:<br/><b>{rating.courseScore}/5</b><br/><br/>
               Professor Score:<br/><b>{rating.professorScore}/5</b></span>
             </Grid.Column>

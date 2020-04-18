@@ -87,10 +87,10 @@ function Scheduler({scheduleInput}) {
             if (Object.keys(scheduleDict).length !== 0)
               schedulesTemp.push(scheduleDict);
           }
-          setSchedules(schedulesTemp);
-
+          
           data["data"]["generateSchedule"]["schedule"] = schedulesTemp;
           setResults(data["data"]["generateSchedule"]);
+          setSchedules(schedulesTemp);
           setLoading(false);
         }
       }
@@ -125,9 +125,9 @@ function Scheduler({scheduleInput}) {
         <Container fluid>
           {info.event.extendedProps.locked ? 
             <Icon color='grey' name='lock' value={info.event} 
-              onClick={lockCourse} style={{float: "right", margin: '1px 5px 0 0'}}/> : 
+              onClick={lockCourse} style={{float: "right", marginRight: "5px"}}/> : 
             <Icon color='grey' name='lock open' value={info.event} 
-              onClick={lockCourse} style={{float: "right", margin: '1px 5px 0 0'}}/>}
+              onClick={lockCourse} style={{float: "right", marginRight: "5px"}}/>}
           <div className="event">{info.event.title}<br/></div>
         </Container>
       </MyPopup>,
