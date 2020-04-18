@@ -163,8 +163,7 @@ module.exports = gql`
 		color: String
 		professorScore: Float
 		courseScore: Float
-		professorScoreWithCourse: Float
-		courseScoreWithProfessor: Float
+		rmpScore: Float
 	}
 
 	type scheduleOutput {

@@ -73,8 +73,7 @@ function convertDaystimes(schedules){
                 "priority": elem.priority,
                 "courseScore": elem.courseScore,
                 "professorScore": elem.professorScore,
-                "courseScoreWithProfessor": elem.courseScoreWithProfessor,
-                "professorScoreWithCourse": elem.professorScoreWithCourse
+                "rmpScore": elem.rmpScore
             }
 
             var dt = "";
@@ -88,6 +87,7 @@ function convertDaystimes(schedules){
             // console.log(elem);
             if (dt === "TBA") {
                 obj['TBA'] = true;
+                obj['duration'] = "TBA";
             }else{
                 if (dt.includes('Su')) {
                     obj['daysOfWeek'].push(0);
@@ -112,6 +112,7 @@ function convertDaystimes(schedules){
                 }
                 // timing = "10:30am - 1:30pm"
                 const timing = dt.split(/ (.+)/)[1];
+                obj['duration'] = timing;
                 // convert 12 hour to 24 hour manner
                 var toBeUpdated = timing.split(' - ');
                 var start = toBeUpdated[0];
@@ -296,6 +297,32 @@ function rankSchedule(allSchedules){
         sortedSchedules.push(allSchedules[sortedScores[i][0]]);
     }
 
+    // deduplicate schedules based on classNo
+    let i = 0;
+    let targetLength = sortedSchedules.length - 1;
+    while (i < targetLength) {
+        if (sortedSchedules[i].length != sortedSchedules[i + 1].length){
+            i += 1;
+            continue;
+        }
+
+        var currSections = [];
+        var nextSections = [];
+        for (let j = 0; j < sortedSchedules[i].length; j++) {
+            currSections.push(sortedSchedules[i][j].classNo);
+            nextSections.push(sortedSchedules[i + 1][j].classNo);
+        }
+        currSections = currSections.sort();
+        nextSections = nextSections.sort();
+        if (currSections === nextSections){
+            sortedSchedules.splice(i, 1);
+            targetLength -= 1;
+        } else {
+            i += 1;
+        }
+
+    }
+
     console.log("schedules scores", scores);
     return sortedSchedules;
 }
@@ -386,8 +413,7 @@ module.exports = {
                     var professor_name = "";
                     // professor_name-> overall score
                     var professor_score = {};
-                    // professor_name-> *course&professor specific{courseS, profS}
-                    var course_score_with_professor = {};
+                    var professor_rscore = {};
                     // no open section
                     const sections1 = await Section.find({
                         courseID: cart[i].courseID,
@@ -445,29 +471,9 @@ module.exports = {
                             });
                             if (p){
                                 professor_score[professor_name] = Math.round((p.score + Number.EPSILON) * 100) / 100;
-                            }else{
-                                professor_score[professor_name] = 0;
-                            }
-                        }
-                        if(!course_score_with_professor.hasOwnProperty(professor_name)){
-                            const rate_summary = await RateSummary.findOne({
-                                courseID: element.courseID,
-                                courseTitle: element.courseTitle,
-                                professor: professor_name
-                            });
-                            // console.log(rate_summary);
-                            if (rate_summary){
-                                course_score_with_professor[professor_name] = {
-                                    // Math.round((result[i]['score'] + Number.EPSILON) * 100) / 100
-                                    // Math.round((rate_summary.avgCourseScore + Number.EPSILON) * 100) / 100
-                                    "profS": Math.round((rate_summary.avgProfScore + Number.EPSILON) * 100) / 100,
-                                    "courseS": Math.round((rate_summary.avgCourseScore + Number.EPSILON) * 100) / 100
-                                };
-                            } else {
-                                course_score_with_professor[professor_name] = {
-                                    "profS": 0,
-                                    "courseS": 0
-                                };
+                                if(p.rscore){
+                                    professor_rscore[professor_name] = p.rscore;
+                                }
                             }
                         }
 
@@ -476,9 +482,14 @@ module.exports = {
                         sectionWithPriorty[j]['priority'] = priority[element.courseID + element.courseTitle];
                         sectionWithPriorty[j]['course_id'] = course_id[element.courseID + element.courseTitle];
                         sectionWithPriorty[j]['courseScore'] = course_score;
-                        sectionWithPriorty[j]['professorScore'] = professor_score[professor_name];
-                        sectionWithPriorty[j]['courseScoreWithProfessor'] = course_score_with_professor[professor_name]['courseS'];
-                        sectionWithPriorty[j]['professorScoreWithCourse'] = course_score_with_professor[professor_name]['profS'];
+                        
+                        if (professor_score.hasOwnProperty(professor_name)){
+                            sectionWithPriorty[j]['professorScore'] = professor_score[professor_name];
+                            if (professor_rscore.hasOwnProperty(professor_name)){
+                                sectionWithPriorty[j]['rmpScore'] = professor_rscore[professor_name];
+                            }
+                        }
+
                         sectionWithPriorty[j]['color'] = colormap[element.courseID + element.courseTitle];
                         if (sectionWithPriorty[j]['status'] !== "Open") {
                             sectionWithPriorty[j]['color'] = closedColor;

@@ -277,8 +277,7 @@ query {
       color // if status !== 'Open', color will be fixed. greyish color.
       courseScore
       professorScore
-      courseScoreWithProfessor
-      professorScoreWithCourse
+      rmpScore
     }
   }
 
