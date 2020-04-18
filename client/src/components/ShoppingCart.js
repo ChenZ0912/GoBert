@@ -7,9 +7,11 @@ import { AuthContext } from '../context/auth';
 import Scheduler from './Scheduler';
 
 function getSemesters (semesters) {
+    if (semesters.length > 2) semesters=semesters.slice(-2);
+
     var options = [];
     for (var i = 0; i < semesters.length; ++i) {
-        options.push({key: i+1, text: semesters[i], value: semesters[i]})
+        options.push({key: i, text: semesters[i], value: semesters[i]})
     }
     return options;
 }
@@ -105,19 +107,19 @@ function ShoppingCart() {
         }
     }
 
-    const [scheduleInput, setInput] = useState({
-        username: user.username,
-        onlyOpen: true,
-        term: "Fall 2020",
-        intendedCourses:[
-            "5e992743cf536b7bbf1c9f39",
-            "5e992743cf536b7bbf1c91f7",
-            "5e992743cf536b7bbf1c995e"
-        ]
-    });
+    // const [scheduleInput, setInput] = useState({
+    //     username: user.username,
+    //     onlyOpen: true,
+    //     term: "Fall 2020",
+    //     intendedCourses:[
+    //         "5e992743cf536b7bbf1c9f39",
+    //         "5e992743cf536b7bbf1c91f7",
+    //         "5e992743cf536b7bbf1c995e"
+    //     ]
+    // });
 
     const [clear, setClear] = useState(false);
-    //const [scheduleInput, setInput] = useState({});
+    const [scheduleInput, setInput] = useState({});
 
     function clearSchedule() {
         setInput({});
@@ -144,15 +146,21 @@ function ShoppingCart() {
             <h1>Shopping Cart</h1>
             <Divider/>
             {loading ? (
-                <h3>Loading results..</h3>
+                <h3>Loading results...</h3>
             ) : ( results && results.courses && results.courses.length !== 0) ? (
             <Form>
 
             {/*Shopping Cart*/}
             <Card fluid>
+                <Button.Group color='violet' attached='top'>  
+                    <Button onClick={selectAll}>Select / Deselect All</Button>
+                    <Button style={{width: '77%'}}>Courses</Button>
+                </Button.Group> 
+               
+                <Card.Content>
                 {results.courses.map((result, index) => (
                     <dl key={index}>
-                    <Grid style={{ marginLeft: '5px' }}>
+                    <Grid>
                         <Grid.Column width={3}>
                             <Dropdown
                                 fluid button selection
@@ -165,40 +173,40 @@ function ShoppingCart() {
                             style={{ margin: '7% 45% 0 45%' }}/>
                         </Grid.Column>
 
-                        <Grid.Column width={10}>
+                        <Grid.Column width={13}>
                             <h2>{result.courseID} {result.courseTitle}</h2>
                             <p>Course Score: {result.score} (based on {result.numRate} ratings)</p>
                         </Grid.Column>
                     </Grid>
                     </dl>
                 ))}
+                </Card.Content>
             </Card>
 
-            {/*Submit to generate schedule*/}
-            <Grid style={{ marginLeft: '5px', marginRight: '5px'}}>
+            {/*Generate schedule*/}
+            <h1>Schedules</h1>
+            <Divider/>
+            <Grid>
                 <Grid.Column width={3}>
-                    <Button fluid color="violet" style={{ marginBottom: "5px" }} onClick={selectAll}>
-                        Select / Deselect All</Button>
-                    <Form.Field 
-                        control='input' type='checkbox' id='onlyOpen'
-                        label='Include open sections only'
-                        style={{ marginTop: "3px" }}/>
-                </Grid.Column>
-                <Grid.Column width={13}>
                 <Button.Group fluid color="violet">
                     {clear ? <Button onClick={clearSchedule}>Clear</Button>:
                     <Dropdown
                         labeled button selection
                         icon='calendar alternate'
                         className='button icon'
-                        text="Generate Schedule For Semester ..."
+                        text='Generate Schedule'
                         options={getSemesters(results.semesters)}
                         onChange={generateSchedule}
                     />}
                 </Button.Group>
                 </Grid.Column>
+                <Grid.Column width={3} style={{marginTop: '7px'}}>
+                    <Form.Field 
+                    control='input' type='checkbox' id='onlyOpen'
+                    label='Include open sections only'
+                    style={{ marginTop: "3px"}}/>
+                </Grid.Column>
             </Grid>
-
             {/*Generated schedules*/}
             {scheduleInput.term && <Scheduler scheduleInput={scheduleInput}/>}
             </Form>

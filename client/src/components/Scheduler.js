@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, Icon, Container } from 'semantic-ui-react';
+import { Card, CardContent, Container, Icon } from 'semantic-ui-react';
 import MyPopup from '../util/MyPopup';
 import ReactDOM from 'react-dom';
 
@@ -12,22 +12,23 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 var lockedCourse = [];
 
 function getCourses (schedule) {
+  
   var events = [];
-  for (var i = 0; i < schedule.length; ++i) {
-    const course = schedule[i];
+  for (var key in schedule) {
+    const course = schedule[key];
     const extra = {
+      link: "/rateCourse/"+course._id,
       course: course.courseTitle,
       classNo: course.classNo,
       courseScore: course.courseScore,
       profScore: course.professorScore,
-      score: course.courseScoreWithProfessor,
+      rmpScore: course.rmpScore,
       locked: lockedCourse.includes(course.classNo)
     }
 
     if (course.TBA) {
       events.push({
         title: course.courseID+' - '+course.professor+' (Time: TBA)',
-        url: "/rateCourse/"+course._id,
         daysOfWeek: [0],
         duration: { days: 7 },
         backgroundColor: course.color,
@@ -37,8 +38,7 @@ function getCourses (schedule) {
       }) 
     } else {
       events.push({
-        title: ('\n'+course.duration.slice(5)+'\n'+course.courseID+'\n'+course.professor),
-        url: "/rateCourse/"+course._id,
+        title: '\n'+course.duration+'\n'+course.courseID+'\n'+course.professor,
         daysOfWeek: course.daysOfWeek,
         startTime: course.start,
         endTime: course.end,
@@ -67,20 +67,31 @@ function Scheduler({scheduleInput}) {
       },
       body: JSON.stringify({query: `{generateSchedule( 
         username:${JSON.stringify(scheduleInput.username)} 
+        onlyOpen:${JSON.stringify(scheduleInput.onlyOpen)} 
         term:${JSON.stringify(scheduleInput.term)} 
         intendedCourses:${JSON.stringify(scheduleInput.intendedCourses)}){
           noSection{ courseID courseTitle priority reason } 
-          schedule{ courseID courseTitle TBA daysOfWeek start end 
-            professor classNo term _id priority dates duration color courseScore 
-            professorScore courseScoreWithProfessor professorScoreWithCourse}}}`})
+          schedule{ courseID courseTitle TBA daysOfWeek start end
+            professor classNo term _id priority dates duration color 
+            rmpScore courseScore professorScore }}}`})
     })
       .then(r => r.json())
       .then(data => {
-        console.log(data);
         if (!data["errors"]) {
-          setLoading(false);
+          var schedulesTemp = [];
+          for (var schedule of data["data"]["generateSchedule"]["schedule"]) {
+            var scheduleDict = {};
+            for (var course of schedule) {
+              scheduleDict[course.classNo] = course;
+            }
+            if (Object.keys(scheduleDict).length !== 0)
+              schedulesTemp.push(scheduleDict);
+          }
+          setSchedules(schedulesTemp);
+
+          data["data"]["generateSchedule"]["schedule"] = schedulesTemp;
           setResults(data["data"]["generateSchedule"]);
-          setSchedules(data["data"]["generateSchedule"]["schedule"])
+          setLoading(false);
         }
       }
     );
@@ -95,45 +106,45 @@ function Scheduler({scheduleInput}) {
     else lockedCourse.push(classNo);
     
     const isLock = lockedCourse.includes(classNo);
-    value.setExtendedProp( "locked",  isLock);
+    value.setExtendedProp("locked",  isLock);
     
     var schedulesTemp = results["schedule"].filter(function(schedule){ 
       for (var lockCourse of lockedCourse) {
-        var flag = false;
-        for (var course of schedule) {
-          if (course.classNo === lockCourse) {
-            flag = true;
-            break;
-          }
-        }
-        if (flag === false) return false;
+        if (!schedule[lockCourse])
+          return false;
       }
       return true;
     })
     setSchedules(schedulesTemp);
   }
   
+  // Render event
   const onRender=(info) => {
     ReactDOM.render(
-      <MyPopup content={info.event} courseCallback={lockCourse}>
+      <MyPopup content={info.event}>
         <Container fluid>
           {info.event.extendedProps.locked ? 
-          <Icon disabled color="black" name='lock' style={{float: "right", marginRight: "5px"}}/> : 
-          <Icon disabled color="black" name='lock open' style={{float: "right", marginRight: "5px"}}/>}
+            <Icon color='grey' name='lock' value={info.event} 
+              onClick={lockCourse} style={{float: "right", margin: '1px 5px 0 0'}}/> : 
+            <Icon color='grey' name='lock open' value={info.event} 
+              onClick={lockCourse} style={{float: "right", margin: '1px 5px 0 0'}}/>}
           <div className="event">{info.event.title}<br/></div>
         </Container>
       </MyPopup>,
       info.el,
     );
-    return info.el
+    return info.el;
   }
 
   return (
     <>
-    {!loading && results &&
+    {loading ? (
+      <h3>Loading results...</h3>
+    ) : results &&
       <Card fluid style={{marginBottom: "50px"}}>
-        <Card.Content>
-          <h2 align="center">{scheduleInput.term}</h2>
+        <Card.Content style={{textTransform: "uppercase", padding: "7px",
+          color: "#57068C", backgroundColor: "#E6E6FA"}}>
+          <h3 align="center">{scheduleInput.term}</h3>
         </Card.Content>
         {results["noSection"] && results["noSection"].length !== 0 &&
           <CardContent>
@@ -173,8 +184,8 @@ function Scheduler({scheduleInput}) {
   );
 }
 
-// const colors = ["rgb(134,227,206)", "rgb(208,230,165)", 
-//   "rgb(255,221,148)", "rgb(250,137,123)", "rgb(204,171,219)" ];
+export default Scheduler;
+
 // import gql from 'graphql-tag';
 // const GENERATE_SCHEDULE_QUERY = gql`
 //   query generateSchedule(
@@ -208,5 +219,3 @@ function Scheduler({scheduleInput}) {
 //     }
 //   }
 // `
-
-export default Scheduler;

@@ -1,21 +1,23 @@
-import { Button, Popup } from 'semantic-ui-react';
+import { Popup } from 'semantic-ui-react';
 import React from 'react';
 
-function MyPopup({ content, children, courseCallback }) {
-  if (courseCallback) {
-    return <Popup hoverable trigger={children} position='top center' style={{width:"175px"}}> 
-      <div className="event" ><b>{content.extendedProps.course}</b>
-      <br/>Class No: [{content.extendedProps.classNo}]
-      <br/>Section Score: {content.extendedProps.score}/5
-      <br/>Course Score: {content.extendedProps.courseScore}/5
-      <br/>Professor Score: {content.extendedProps.profScore}/5<br/><br/></div>
-      { content.extendedProps.locked ?
-        <Button fluid onClick={courseCallback} value={content}>Unlock</Button>:
-        <Button fluid onClick={courseCallback} value={content}>Lock</Button>
-      }
-    </Popup>;
+function MyPopup({ content, children }) {
+  const event = content.extendedProps;
+  if (event) {
+    content = '\nClass No: ' + event.classNo;
+    content += '\nCourse Score: ';
+    content += (event.courseScore) ? event.courseScore + '/5' : 'N/A';
+    content += '\nRMP Prof Score: ';
+    content += (event.rmpScore) ? event.rmpScore + '/5' : 'N/A';
+    content += '\nGoBert Prof Score: ';
+    content += (event.profScore) ? event.profScore + '/5' : 'N/A';
   }
-  return <Popup inverted content={content} trigger={children}/>;
+
+  return (event)?
+    <Popup inverted hoverable className='event' trigger={children}>
+      <a href={event.link}><b>{event.course}</b></a> {content}
+    </Popup>:
+    <Popup inverted content={content} trigger={children}/>;
 }
 
 export default MyPopup;
