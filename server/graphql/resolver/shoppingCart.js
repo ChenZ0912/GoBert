@@ -300,33 +300,25 @@ function rankSchedule(allSchedules){
 
     // deduplicate schedules based on classNo
     console.log("deduplicate schedules");
-    let i = 0;
-    let targetLength = sortedSchedules.length - 1;
-    while (i < targetLength) {
-        if (sortedSchedules[i].length != sortedSchedules[i + 1].length){
-            i += 1;
-            continue;
-        }
-
+    uniqueSchedule = {};
+    result = [];
+    for (let i = 0; i < sortedSchedules.length; i++) {
+        const s = sortedSchedules[i]; // one schedule;
         var currSections = [];
-        var nextSections = [];
         for (let j = 0; j < sortedSchedules[i].length; j++) {
-            currSections.push(sortedSchedules[i][j].classNo);
-            nextSections.push(sortedSchedules[i + 1][j].classNo);
-        }
-        currSections = currSections.sort();
-        nextSections = nextSections.sort();
-        
-        if (JSON.stringify(currSections) == JSON.stringify(nextSections)) {
-            sortedSchedules.splice(i, 1);
-            targetLength -= 1;
-        } else {
-            i += 1;
+          currSections.push(sortedSchedules[i][j].classNo);
         }
 
+        const sectionKey = JSON.stringify(currSections.sort());
+        if (uniqueSchedule.hasOwnProperty(sectionKey)) {
+            continue;
+        } else {
+            uniqueSchedule[sectionKey] = 1;
+            result.push(sortedSchedules[i]);
+        }
     }
 
-    return sortedSchedules;
+    return result;
 }
 
 
