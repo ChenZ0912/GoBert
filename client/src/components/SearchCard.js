@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Card, Dropdown, Grid, Icon } from 'semantic-ui-react';
+import { Button, Card, Dropdown, Grid, Icon } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { useMutation } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
@@ -53,7 +53,7 @@ function SearchCard({
   }
 
   return (
-    <Card fluid>
+    <Card fluid color='violet'>
       <Card.Content>
       <Grid>
         <Grid.Column width={3} style={{textTransform: "uppercase", fontSize: "15px"}}>
@@ -65,17 +65,18 @@ function SearchCard({
         
         {/*Add to Shopping Card*/}
         {category === "Course" && user && add &&
+        <Button.Group color="violet">
           <Dropdown
             labeled button selection
             text='Add to Shopping Cart'
+            className='button icon'
+            color='violet'
             icon='cart'
-            className='icon'
             options={options}
             onChange={onChange}
-            style={{ margin: "5px", height: "10px",
-            color: "white", backgroundColor: "#8900e1" }}
+            style={{ margin: "5px", height: "10px" }}
           />
-        }
+        </Button.Group>}
       </Grid>
       </Card.Content>
       <Card.Content as={Link} to={link} style={{backgroundColor: "#f2f2f2"}}>

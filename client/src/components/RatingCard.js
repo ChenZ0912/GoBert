@@ -56,7 +56,7 @@ function RatingCard({
         <Grid.Column width={11}>
           { category === "Professor" ? 
             <h3>{courseID} {courseTitle}</h3> : 
-            <a href={"/rateProf/"+professor}> <h3>{professor}</h3> </a> 
+            <a style={{color: "black"}} href={"/rateProf/"+professor}> <h3>{professor}</h3> </a> 
           }
           <span><br/>[ Number of Ratings: {values.ratings.length} ]</span>
         </Grid.Column>
@@ -117,8 +117,8 @@ function RatingCard({
           </Grid>
         </dl> ))}
         {user && askToRate &&
-          <RateForm formInput = {{professor, courseID, courseTitle, vals: values}} 
-            setAsk={setAsk} setVals={setVal}/>
+          <RateForm  setAsk={setAsk} setVals={setVal}
+            formInput = {{professor, courseID, courseTitle, vals: values}}/>
         }
       </Card.Content>
       : ( user && 

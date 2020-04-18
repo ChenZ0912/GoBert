@@ -12,55 +12,39 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 var lockedCourse = [];
 
 function getCourses (schedule) {
-  var colors = ["rgb(134,227,206)", "rgb(208,230,165)", 
-  "rgb(255,221,148)", "rgb(250,137,123)", "rgb(204,171,219)" ];
-  const colorSize = colors.length;
-  for (var j = 0; j < (schedule.length-colorSize); ++j) {
-    // generate extra colors if needed
-    var found = true;
-    while (found){
-      var color = "rgb("+(Math.random()*100+150)+","
-                        +(Math.random()*100+150)+","
-                        +(Math.random()*100+150)+")";
-      found = colors.includes(color);
-      if (!found) colors.push(color);
-    }
-  }
-  colors.sort(() => Math.random() - 0.5); // shuffle colors
-
   var events = [];
   for (var i = 0; i < schedule.length; ++i) {
     const course = schedule[i];
+    const extra = {
+      course: course.courseTitle,
+      classNo: course.classNo,
+      courseScore: course.courseScore,
+      profScore: course.professorScore,
+      score: course.courseScoreWithProfessor,
+      locked: lockedCourse.includes(course.classNo)
+    }
+
     if (course.TBA) {
       events.push({
         title: course.courseID+' - '+course.professor+' (Time: TBA)',
         url: "/rateCourse/"+course._id,
         daysOfWeek: [0],
         duration: { days: 7 },
-        backgroundColor: colors[i],
-        borderColor: colors[i],
+        backgroundColor: course.color,
+        borderColor: course.color,
         textColor: "black",
-        extendedProps: {
-          course: course.courseTitle,
-          classNo: course.classNo,
-          locked: lockedCourse.includes(course.classNo)
-        }
+        extendedProps: extra
       }) 
     } else {
       events.push({
-        title: ('\n'+course.start.slice(0,-3)+' - '+course.end.slice(0,-3)+'\n'+
-                course.courseID+'\n'+course.professor),
+        title: ('\n'+course.duration.slice(5)+'\n'+course.courseID+'\n'+course.professor),
         url: "/rateCourse/"+course._id,
         daysOfWeek: course.daysOfWeek,
         startTime: course.start,
         endTime: course.end,
-        backgroundColor: colors[i],
-        borderColor: colors[i],
-        extendedProps: {
-          course: course.courseTitle,
-          classNo: course.classNo,
-          locked: lockedCourse.includes(course.classNo)
-        }
+        backgroundColor: course.color,
+        borderColor: course.color,
+        extendedProps: extra
         // startRecur:
         // endRecur:
       })
@@ -87,7 +71,8 @@ function Scheduler({scheduleInput}) {
         intendedCourses:${JSON.stringify(scheduleInput.intendedCourses)}){
           noSection{ courseID courseTitle priority reason } 
           schedule{ courseID courseTitle TBA daysOfWeek start end 
-            professor classNo term _id priority dates }}}`})
+            professor classNo term _id priority dates duration color courseScore 
+            professorScore courseScoreWithProfessor professorScoreWithCourse}}}`})
     })
       .then(r => r.json())
       .then(data => {
@@ -150,7 +135,7 @@ function Scheduler({scheduleInput}) {
         <Card.Content>
           <h2 align="center">{scheduleInput.term}</h2>
         </Card.Content>
-        {results["noSection"] &&
+        {results["noSection"] && results["noSection"].length !== 0 &&
           <CardContent>
           <h3><br/>Oh No! The following courses are NOT availble</h3>
           {results["noSection"].map((section, index) => (
@@ -180,7 +165,7 @@ function Scheduler({scheduleInput}) {
               />
               </dl>
             ))}
-          </> : <h3>No schedule available</h3> }
+          </> : <h3>No schedule available o((⊙﹏⊙))o</h3> }
         </CardContent>
       </Card>
     }
@@ -188,6 +173,8 @@ function Scheduler({scheduleInput}) {
   );
 }
 
+// const colors = ["rgb(134,227,206)", "rgb(208,230,165)", 
+//   "rgb(255,221,148)", "rgb(250,137,123)", "rgb(204,171,219)" ];
 // import gql from 'graphql-tag';
 // const GENERATE_SCHEDULE_QUERY = gql`
 //   query generateSchedule(

@@ -105,18 +105,26 @@ function ShoppingCart() {
         }
     }
 
+    const [scheduleInput, setInput] = useState({
+        username: user.username,
+        onlyOpen: true,
+        term: "Fall 2020",
+        intendedCourses:[
+            "5e992743cf536b7bbf1c9f39",
+            "5e992743cf536b7bbf1c91f7",
+            "5e992743cf536b7bbf1c995e"
+        ]
+    });
+
     const [clear, setClear] = useState(false);
-    const [scheduleInput, setInput] = useState({});
-    // const [scheduleInput, setInput] = useState({
-    //     username: user.username,
-    //     term: "Fall 2019",
-    //     intendedCourses: ["5e790d64199406c82611abb9"]
-    // });
+    //const [scheduleInput, setInput] = useState({});
+
     function clearSchedule() {
         setInput({});
         setClear(false);
     }
     function generateSchedule(e, {value}) {
+        const onlyOpen = document.getElementById("onlyOpen").checked;
         var intendedCourses = [];
         var checkboxes = document.getElementsByName("selectedCourse");  
         for (var i = 0; i < checkboxes.length; i++) {
@@ -124,6 +132,7 @@ function ShoppingCart() {
         }
         setInput({
             username: user.username,
+            onlyOpen: onlyOpen,
             term: value,
             intendedCourses: intendedCourses
         });
@@ -138,6 +147,8 @@ function ShoppingCart() {
                 <h3>Loading results..</h3>
             ) : ( results && results.courses && results.courses.length !== 0) ? (
             <Form>
+
+            {/*Shopping Cart*/}
             <Card fluid>
                 {results.courses.map((result, index) => (
                     <dl key={index}>
@@ -162,9 +173,16 @@ function ShoppingCart() {
                     </dl>
                 ))}
             </Card>
+
+            {/*Submit to generate schedule*/}
             <Grid style={{ marginLeft: '5px', marginRight: '5px'}}>
                 <Grid.Column width={3}>
-                    <Button fluid color="violet" onClick={selectAll}>Select / Deselect All</Button>
+                    <Button fluid color="violet" style={{ marginBottom: "5px" }} onClick={selectAll}>
+                        Select / Deselect All</Button>
+                    <Form.Field 
+                        control='input' type='checkbox' id='onlyOpen'
+                        label='Include open sections only'
+                        style={{ marginTop: "3px" }}/>
                 </Grid.Column>
                 <Grid.Column width={13}>
                 <Button.Group fluid color="violet">
@@ -180,6 +198,8 @@ function ShoppingCart() {
                 </Button.Group>
                 </Grid.Column>
             </Grid>
+
+            {/*Generated schedules*/}
             {scheduleInput.term && <Scheduler scheduleInput={scheduleInput}/>}
             </Form>
         ) : (

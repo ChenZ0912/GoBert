@@ -31,7 +31,7 @@ function RateForm(
   }
 
   // A year is considered valid if it is within last 5 years
-  const year = new Date().getFullYear() + 1;
+  const year = new Date().getFullYear();
 
   function onSubmit() {
     var errorTemp = "";
@@ -67,11 +67,13 @@ function RateForm(
     update(cache, mutationResult) {
       if (mutationResult.data["postRate"]) {
         var results = mutationResult.data["postRate"];
+        // Reset values for ratings in current rateSummary
         vals.avgProfScore = results.avgProfScore;
         vals.avgCourseScore = results.avgCourseScore;
         vals.ratings = results.ratings;
         setVals(vals);
-        setAsk(results.alreadyRate);
+        // Reset ask to rate in current rateSummary
+        setAsk(false);
       }
     },
     onError(error) {
@@ -99,7 +101,7 @@ function RateForm(
           <Form.Input
             name="year"
             type="number"
-            placeholder="2020"
+            placeholder={year}
             onChange={onChange}
           />
         </Grid.Column>
