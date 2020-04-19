@@ -214,6 +214,7 @@ query {
       avgProfScore
       avgCourseScore
       numRate
+      course_id
       ratings{
         username
         username

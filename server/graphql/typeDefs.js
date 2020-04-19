@@ -64,6 +64,7 @@ module.exports = gql`
 		avgCourseScore: Float
 		numRate: Int
 		ratings: [Rate]
+		course_id: String
 	}
 	type Professor {
 		name: String

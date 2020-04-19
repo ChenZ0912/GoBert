@@ -3,6 +3,7 @@ const RateSummary = require('../../models/RateSummary');
 const Rate = require('../../models/Rate');
 const escapeRegex = require("../../utils/escape");
 const Teach = require('../../models/Teach');
+const Course = require('../../models/Course');
 
 module.exports = {
   ProfQuery: {
@@ -57,7 +58,13 @@ module.exports = {
                     courseTitle: courseTitle,
                     professor: professor
                 });
-                
+                var course = await Course.findOne({
+                  courseID: courseID,
+                  courseTitle: courseTitle
+                });
+
+
+
                 if (!rating){
                     rating = {
                         'courseID': courseID,
@@ -66,12 +73,14 @@ module.exports = {
                         'avgCourseScore': 0.0,
                         'numRate': 0,
                         'professor': professor,
-                        'ratings': []
+                        'ratings': [],
+                        'course_id': course._id
                     }
                 }else{
                   rating['ratings'] = ratings;
-                  rating['avgProfScore'] = Math.round((rating['avgProfScore'] + Number.EPSILON) * 100) / 100
-                  rating['avgCourseScore'] = Math.round((rating['avgCourseScore'] + Number.EPSILON) * 100) / 100
+                  rating['avgProfScore'] = Math.round((rating['avgProfScore'] + Number.EPSILON) * 100) / 100;
+                  rating['avgCourseScore'] = Math.round((rating['avgCourseScore'] + Number.EPSILON) * 100) / 100;
+                  rating['course_id'] = course._id;
                 }
                 profStats.push(rating);
             }
