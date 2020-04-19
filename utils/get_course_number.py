@@ -58,7 +58,7 @@ try:
             # print("open sub first time")
         driver.execute_script("arguments[0].click();", sub_sel)
         # click to open the subject drop down
-         myElem = WebDriverWait(driver, delay).until(
+        myElem = WebDriverWait(driver, delay).until(
                             EC.presence_of_element_located((By.CSS_SELECTOR, 'div.bs-container > div.dropdown-menu > ul > li > a')))
         sub_drop_down = driver.find_elements_by_css_selector('div.bs-container > div.dropdown-menu > ul > li > a')
         # click to get the length of all subjects
