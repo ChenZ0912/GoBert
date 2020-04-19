@@ -222,25 +222,25 @@ async function searchGobert(query){
     return 0;
   }
 
-  if (professors.length === 0 && courses.length === 0) {
-    console.log('failed to search using the exact mode, transit to blurry mode');
+  // if (professors.length === 0 && courses.length === 0) {
+  //   console.log('failed to search using the exact mode, transit to blurry mode');
 
-    var lookupRegex = [];
-    for (var i = lookupWords.length - 1; i >= 0; i--) {
-      lookupRegex.push(new RegExp(escapeRegex(lookupWords[i]), 'gi'));
-    }
-    professors = await Professor.find({
-      name: {
-        $in: lookupRegex
-      }
-    });
+  //   var lookupRegex = [];
+  //   for (var i = lookupWords.length - 1; i >= 0; i--) {
+  //     lookupRegex.push(new RegExp(escapeRegex(lookupWords[i]), 'gi'));
+  //   }
+  //   professors = await Professor.find({
+  //     name: {
+  //       $in: lookupRegex
+  //     }
+  //   });
 
-    courses = await Course.find({
-      _total: {
-        $in: lookupRegex
-      }
-    });
-  }
+  //   courses = await Course.find({
+  //     _total: {
+  //       $in: lookupRegex
+  //     }
+  //   });
+  // }
 
   for (let i = 0; i < professors.length; i++) {
     professors[i]['category'] = 'Professor';
