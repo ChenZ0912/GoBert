@@ -49,6 +49,8 @@ try:
         sub_sel = drop_downs[2]
         driver.execute_script("arguments[0].click();", school_sel)
         # click to drop down all schools
+        myElem = WebDriverWait(driver, delay).until(
+                    EC.presence_of_element_located((By.CSS_SELECTOR, 'div.bs-container > div.dropdown-menu > ul > li > a')))
         school_drop_down = driver.find_elements_by_css_selector('div.bs-container > div.dropdown-menu > ul > li > a')
         # get all the selection buttons
         driver.execute_script("arguments[0].click();", school_drop_down[i])
@@ -56,6 +58,8 @@ try:
             # print("open sub first time")
         driver.execute_script("arguments[0].click();", sub_sel)
         # click to open the subject drop down
+         myElem = WebDriverWait(driver, delay).until(
+                            EC.presence_of_element_located((By.CSS_SELECTOR, 'div.bs-container > div.dropdown-menu > ul > li > a')))
         sub_drop_down = driver.find_elements_by_css_selector('div.bs-container > div.dropdown-menu > ul > li > a')
         # click to get the length of all subjects
             # print("close sub first time")
@@ -63,6 +67,8 @@ try:
         # click to close the drop down to setup looping
         over_lay_count = 0
         over_lay_max = 100
+        if len(sub_drop_down) == 0:
+          continue
         for j in range(1, len(sub_drop_down)):
             if over_lay_count >= over_lay_max:
                 driver.refresh()
