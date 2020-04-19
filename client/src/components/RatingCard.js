@@ -55,9 +55,8 @@ function RatingCard({
       <Grid>
         <Grid.Column width={11}>
           { course_id ? 
-            <a style={{color: "black"}} href={"/rateCourse/"+course_id}> 
-              <h3>{courseID} {courseTitle}</h3> 
-            </a>: 
+            <a style={{color: "black"}} href={"/rateCourse/"+course_id}>
+              <h3>{courseID} {courseTitle}</h3></a>: 
             <a style={{color: "black"}} href={"/rateProf/"+professor}> <h3>{professor}</h3> </a> 
           }
           <span><br/>[ Number of Ratings: {values.ratings.length} ]</span>
