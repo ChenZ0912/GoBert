@@ -53,6 +53,9 @@ module.exports = {
                     var courseStats = [];
 					for (let i = 0; i < sections.length; i++) {
 						const prof = sections[i]['professor'];
+						if (prof === "Staff"){
+							continue;
+						}
 						var rating = await RateSummary.findOne({
 							courseID: course.courseID,
 							courseTitle: course.courseTitle,
