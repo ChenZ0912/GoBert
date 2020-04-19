@@ -77,7 +77,7 @@ function RateProf(props) {
         {results.rateSummary &&
           results.rateSummary.map((rateSummary, index) => (
             <dl key={index}>
-              <RatingCard category="Professor" rateSummary={rateSummary} />
+              <RatingCard course_id={rateSummary.course_id} rateSummary={rateSummary} />
             </dl>  
           ))}
       </Transition.Group>
@@ -104,6 +104,7 @@ const FETCH_PROF_QUERY = gql`
         avgProfScore
         avgCourseScore
         numRate
+        course_id
         ratings{
           username
           anonymity

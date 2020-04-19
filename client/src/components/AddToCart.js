@@ -36,7 +36,7 @@ function AddToCart(
 
   return (
     <>
-    {add && <Button.Group color="violet" floated='right'>
+    {user && add && <Button.Group color="violet" floated='right'>
         <Dropdown
             labeled button selection
             text='Add to Shopping Cart'

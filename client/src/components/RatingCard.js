@@ -9,10 +9,10 @@ import RateForm from './RateForm';
 import VoteButton from './VoteButton';
 
 function RatingCard({
-  category,
+  course_id,
   rateSummary: { professor, courseID, courseTitle, avgProfScore, avgCourseScore, ratings }
 }) {
-
+  
   const {user} = useContext(AuthContext);
   const [ askToRate, setAsk ] = useState(true);
   const [ values, setVal ] = useState({
@@ -54,8 +54,10 @@ function RatingCard({
       <Card.Content>
       <Grid>
         <Grid.Column width={11}>
-          { category === "Professor" ? 
-            <h3>{courseID} {courseTitle}</h3> : 
+          { course_id ? 
+            <a style={{color: "black"}} href={"/rateCourse/"+course_id}> 
+              <h3>{courseID} {courseTitle}</h3> 
+            </a>: 
             <a style={{color: "black"}} href={"/rateProf/"+professor}> <h3>{professor}</h3> </a> 
           }
           <span><br/>[ Number of Ratings: {values.ratings.length} ]</span>
