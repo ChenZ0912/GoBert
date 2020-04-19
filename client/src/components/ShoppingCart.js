@@ -156,22 +156,26 @@ function ShoppingCart() {
                 {results.courses.map((result, index) => (
                     <dl key={index}>
                     <Grid>
-                        <Grid.Column width={3}>
-                            <Dropdown
-                                fluid button selection
-                                name={JSON.stringify({ id: result.courseID, title: result.courseTitle })}
-                                options={options}
-                                value={result.priority}
-                                onChange={onChange}/>
-                            <Form.Field control='input' type='checkbox' name="selectedCourse" 
-                            value={result._id} 
-                            style={{ margin: '7% 45% 0 45%' }}/>
-                        </Grid.Column>
+                    <Grid.Column width={3}>
+                        <Dropdown
+                            fluid button selection
+                            name={JSON.stringify({ id: result.courseID, title: result.courseTitle })}
+                            options={options}
+                            value={result.priority}
+                            onChange={onChange}/>
+                        <Form.Field control='input' type='checkbox' name="selectedCourse" 
+                        value={result._id} 
+                        style={{ margin: '7% 45% 0 45%' }}/>
+                    </Grid.Column>
 
-                        <Grid.Column width={13}>
-                            <h2>{result.courseID} {result.courseTitle}</h2>
-                            <p>Course Score: {result.score} (based on {result.numRate} ratings)</p>
-                        </Grid.Column>
+                    <Grid.Column width={13}>
+                        <a style={{color: "black"}} href={"/rateCourse/"+result._id}>
+                            <h2>{result.courseID} {result.courseTitle}</h2></a>
+                        {result.score === 0 ? 
+                            <p>Course Score: N/A</p>:
+                            <p>Course Score: {result.score}/5 (based on {result.numRate} ratings)</p>
+                        }
+                    </Grid.Column>
                     </Grid>
                     </dl>
                 ))}
