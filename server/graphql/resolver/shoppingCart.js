@@ -101,7 +101,7 @@ function convertDaystimes(schedules){
                 if (dt.includes('We')) {
                     obj['daysOfWeek'].push(3);
                 }
-                if (dt.includes('Tu')) {
+                if (dt.includes('Th')) {
                     obj['daysOfWeek'].push(4);
                 }
                 if (dt.includes('Fr')) {
@@ -496,7 +496,7 @@ module.exports = {
                     }
                     allSections.push(sectionWithPriorty);
                 }
-                console.log("color mapping", colormap);
+                // console.log("color mapping", colormap);
                 // cartesian products to find all potential schedule
                 var unsortedSchedules = cleanSchedule(product(allSections));
                 var sortedSchedules = rankSchedule(unsortedSchedules);
