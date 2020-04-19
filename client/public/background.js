@@ -2,13 +2,13 @@ window.result = {}
 chrome.storage.local.clear();
 function onClickHandler(info, tab) {
   console.log(`${info.selectionText}`);
-  fetch('http://localhost:4000', {
+  fetch('https://gobert.herokuapp.com/graphql', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     },
-    body: JSON.stringify({query: `{getSearchResult(query:"${info.selectionText}"){category professor courseID courseTitle score numRate}}`})
+    body: JSON.stringify({query: `{getSearchResult(query:"${info.selectionText}"){category name courseID courseTitle score numRate}}`})
   })
     .then(r => r.json())
     .then(data => { window.result = data; chrome.runtime.sendMessage({type :"course-selection", result: result}); })
