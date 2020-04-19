@@ -142,8 +142,8 @@ function Scheduler({scheduleInput}) {
       <h3>Loading results...</h3>
     ) : results &&
       <Card fluid style={{marginBottom: "50px"}}>
-        <Card.Content style={{textTransform: "uppercase", padding: "7px",
-          color: "#57068C", backgroundColor: "#E6E6FA"}}>
+        <Card.Content style={{textTransform: "uppercase", 
+          padding: "7px", backgroundColor: "#E6E6FA"}}>
           <h3 align="center">{scheduleInput.term}</h3>
         </Card.Content>
         {results["noSection"] && results["noSection"].length !== 0 &&

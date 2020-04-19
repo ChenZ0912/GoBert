@@ -142,7 +142,7 @@ function ShoppingCart() {
     }
 
     return (
-        <Container style={{ marginTop: '7em' }}>
+        <Container style={{ marginTop: '7em', marginBottom: '3em' }}>
             <h1>Shopping Cart</h1>
             <Divider/>
             {loading ? (
@@ -152,11 +152,6 @@ function ShoppingCart() {
 
             {/*Shopping Cart*/}
             <Card fluid>
-                <Button.Group color='violet' attached='top'>  
-                    <Button onClick={selectAll}>Select / Deselect All</Button>
-                    <Button style={{width: '77%'}}>Courses</Button>
-                </Button.Group> 
-               
                 <Card.Content>
                 {results.courses.map((result, index) => (
                     <dl key={index}>
@@ -184,28 +179,28 @@ function ShoppingCart() {
             </Card>
 
             {/*Generate schedule*/}
-            <h1>Schedules</h1>
-            <Divider/>
             <Grid>
-                <Grid.Column width={3}>
-                <Button.Group fluid color="violet">
-                    {clear ? <Button onClick={clearSchedule}>Clear</Button>:
-                    <Dropdown
-                        labeled button selection
-                        icon='calendar alternate'
-                        className='button icon'
-                        text='Generate Schedule'
-                        options={getSemesters(results.semesters)}
-                        onChange={generateSchedule}
-                    />}
-                </Button.Group>
-                </Grid.Column>
-                <Grid.Column width={3} style={{marginTop: '7px'}}>
-                    <Form.Field 
+            <Grid.Column width={3}>
+                <Button fluid color="violet" style={{ marginBottom: "5px" }} onClick={selectAll}>
+                    Select / Deselect All</Button>
+                <Form.Field 
                     control='input' type='checkbox' id='onlyOpen'
                     label='Include open sections only'
-                    style={{ marginTop: "3px"}}/>
-                </Grid.Column>
+                    style={{ marginTop: "3px" }}/>
+            </Grid.Column>
+            <Grid.Column width={13}>
+            <Button.Group fluid color="violet">
+                {clear ? <Button onClick={clearSchedule}>Clear</Button>:
+                <Dropdown
+                    labeled button selection
+                    icon='calendar alternate'
+                    className='button icon'
+                    text='Generate schedule for semester...'
+                    options={getSemesters(results.semesters)}
+                    onChange={generateSchedule}
+                />}
+            </Button.Group>
+            </Grid.Column>
             </Grid>
             {/*Generated schedules*/}
             {scheduleInput.term && <Scheduler scheduleInput={scheduleInput}/>}

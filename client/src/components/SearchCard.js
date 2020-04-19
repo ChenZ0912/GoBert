@@ -1,15 +1,7 @@
-import React, { useContext, useState } from 'react';
-import { Button, Card, Dropdown, Grid, Icon } from 'semantic-ui-react';
+import React, { useState } from 'react';
+import { Card, Grid, Icon } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import { useMutation } from '@apollo/react-hooks';
-import gql from 'graphql-tag';
-
-import { AuthContext } from '../context/auth';
-
-const options = [
-  { key: 1, text: 'Required', value: "required" },
-  { key: 2, text: 'Interested', value: "interested" }
-];
+import AddToCart from './AddToCart';
 
 function SearchCard({
   result: { category, name, courseID, courseTitle, _id, score, numRate,
@@ -17,7 +9,6 @@ function SearchCard({
 }) {
 
   // Search card content
-  const { user } = useContext(AuthContext);
   var categoryIcon = "exclamation triangle";
   var link = "/404";
   var title = "";
@@ -32,25 +23,8 @@ function SearchCard({
     title = name;
   }
 
-  // Add to shopping cart
-  const [add, setAdd] = useState(true);
+  // Add to shopping cart errors
   const [errors, setErrors] = useState({});
-  const [addToCart] = useMutation(ADD_TO_CART_MUTATION, {
-    onError(err) {
-      setErrors(err.graphQLErrors[0].message);
-    }
-  });
-  function onChange (e, {value}) {
-    addToCart({
-      variables: {
-        username: user.username,
-        courseID: courseID,
-        courseTitle: courseTitle,
-        priority: value,
-      }
-    })
-    setAdd(false);
-  }
 
   return (
     <Card fluid color='violet'>
@@ -63,20 +37,9 @@ function SearchCard({
           <Card.Header style={{fontSize: "15px", fontWeight: "bold"}}>{title}</Card.Header>
         </Grid.Column>
         
-        {/*Add to Shopping Card*/}
-        {category === "Course" && user && add &&
-        <Button.Group color="violet">
-          <Dropdown
-            labeled button selection
-            text='Add to Shopping Cart'
-            className='button icon'
-            color='violet'
-            icon='cart'
-            options={options}
-            onChange={onChange}
-            style={{ margin: "5px", height: "10px" }}
-          />
-        </Button.Group>}
+        {/*Add to Shopping Cart*/}
+        {category === "Course" && 
+          <AddToCart setErrors={setErrors} courseID={courseID} courseTitle={courseTitle}/>}
       </Grid>
       </Card.Content>
       <Card.Content as={Link} to={link} style={{backgroundColor: "#f2f2f2"}}>
@@ -117,27 +80,5 @@ function SearchCard({
     </Card>
   );
 }
-
-const ADD_TO_CART_MUTATION = gql`
-  mutation addToShoppingCart(
-    $username: String!,
-    $courseID: String!,
-    $courseTitle: String!,
-    $priority: String!
-  ) {
-    addToShoppingCart(
-      username: $username,
-      courseID: $courseID,
-      courseTitle: $courseTitle,
-      priority: $priority
-    ) {
-      courseID
-      courseTitle
-      score
-      numRate
-      priority
-    }
-  }
-`;
 
 export default SearchCard;
