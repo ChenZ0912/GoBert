@@ -166,6 +166,17 @@ async function searchCourse(query){
   // search courseID union courseTitle union _total
 
   // remove special characters and turm all consecutive white spaces into one white space
+  
+  query = query.replace('\n', ' ');
+
+  const albert_regex = /[a-z]+-[a-z]+ [0-9]+-[0-9a-z]+ \([0-9]+\)/g;
+  
+  if (query.match(albert_regex)){
+    const s = query.split('-');
+
+    query = s[0] + s[1];
+  }
+
   const fuzzyQuery = escapeCourse(query);
   return await Course.find({
       $or: [{
