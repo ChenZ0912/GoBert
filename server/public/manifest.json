@@ -1,9 +1,9 @@
 {
   "manifest_version": 2,
-  "name": "Hello World",
+  "name": "GoBert",
   "version": "1.0",
   "key": "MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQC4OFlka5Qnb8bk/qg/PBvSIQsTFDZesvv+/A+apjYpaBEDhHzapXfMruY0jWYNvsTMASpvlK9rXzB3864CFaOrL5vuKs0e3WoPFUXhvVphIP9bWgDPKL79p9DOLmrSxwPpJffVooqLTw09/81pJaZpgNIJhtAGm3Bd7QZxc2ZnTfQanOnbDt8WoP6okwvCwf1+GZxqbv4kpzn6PWNx8xZShaaTOA5OzBSalhDzcUbZcs061FZ6n+LBfWDFGZWlv4FrqA9wtvllBCB5v47QwybUqhs9mHjdHF+CKPDhVLorA0W56uwkKDPn6/0QsDngUdFPPjGNSURZJP9O23KIzMD/AgMBAAECggEAHp9PTMANOpj8COjD8u78+OsBOkSr3QYHmZUwytZCPpPL8De/wWCsD1wrbCTtB+/kKr0u3qlql4CVP/tDu5j5QeWCGA8JVc4caTFyElo1gdvIVtkZNVZimSuiLAPPQgZPAhyLm/mO6iVT4DB7ZrUZeoQtZeQBBHgmL5bM8WLrbNRiQKKhtwTf0vTt0pZJ24z8Vmzn2j/yZC7V3cv1NHBCGHk6UawfsFqn0S+G+/z9oJZG61Xwz25ZCOhIB9b99F6aVl/B+H9LhdxTNvvC1grxpOv+RbzRSUb3AGsH5hLLMxHbmHc1Di2pLMQmaVyJh6hf8+f0C2hjKtUIbMT0TAYUgQKBgQDcZ6goRCvvAZ1rhL4YgNl4DoZbwKukwVPRxWOg6+2lj/G29NHpIL+26vBsfnoTluaJgv/ys0UJIMepGeh19CkasOTWwORpgM98K0Dii6QzPx4anu4mpmoEI1wtWKjWQDWsN5c8DoRxosH4xKNonSOUSRnV/613OWhgrxAJdbiwIQKBgQDV+K5MJhObuVl4LJ4vy4vv5qPKGyzAW7rxeUjLHWphX9mptgddVOhof9148qPJhgovSGxhBUWAfUoFruF3aFnZzje45G5Qap/d5VYqIt1BUpUvn9yV15DvPdpu0SBqkhenRaIXouZe59ddswxTlZIqgALNTd5iaLh0SIiBucXNHwKBgQCC4HqWDoUYE5lqsxQ+cKSyCc32xd4mozYmplOWxwIDAgrCXXYYPP4anD/P7PqIj16t4UAi2hjwZqqo212STT3rP4djjn8Ttw196iFJZSpH0/8IR7+a686gTm757l+zecVlUk1XuDclU0RjeECgak8qSo4w6PYUid5VKx8WvvTAgQKBgQCA7xgAVNVt+dNa4e/0NwA88Er0J0nhI6VTitT9Z91Jjdt4M3Len6JoDdyj2/osHjQW59o+4FFQKq8nG4lLTbsOzv+uzx9WH9nzeRVh0J5olV3GU9s1A6+XKjtsmWGiNiRArGoPOh79Q1D4akLcPv3T1E1b7zc5L4cusuJm4U262wKBgQCKREgWlPrp9H6WrvkBMXR4AJDH9DQGCVdiZ1JWGhMNmOhgiFylYNBHulSvwASyoUpKC/TwEYRyTexWnwwEcps0X4g7babJam3o7I9VZXcehLQ/hP2UyYC1E6KELyarHPBtC9btuLsZDZJuCDMFAuQSPg+EK6XXrOFRFWytccRWJA==",
-  "description": "Hello world extension for senior design",
+  "description": "GoBert Extension: Better user experience of NYU Albert.",
   "icons": {
     "128": "icon128.png",
     "48": "icon48.png",
@@ -11,25 +11,21 @@
   },
   "background": {
     "scripts": ["background.js"],
-    "js": ["jquery.min.js", "content.js"]
+    "js": ["jquery.min.js"]
   },
   "browser_action": {
     "default_icon": "icon16.png",
     "default_popup": "popup.html"
   },
-  "content_scripts": [{
-    "matches": ["*://www.gobertweb.com/*"],
-    "js": ["jquery.min.js", "content.js"]
-  }],
   "permissions": [
     "tabs",
     "contextMenus",
     "storage",
-    "*://www.gobertweb.com/*"
+    "*://gobert.herokuapp.com/*"
   ],
   "externally_connectable": {
     "matches": [
-      "*://www.gobertweb.com/*"
+      "*://gobert.herokuapp.com/*"
     ]
   }
 }

@@ -102,13 +102,13 @@ $(document).ready(function() {
   $("#search-submit").click(function() {
     console.log("Submitted");
     let input = $("#search-input").val();
-    fetch('http://localhost:4000', {
+    fetch('https://gobert.herokuapp.com/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      body: JSON.stringify({query: `{getSearchResult(query:"${input}"){category professor courseID courseTitle score numRate}}`})
+      body: JSON.stringify({query: `{getSearchResult(query:"${input}"){category name courseID courseTitle score numRate}}`})
     })
       .then(r => r.json())
       .then(result => render(result.data['getSearchResult']) );
@@ -116,12 +116,12 @@ $(document).ready(function() {
   })
 
   $("#login").click(function() {
-    login_url = "http://www.gobertweb.com:3000/login"
+    login_url = "https://gobert.herokuapp.com/login"
     chrome.tabs.create({url : login_url});
   });
 
   $("#signup").click(function() {
-    register_url = "http://www.gobertweb.com:3000/register"
+    register_url = "https://gobert.herokuapp.com/register"
     chrome.tabs.create({url : register_url});
   });
 });
@@ -133,7 +133,7 @@ $(document).on('click', '.'+addToShoppingCartClass, function () {
     let user = items["jwtToken"]["username"]
     let token = items["jwtToken"]["token"]
     console.log(token)
-    fetch('http://localhost:4000', {
+    fetch('https://gobert.herokuapp.com/graphql', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -167,6 +167,6 @@ $(document).on('click', '.'+addToShoppingCartClass, function () {
 });
 
 $(document).on('click', '#username', function () {
-  homepage_url = "http://www.gobertweb.com:3000"
+  homepage_url = "https://gobert.herokuapp.com/graphql"
   chrome.tabs.create({url : homepage_url});
 });
