@@ -13,24 +13,20 @@ function RateProf(props) {
     error,
     data
   } = useQuery(FETCH_PROF_QUERY, {
-    variables: { name },
-    onCompleted: data => {
-      if (!data["getProfessorDetail"])
-        props.history.push('/404');
-    }
+    variables: { name }
   });
 
-  // Show error page
+  // Show 404 page on search error
   if (error) props.history.push('/404');
-  
-  const results = error ? {} : data.getProfessorDetail;
-  var gobert = "GOBERT - No ratings availble /(ㄒoㄒ)/~~";
-  if (results && results.rateSummary && results.rateSummary.length!==0)
-    gobert = "GOBERT - Overall Score Based on " + results.rateSummary.length + " Course(s):";
 
   // Show RMP Tags
   const [ showTag, setShow ] = useState(false);
   function onChange(e, {checked}) { setShow(checked); }
+
+  const results = (data && data.getProfessorDetail) ? data.getProfessorDetail : {};
+  var gobert = (results && results.rateSummary && results.rateSummary.length!==0)
+    ? "GOBERT - Overall Score Based on " + results.rateSummary.length + " Course(s):"
+    : "GOBERT - No ratings availble /(ㄒoㄒ)/~~";
   
   return (
     <Container style={{ marginTop: '7em' }}>
