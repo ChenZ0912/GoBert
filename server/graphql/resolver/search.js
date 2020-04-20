@@ -282,7 +282,7 @@ module.exports = {
         try {
           const try_length_of_query = query.replace(/[^a-zA-Z0-9]+/g, "");
           if (try_length_of_query.length < 3){
-            throw new Error("Query too short");
+            throw new Error("Short search term will result in a huge amount of results, please enter a longer search term for better experience!");
           }
 
           const gobertResult = await searchGobert(query);
