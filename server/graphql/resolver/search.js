@@ -280,6 +280,12 @@ module.exports = {
       context,
       info){
         try {
+          const try_length_of_query = escapeCourse(query).replace(' ', '');
+          console.log(try_length_of_query);
+          if (try_length_of_query.length < 3){
+            throw new Error("Query too short");
+          }
+
           const gobertResult = await searchGobert(query);
           // const rmpResult = await searchRMP(query);
           // const result = {
