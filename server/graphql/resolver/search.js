@@ -169,7 +169,7 @@ async function searchCourse(query){
   
   query = query.replace('\n', ' ');
 
-  const albert_regex = /[a-z]+-[a-z]+ [0-9]+-[0-9a-z]+ \([0-9]+\)/g;
+  const albert_regex = /[a-z]+-[a-z]+ [0-9a-z]+-[0-9a-z]+ \([0-9]+\)/g;
   
   if (query.match(albert_regex)){
     const s = query.split('-');
