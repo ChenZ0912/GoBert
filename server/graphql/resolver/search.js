@@ -280,8 +280,7 @@ module.exports = {
       context,
       info){
         try {
-          const try_length_of_query = escapeCourse(query).replace(' ', '');
-          console.log(try_length_of_query);
+          const try_length_of_query = query.replace(/[^a-zA-Z0-9]+/g, "");
           if (try_length_of_query.length < 3){
             throw new Error("Query too short");
           }
