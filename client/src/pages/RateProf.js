@@ -27,7 +27,7 @@ function RateProf(props) {
   var gobert = (results && results.rateSummary && results.rateSummary.length!==0)
     ? "GOBERT - Overall Score Based on " + results.rateSummary.length + " Course(s):"
     : "GOBERT - No ratings availble /(ㄒoㄒ)/~~";
-  console.log(results)
+
   return (
     <Container style={{ marginTop: '7em' }}>
     {loading ? <h1>Loading results..</h1> : <>
