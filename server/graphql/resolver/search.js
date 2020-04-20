@@ -282,7 +282,7 @@ module.exports = {
         try {
           const try_length_of_query = query.replace(/[^a-zA-Z0-9]+/g, "");
           if (try_length_of_query.length < 3){
-            throw new Error("Short search term will result in a huge amount of results, please enter a longer search term for better experience!");
+            throw new Error("Your search didn't return any results");
           }
 
           const gobertResult = await searchGobert(query);
@@ -291,6 +291,10 @@ module.exports = {
           //   "gobert": gobertResult,
           //   "rmp": rmpResult
           // }
+
+          if (gobertResult.length == 0){
+            throw new Error("Your search didn't return any results");
+          }
           return gobertResult;
         } catch (err) {
             throw new Error(err);
