@@ -1,5 +1,8 @@
 const { ApolloServer } = require('apollo-server-express');
 const express = require('express');
+var favicon = require('serve-favicon');
+
+
 
 const expressPlayground = require('graphql-playground-middleware-express').default
 const mongoose = require('mongoose');
@@ -23,7 +26,7 @@ const server = new ApolloServer({
 });
 
 app.use(express.static('public'));
-
+app.use(favicon('public/favicon.ico'));
 // graphql playground
 app.get('/playground', expressPlayground({ endpoint: '/graphql' }))
 
