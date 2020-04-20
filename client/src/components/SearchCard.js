@@ -54,7 +54,7 @@ function SearchCard({
           </Grid.Row>
 
           {/*Rate My Professor Info Display*/}
-          {category === "Professor" && rnumRate && 
+          {category === "Professor" && rnumRate !== 0 && rnumRate &&
           <Grid.Row>
           <Grid.Column width={3}>
             <Icon name='angle down'/> <b>RateMyProfessor</b>

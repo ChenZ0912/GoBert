@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, Container, Icon } from 'semantic-ui-react';
+import { Card, CardContent, Container, Icon, Loader } from 'semantic-ui-react';
 import MyPopup from '../util/MyPopup';
 import ReactDOM from 'react-dom';
 
@@ -92,6 +92,7 @@ function Scheduler({scheduleInput}) {
           setResults(data["data"]["generateSchedule"]);
           setSchedules(schedulesTemp);
           setLoading(false);
+          lockedCourse = []
         }
       }
     );
@@ -138,8 +139,9 @@ function Scheduler({scheduleInput}) {
 
   return (
     <>
+    <br/>
     {loading ? (
-      <h3>Loading results...</h3>
+      <Loader active inline='centered'><b>Loading Schedules</b></Loader>
     ) : results &&
       <Card fluid style={{marginBottom: "50px"}}>
         <Card.Content style={{textTransform: "uppercase", 
