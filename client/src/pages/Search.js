@@ -10,25 +10,28 @@ function Search(props) {
 
   const {
     loading,
-    data: {getSearchResult : results}
+    error,
+    data
   } = useQuery(FETCH_SERACH_QUERY, {
     variables: {
       input
     }
   });
 
+  const results = error ? {} : data.getSearchResult;
+
   return (
     <Container style={{ marginTop: '7em' }}>
        {loading ? (
           <h1>Loading results..</h1>
-        ) : (
+       ) : error ? <h1>{error.graphQLErrors[0].message}</h1> :
           <Transition.Group>
             {results &&
               results.map((result, index) => (
                 <dl key={index}> <SearchCard result={result} /> </dl>
             ))}
           </Transition.Group>
-        )}
+        }
     </Container>
   );
 }

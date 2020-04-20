@@ -10,19 +10,20 @@ function RateProf(props) {
 
   const {
     loading,
-    data: {getProfessorDetail : results}
+    error,
+    data
   } = useQuery(FETCH_PROF_QUERY, {
     variables: { name },
-    // Show error page
-    onError() {
-      props.history.push('/404');
-    }, 
     onCompleted: data => {
       if (!data["getProfessorDetail"])
         props.history.push('/404');
     }
   });
 
+  // Show error page
+  if (error) props.history.push('/404');
+  
+  const results = error ? {} : data.getProfessorDetail;
   var gobert = "GOBERT - No ratings availble /(ㄒoㄒ)/~~";
   if (results && results.rateSummary && results.rateSummary.length!==0)
     gobert = "GOBERT - Overall Score Based on " + results.rateSummary.length + " Course(s):";

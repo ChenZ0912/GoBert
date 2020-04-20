@@ -11,19 +11,20 @@ function RateCourse(props) {
 
   const {
     loading,
-    data: {getCourseDetail : results}
+    error,
+    data
   } = useQuery(FETCH_COURSE_QUERY, {
     variables: { id },
-    // Show error page
-    onError() {
-      props.history.push('/404');
-    }, 
     onCompleted: data => {
       if (!data["getCourseDetail"])
         props.history.push('/404');
     }
   });
 
+  // Show error page
+  if (error) props.history.push('/404');
+
+  const results = error ? {} : data.getCourseDetail;
   var output = "No ratings availble /(ㄒoㄒ)/~~";
   if (results && results.rateSummary && results.rateSummary.length!==0) {
     output = "Overall Score Based on " + results.rateSummary.length + " Professor(s):";
