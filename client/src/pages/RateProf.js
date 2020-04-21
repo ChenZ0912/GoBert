@@ -10,27 +10,24 @@ function RateProf(props) {
 
   const {
     loading,
-    data: {getProfessorDetail : results}
+    error,
+    data
   } = useQuery(FETCH_PROF_QUERY, {
-    variables: { name },
-    // Show error page
-    onError() {
-      props.history.push('/404');
-    }, 
-    onCompleted: data => {
-      if (!data["getProfessorDetail"])
-        props.history.push('/404');
-    }
+    variables: { name }
   });
 
-  var gobert = "GOBERT - No ratings availble /(ㄒoㄒ)/~~";
-  if (results && results.rateSummary && results.rateSummary.length!==0)
-    gobert = "GOBERT - Overall Score Based on " + results.rateSummary.length + " Course(s):";
+  // Show 404 page on search error
+  if (error) props.history.push('/404');
 
   // Show RMP Tags
   const [ showTag, setShow ] = useState(false);
   function onChange(e, {checked}) { setShow(checked); }
-  
+
+  const results = (data && data.getProfessorDetail) ? data.getProfessorDetail : {};
+  var gobert = (results && results.rateSummary && results.rateSummary.length!==0)
+    ? "GOBERT - Overall Score Based on " + results.rateSummary.length + " Course(s):"
+    : "GOBERT - No ratings availble /(ㄒoㄒ)/~~";
+
   return (
     <Container style={{ marginTop: '7em' }}>
     {loading ? <h1>Loading results..</h1> : <>
@@ -38,7 +35,7 @@ function RateProf(props) {
       <Divider/>
 
       {/*Rate My Professor Ratings*/}
-      { results.rnumRate && <>
+      { results.rnumRate !== 0 && results.rnumRate && <>
         <h3>RATE MY PROFESSOR - Overall Score Based on {results.rnumRate} Rating(s):</h3>
         <Card fluid color="violet">
           <Card.Content>

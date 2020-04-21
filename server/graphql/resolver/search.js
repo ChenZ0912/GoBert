@@ -169,7 +169,7 @@ async function searchCourse(query){
   
   query = query.replace('\n', ' ');
 
-  const albert_regex = /[a-z]+-[a-z]+ [0-9]+-[0-9a-z]+ \([0-9]+\)/g;
+  const albert_regex = /[a-z]+-[a-z]+ [0-9a-z]+-[0-9a-z]+ \([0-9]+\)/g;
   
   if (query.match(albert_regex)){
     const s = query.split('-');
@@ -280,12 +280,21 @@ module.exports = {
       context,
       info){
         try {
+          const try_length_of_query = query.replace(/[^a-zA-Z0-9]+/g, "");
+          if (try_length_of_query.length < 3){
+            throw new Error("Your search didn't return any results");
+          }
+
           const gobertResult = await searchGobert(query);
           // const rmpResult = await searchRMP(query);
           // const result = {
           //   "gobert": gobertResult,
           //   "rmp": rmpResult
           // }
+
+          if (gobertResult.length == 0){
+            throw new Error("Your search didn't return any results");
+          }
           return gobertResult;
         } catch (err) {
             throw new Error(err);
