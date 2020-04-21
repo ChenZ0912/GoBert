@@ -146,7 +146,7 @@ function ShoppingCart() {
             <h1>Shopping Cart</h1>
             <Divider/>
             {loading ? (
-                <h3>Loading results...</h3>
+                <h2>Loading results...</h2>
             ) : ( results && results.courses && results.courses.length !== 0) ? (
             <Form>
 

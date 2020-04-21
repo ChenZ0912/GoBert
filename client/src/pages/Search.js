@@ -13,12 +13,10 @@ function Search(props) {
     error,
     data
   } = useQuery(FETCH_SERACH_QUERY, {
-    variables: {
-      input
-    }
+    variables: { input }
   });
 
-  const results = error ? {} : data.getSearchResult;
+  const results = (data && data.getSearchResult) ? data.getSearchResult : {};
 
   return (
     <Container style={{ marginTop: '7em' }}>
