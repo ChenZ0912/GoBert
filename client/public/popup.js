@@ -60,6 +60,7 @@ function render(array) {
     } else if (category == "Course") {
       isCourse = true;
       delete keys[1];
+      delete keys[5];
     }
     console.log("Keys are: ")
     console.log(keys);
@@ -108,7 +109,7 @@ $(document).ready(function() {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      body: JSON.stringify({query: `{getSearchResult(query:"${input}"){category name courseID courseTitle score numRate}}`})
+      body: JSON.stringify({query: `{getSearchResult(query:"${input}"){category name courseID courseTitle score rscore numRate}}`})
     })
       .then(r => r.json())
       .then(result => render(result.data['getSearchResult']) );
@@ -167,6 +168,6 @@ $(document).on('click', '.'+addToShoppingCartClass, function () {
 });
 
 $(document).on('click', '#username', function () {
-  homepage_url = "https://gobert.herokuapp.com/graphql"
+  homepage_url = "https://gobert.herokuapp.com"
   chrome.tabs.create({url : homepage_url});
 });
