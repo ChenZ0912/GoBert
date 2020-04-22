@@ -8,7 +8,7 @@ function onClickHandler(info, tab) {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     },
-    body: JSON.stringify({query: `{getSearchResult(query:"${info.selectionText}"){category name courseID courseTitle score rscore numRate}}`})
+    body: JSON.stringify({query: `{getSearchResult(query:"${info.selectionText}"){category name courseID courseTitle score rscore numRate _id}}`})
   })
     .then(r => r.json())
     .then(data => { window.result = data; chrome.runtime.sendMessage({type :"course-selection", result: result}); })
