@@ -5,6 +5,7 @@ function generateTableHead(table, keys) {
 
   for (let key of keys) {
     if (key == undefined) continue;
+    if (key == "rscore") key = "RPM";
     let th = document.createElement("th");
     th.setAttribute("scope", "row");
     let text = document.createTextNode(key);
