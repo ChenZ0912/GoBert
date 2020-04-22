@@ -3,6 +3,9 @@
 # Dependencies
 node_modules/
 
+# config
+server/config.js
+
 # Compiled output
 build
 
