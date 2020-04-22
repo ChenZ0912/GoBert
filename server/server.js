@@ -26,7 +26,7 @@ const server = new ApolloServer({
 });
 
 app.use(express.static('public'));
-app.use(favicon('public/static/media/favicon.ico'));
+app.use(favicon('favicon.ico'));
 // graphql playground
 app.get('/playground', expressPlayground({ endpoint: '/graphql' }))
 

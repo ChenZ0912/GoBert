@@ -20,23 +20,38 @@ function generateTable(table, data, keys, isCourse) {
     let row = tbody.insertRow();
     let course_data = []
     for (let key of keys) {
+      if (key == '_id') continue;
       if (key == undefined) continue;
       let cell = row.insertCell();
       let text = document.createTextNode(element[key]);
       cell.appendChild(text);
       if (key == "courseID" || key == "courseTitle") {
         course_data.push(element[key]);
+        cell.setAttribute('class', 'gobert_link');
+        cell.setAttribute('id', 'https://gobert.herokuapp.com/rateCourse/' + element[keys[keys.length - 1]]);
       }
+      if (key == "name"){
+        cell.setAttribute('class', 'gobert_link');
+        cell.setAttribute('id', 'https://gobert.herokuapp.com/rateProf/' + element[keys[1]].replace(' ', '%20'));
+      }
+
     }
     if (isCourse) {
-      let cell = row.insertCell();
+      let cell = row.insertCell(); 
       generateSubmitButtonInTable(cell, course_data);
     }
+
+    let span = document.createElement('span');
+    span.setAttribute("class", "hovertext");
+    span.innerText = "Click to go to gobert to see more details";
+    // span.setAttribute("style", "visibility: hidden; width: 120px;background-color: black;color: #fff;text-align: center;border-radius: 6px;padding: 5px 0;position: absolute;z-index: 1");
+    row.appendChild(span);
   }
 }
 
 function generateSubmitButtonInTable(cell, course_data)  {
   let button = document.createElement("button");
+  button.setAttribute('z-index', '999');
   button.classList.add(addToShoppingCartClass)
   button.classList.add("btn");
   button.classList.add("btn-info")
@@ -65,7 +80,7 @@ function render(array) {
     }
     console.log("Keys are: ")
     console.log(keys);
-    generateTableHead(table, keys);
+    generateTableHead(table, keys.slice(0, keys.length - 1));
     generateTable(table, array, keys, isCourse);
     $(".search-result").html(table);
   }
@@ -110,7 +125,7 @@ $(document).ready(function() {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      body: JSON.stringify({query: `{getSearchResult(query:"${input}"){category name courseID courseTitle score rscore numRate}}`})
+      body: JSON.stringify({query: `{getSearchResult(query:"${input}"){category name courseID courseTitle score rscore numRate _id}}`})
     })
       .then(r => r.json())
       .then(result => render(result.data['getSearchResult']) );
@@ -127,6 +142,11 @@ $(document).ready(function() {
     chrome.tabs.create({url : register_url});
   });
 });
+
+$(document).on('click', '.table tbody .gobert_link', function(){
+  // console.log(this.id);
+  window.open(this.id, '_blank');
+})
 
 $(document).on('click', '.'+addToShoppingCartClass, function () {
   var course_info = $(this).data('course');

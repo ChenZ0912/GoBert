@@ -10,6 +10,32 @@ form{
   margin-top: 30px;
 }
 
+tr:hover {
+    cursor: pointer;
+}
+
+tr .hovertext{
+  visibility: hidden;
+  width: 50%;
+  background-color: black;
+  opacity: 0.5;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the hovertext */
+  position: absolute;
+  font-size: small;
+  left: 25px;
+  margin-top: 35px;
+  z-index: 1;
+}
+
+tr:hover .hovertext{
+  visibility: visible;
+}
+
 .card-title{ font-weight:300; }
 
 .btn{
